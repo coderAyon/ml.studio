@@ -1,0 +1,4 @@
+id,title,severity,status,columns,count,method,explanation,recommendation,risk,evidence
+1,Potential outliers,Low,Potential Issue,['x'],2,1.5 × IQR fences,Extreme observations are not necessarily errors.,Review a box plot and original records.,Deleting extremes can bias the data.,"[-3.0783319101980338, -2.683103555466855]"
+2,Missing values,Medium,Confirmed Issue,['amount'],1,isna,0.8% of this column is missing.,Review median or most-frequent imputation inside the training pipeline.,No imputation strategy suits every dataset; whole-data imputation can leak validation information.,[3]
+3,Surrounding whitespace,Low,Confirmed Issue,['category'],40,Compare stripped labels,Whitespace can split equivalent labels.,Preview trimming whitespace.,Whitespace can occasionally be meaningful.,"[' A', ' A', ' A', ' A', ' A', ' A', ' A', ' A']"

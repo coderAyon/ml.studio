@@ -1,0 +1,2 @@
+# ML libraries are required by the core application.
+-r core.txt

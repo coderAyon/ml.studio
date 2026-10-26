@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": [
+    "Mean by group: actual Iris mean 5.006",
+    "Counts: 50 per species",
+    "Three vertical subplots with four measurements",
+    "Light/dark UI and chart",
+    "Preset controls and QWebChannel"
+  ]
+}

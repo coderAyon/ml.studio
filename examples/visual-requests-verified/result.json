@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Written question maps to actual Iris group means",
+    "Count includes all 150 rows",
+    "Four measurements in three species subplots",
+    "Scatter follows requested X/Y order",
+    "Edited row filter/title produce 50-row histogram",
+    "Unsupported request asks for choices",
+    "Draft text survives state refresh",
+    "Real CSV/HTML/JSON/PNG/SVG exports"
+  ]
+}

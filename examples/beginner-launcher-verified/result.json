@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "fixture": "Explicit synthetic two-group data",
+  "checks": [
+    "Overview contains no redundant chart section",
+    "Quality card opens real issue details and links to analyzer",
+    "Detailed guidance is collapsed by default",
+    "Clustering is a task without a target; excludes selected outcome and IDs by default",
+    "Same-feature three-method comparison with group plot/profiles and K scan",
+    "Group-label CSV export",
+    "Charts retained in Visual Analytics",
+    "Classification remains available",
+    "Dataset changes invalidate clustering results"
+  ]
+}

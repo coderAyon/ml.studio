@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\STUDY\8th sem\project\ML Studio\src\mlstudio\contest_audit.py", line 57, in run
+    assert c.dataset.current.iloc[0,0]=='André' and c.dataset.current.iloc[0,1]==2.5
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

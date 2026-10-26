@@ -1,0 +1,5 @@
+id,title,severity,status,columns,count,method,explanation,recommendation,risk,evidence
+1,Missing values,Medium,Confirmed Issue,['measurement'],6,isna,2.4% of this column is missing.,Review median or most-frequent imputation inside the training pipeline.,No imputation strategy suits every dataset; whole-data imputation can leak validation information.,"[3, 4, 5, 6, 7, 8]"
+2,Potential outliers,Low,Potential Issue,['measurement'],2,1.5 × IQR fences,Extreme observations are not necessarily errors.,Review a box plot and original records.,Deleting extremes can bias the data.,"[7.91386246600733, 7.517474037533921]"
+3,Surrounding whitespace,Low,Confirmed Issue,['category'],49,Compare stripped labels,Whitespace can split equivalent labels.,Preview trimming whitespace.,Whitespace can occasionally be meaningful.,"[' Group A', ' Group A', ' Group A', ' Group A', ' Group A', ' Group A', ' Group A', ' Group A']"
+4,Equivalent category labels,Low,Potential Issue,['category'],245,Case-folded and trimmed distinct counts,Some labels differ only in case or whitespace.,Review labels before standardizing.,Case can carry domain meaning.,[]

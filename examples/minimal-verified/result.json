@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "Click outlier -> exact affected row beyond first page, right-panel preview and IQR bounds",
+    "Inline before/after preview, Apply, full-data leakage guard, Undo",
+    "Choose target -> real training with fold-fitted preparation, excluded feature, actual metrics",
+    "One-click three-method comparison uses identical split and preparation",
+    "All 18 available routes remain reachable with 7 main navigation items",
+    "Two written questions -> separate date trend and category-share results"
+  ]
+}

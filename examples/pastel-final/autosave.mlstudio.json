@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "source": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\pastel-final\\synthetic-pastel.csv",
+  "fingerprint": "97fbb19045fce4bc930f973f4ae8150d07581dba75b4eadf3b7c41b23d1c516c",
+  "import": {
+    "delimiter": ",",
+    "encoding": "utf-8-sig",
+    "header": true,
+    "decimal": "."
+  },
+  "operations": [],
+  "workflow": {
+    "nodes": {
+      "1": {
+        "type": "Dataset",
+        "position": [
+          35.0,
+          45.0
+        ]
+      },
+      "2": {
+        "type": "Remove duplicates",
+        "position": [
+          270.0,
+          45.0
+        ]
+      },
+      "3": {
+        "type": "Train model",
+        "position": [
+          505.0,
+          45.0
+        ]
+      }
+    },
+    "edges": [
+      [
+        "1",
+        "2"
+      ],
+      [
+        "2",
+        "3"
+      ]
+    ]
+  },
+  "target": "",
+  "algorithm": "Logistic Regression"
+}

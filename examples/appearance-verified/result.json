@@ -1,0 +1,943 @@
+{
+  "status": "passed",
+  "checks": [
+    "All 15 available pages in Light and Dark",
+    "Representative normal-size text contrast at least 4.5:1",
+    "Dark/light Matplotlib plotting paper and labels",
+    "Quality issue popup in both themes",
+    "Header theme toggle and persisted settings",
+    "Unsaved input, selection and keyboard-focus preservation",
+    "No entry-animation replay on status refresh",
+    "Page-entry motion when allowed",
+    "OS and saved reduced-motion handling",
+    "Legacy high-contrast light preference"
+  ],
+  "minimum_measured_contrast": 5.20037056135573,
+  "contrast_measurements": [
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "home"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "home"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.890036733892175,
+      "theme": "light",
+      "page": "home"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "home"
+    },
+    {
+      "name": "small supporting text",
+      "ratio": 5.20037056135573,
+      "theme": "light",
+      "page": "home"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "workflow"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "workflow"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "workflow"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "workflow"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "table headings",
+      "ratio": 5.871879769671012,
+      "theme": "light",
+      "page": "data"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "analyzer"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "analyzer"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "analyzer"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "analyzer"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "analyzer"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "analytics"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "analytics"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "analytics"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "analytics"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "analytics"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "models"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "models"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "models"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "models"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "models"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "table headings",
+      "ratio": 5.871879769671012,
+      "theme": "light",
+      "page": "history"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "predictions"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "predictions"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "predictions"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "predictions"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "reports"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "reports"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "reports"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "reports"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "settings"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "settings"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "settings"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "settings"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "settings"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "safety"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "safety"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "safety"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "safety"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "safety"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "impact"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "impact"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "impact"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "impact"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "impact"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "table headings",
+      "ratio": 5.871879769671012,
+      "theme": "light",
+      "page": "reliability"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "errors"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "errors"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "errors"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "errors"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "errors"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.404707963415271,
+      "theme": "light",
+      "page": "researchpack"
+    },
+    {
+      "name": "body",
+      "ratio": 12.71626076245254,
+      "theme": "light",
+      "page": "researchpack"
+    },
+    {
+      "name": "navigation",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "researchpack"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 5.781749279451971,
+      "theme": "light",
+      "page": "researchpack"
+    },
+    {
+      "name": "helper text",
+      "ratio": 6.243144180463094,
+      "theme": "light",
+      "page": "researchpack"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "home"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "home"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.646596583514105,
+      "theme": "dark",
+      "page": "home"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "home"
+    },
+    {
+      "name": "small supporting text",
+      "ratio": 7.243437020645069,
+      "theme": "dark",
+      "page": "home"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "workflow"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "workflow"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "workflow"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "workflow"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "table headings",
+      "ratio": 8.009154820101411,
+      "theme": "dark",
+      "page": "data"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "analyzer"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "analyzer"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "analyzer"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "analyzer"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "analyzer"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "analytics"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "analytics"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "analytics"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "analytics"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "analytics"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "models"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "models"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "models"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "models"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "models"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "table headings",
+      "ratio": 8.009154820101411,
+      "theme": "dark",
+      "page": "history"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "predictions"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "predictions"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "predictions"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "predictions"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "reports"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "reports"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "reports"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "reports"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "settings"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "settings"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "settings"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "settings"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "settings"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "safety"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "safety"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "safety"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "safety"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "safety"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "impact"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "impact"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "impact"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "impact"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "impact"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "table values",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "table headings",
+      "ratio": 8.009154820101411,
+      "theme": "dark",
+      "page": "reliability"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "errors"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "errors"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "errors"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "errors"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "errors"
+    },
+    {
+      "name": "h2",
+      "ratio": 14.28844838973831,
+      "theme": "dark",
+      "page": "researchpack"
+    },
+    {
+      "name": "body",
+      "ratio": 16.249524487814934,
+      "theme": "dark",
+      "page": "researchpack"
+    },
+    {
+      "name": "navigation",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "researchpack"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 6.5282691728943885,
+      "theme": "dark",
+      "page": "researchpack"
+    },
+    {
+      "name": "helper text",
+      "ratio": 8.845426606376114,
+      "theme": "dark",
+      "page": "researchpack"
+    }
+  ],
+  "os_reduced_motion": false
+}

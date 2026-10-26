@@ -1,0 +1,130 @@
+<!doctype html><meta charset="utf-8"><title>ML Studio report</title><style>body{max-width:1000px;margin:48px auto;font:16px Segoe UI;color:#24324b}pre{white-space:pre-wrap;background:#f4f6fa;padding:24px;border-radius:12px}</style><h1>ML Studio · Experiment report</h1><p>Local analysis. Potential findings require domain review. Statistical association does not establish causation.</p><pre>{
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;generated&quot;: &quot;2026-10-25T21:32:36.486877+06:00&quot;,
+  &quot;dataset&quot;: {
+    &quot;rows&quot;: 80,
+    &quot;columns&quot;: 3,
+    &quot;bytes&quot;: 5412,
+    &quot;fields&quot;: [
+      {
+        &quot;name&quot;: &quot;feature&quot;,
+        &quot;type&quot;: &quot;int64&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 80
+      },
+      {
+        &quot;name&quot;: &quot;category&quot;,
+        &quot;type&quot;: &quot;str&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 2
+      },
+      {
+        &quot;name&quot;: &quot;target&quot;,
+        &quot;type&quot;: &quot;int64&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 2
+      }
+    ]
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;title&quot;: &quot;Small dataset&quot;,
+      &quot;severity&quot;: &quot;Medium&quot;,
+      &quot;status&quot;: &quot;Recommendation&quot;,
+      &quot;columns&quot;: [],
+      &quot;count&quot;: 80,
+      &quot;method&quot;: &quot;Row count &lt; 100&quot;,
+      &quot;explanation&quot;: &quot;Validation estimates may have high variance.&quot;,
+      &quot;recommendation&quot;: &quot;Use appropriate cross-validation and report uncertainty.&quot;,
+      &quot;risk&quot;: &quot;Too many folds can leave insufficient class samples.&quot;,
+      &quot;evidence&quot;: []
+    }
+  ],
+  &quot;transformations&quot;: [],
+  &quot;results&quot;: {
+    &quot;metrics&quot;: {
+      &quot;Accuracy&quot;: 1.0,
+      &quot;Precision (weighted)&quot;: 1.0,
+      &quot;Recall (weighted)&quot;: 1.0,
+      &quot;F1 (weighted)&quot;: 1.0,
+      &quot;Confusion matrix&quot;: [
+        [
+          10,
+          0
+        ],
+        [
+          0,
+          10
+        ]
+      ],
+      &quot;Class labels&quot;: [
+        &quot;0&quot;,
+        &quot;1&quot;
+      ],
+      &quot;Per-class report&quot;: {
+        &quot;0&quot;: {
+          &quot;precision&quot;: 1.0,
+          &quot;recall&quot;: 1.0,
+          &quot;f1-score&quot;: 1.0,
+          &quot;support&quot;: 10.0
+        },
+        &quot;1&quot;: {
+          &quot;precision&quot;: 1.0,
+          &quot;recall&quot;: 1.0,
+          &quot;f1-score&quot;: 1.0,
+          &quot;support&quot;: 10.0
+        },
+        &quot;accuracy&quot;: 1.0,
+        &quot;macro avg&quot;: {
+          &quot;precision&quot;: 1.0,
+          &quot;recall&quot;: 1.0,
+          &quot;f1-score&quot;: 1.0,
+          &quot;support&quot;: 20.0
+        },
+        &quot;weighted avg&quot;: {
+          &quot;precision&quot;: 1.0,
+          &quot;recall&quot;: 1.0,
+          &quot;f1-score&quot;: 1.0,
+          &quot;support&quot;: 20.0
+        }
+      },
+      &quot;ROC-AUC&quot;: 1.0
+    },
+    &quot;metadata&quot;: {
+      &quot;algorithm&quot;: &quot;Logistic Regression&quot;,
+      &quot;target&quot;: &quot;target&quot;,
+      &quot;features&quot;: [
+        &quot;feature&quot;,
+        &quot;category&quot;
+      ],
+      &quot;dataset_fingerprint&quot;: &quot;b51d494b4630adaa211cb49bcfd177364d86e3e403f0b2290a2f322a41611c4f&quot;,
+      &quot;parameters&quot;: {
+        &quot;C&quot;: 1.0,
+        &quot;class_weight&quot;: null,
+        &quot;dual&quot;: false,
+        &quot;fit_intercept&quot;: true,
+        &quot;intercept_scaling&quot;: 1,
+        &quot;l1_ratio&quot;: 0.0,
+        &quot;max_iter&quot;: 100,
+        &quot;n_jobs&quot;: null,
+        &quot;penalty&quot;: &quot;deprecated&quot;,
+        &quot;random_state&quot;: 42,
+        &quot;solver&quot;: &quot;lbfgs&quot;,
+        &quot;tol&quot;: 0.0001,
+        &quot;verbose&quot;: 0,
+        &quot;warm_start&quot;: false
+      },
+      &quot;seed&quot;: 42,
+      &quot;test_size&quot;: 0.25,
+      &quot;training_rows&quot;: 60,
+      &quot;test_rows&quot;: 20,
+      &quot;seconds&quot;: 0.016821700002765283,
+      &quot;protocol&quot;: &quot;Stratified holdout&quot;,
+      &quot;warnings&quot;: [
+        &quot;Exploratory holdout estimate. Repeated model selection on this holdout biases final performance; reserve independent data for final evaluation.&quot;,
+        &quot;Small dataset: performance estimates may have high variance.&quot;
+      ]
+    }
+  }
+}</pre>

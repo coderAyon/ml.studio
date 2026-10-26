@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "version": "0.4.0",
+  "fixture": "Explicitly synthetic research acceptance data; isolated history",
+  "checks": [
+    "Safety Advisor evidence and design controls",
+    "Repeated same-fold model CV with reserved final rows",
+    "Four preprocessing variants and paired fold effects",
+    "Explicit final evaluation and repeat-use lock",
+    "Error Detective rows, metrics and slices",
+    "Native research ZIP export including runnable sources"
+  ],
+  "final_metrics": {
+    "Accuracy": 0.8055555555555556,
+    "Balanced accuracy": 0.7761904761904761,
+    "Macro F1": 0.7855319148936171,
+    "Weighted F1": 0.7964539007092198
+  },
+  "pack": "examples\\pastel-research-acceptance\\research-pack.zip"
+}

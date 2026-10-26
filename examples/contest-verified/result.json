@@ -1,0 +1,189 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "feature": "Unavailable capability clearly disabled",
+      "status": "passed",
+      "detail": "Deep Learning is not implemented and is not counted as a working feature."
+    },
+    {
+      "feature": "Default CSV import",
+      "status": "passed",
+      "detail": "Actual file parsed and profiled; no target guessed."
+    },
+    {
+      "feature": "Advanced import options",
+      "status": "passed",
+      "detail": "Real Latin-1, semicolon separator and comma decimal parse."
+    },
+    {
+      "feature": "All 15 available page routes render",
+      "status": "passed",
+      "detail": "Deep Learning intentionally excluded as unavailable."
+    },
+    {
+      "feature": "Train Logistic Regression",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Random Forest",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Decision Tree",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train KNN",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train SVM",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Naive Bayes",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Linear Regression",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Ridge",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Random Forest Regressor",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train Decision Tree Regressor",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Train SVR",
+      "status": "passed",
+      "detail": "Actual sklearn fit, holdout metrics and session pipeline."
+    },
+    {
+      "feature": "Predict new CSV",
+      "status": "passed",
+      "detail": "17 actual predictions exported through the session pipeline."
+    },
+    {
+      "feature": "Classification comparison",
+      "status": "passed",
+      "detail": "6 real same-split fits."
+    },
+    {
+      "feature": "Regression comparison",
+      "status": "passed",
+      "detail": "5 real same-split fits."
+    },
+    {
+      "feature": "Workflow actions",
+      "status": "passed",
+      "detail": "Empty/disconnected validation errors; starter, execution, undo, deletion and zoom/fit."
+    },
+    {
+      "feature": "Chart Histogram",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Chart Box plot",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Chart Scatter",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Chart Correlation",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Chart Missing values",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Chart Category frequencies",
+      "status": "passed",
+      "detail": "Actual Matplotlib SVG."
+    },
+    {
+      "feature": "Cleaning previews, apply, undo and redo",
+      "status": "passed",
+      "detail": "11 operations; source version preserved."
+    },
+    {
+      "feature": "export_csv",
+      "status": "passed",
+      "detail": "Real output file: cleaned.csv"
+    },
+    {
+      "feature": "export_log",
+      "status": "passed",
+      "detail": "Real output file: transformations.json"
+    },
+    {
+      "feature": "report",
+      "status": "passed",
+      "detail": "Real output file: experiment-report.html"
+    },
+    {
+      "feature": "Dataset health exports",
+      "status": "passed",
+      "detail": "HTML, CSV and PDF written."
+    },
+    {
+      "feature": "Project roundtrip & autosave",
+      "status": "passed",
+      "detail": "Source fingerprint, operations, graph and target restored from disk."
+    },
+    {
+      "feature": "Changed-source project rejection",
+      "status": "passed",
+      "detail": "Error displayed without hidden modal; current workspace preserved."
+    },
+    {
+      "feature": "Settings & resource limits",
+      "status": "passed",
+      "detail": "Theme, autosave, valid/invalid row budget and next-launch storage selection persisted in isolated settings."
+    },
+    {
+      "feature": "Background failure recovery",
+      "status": "passed",
+      "detail": "Rare-class training error reported in web UI; valid training succeeds immediately afterward."
+    },
+    {
+      "feature": "History inspection",
+      "status": "passed",
+      "detail": "Actual SQLite records and experiment detail modal."
+    }
+  ],
+  "count": 35,
+  "seconds": 16.21,
+  "test_data": "Generated QA datasets only; no user files modified. Algorithms and file processing are real; only native dialog selections are automated.",
+  "known_unavailable": [
+    "Deep Learning / GPU engine",
+    "Saved model bundles across application restarts",
+    "Standalone installer/clean-machine acceptance"
+  ],
+  "errors_exercised": 5
+}

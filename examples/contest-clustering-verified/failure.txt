@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "D:\STUDY\8th sem\project\ML Studio\src\mlstudio\app.py", line 690, in main
+    run(window, app, sys.argv[index + 1])
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\STUDY\8th sem\project\ML Studio\src\mlstudio\beginner_smoke.py", line 23, in run
+    assert evaluate(window,"document.querySelectorAll('.automatic-overview').length===0")
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

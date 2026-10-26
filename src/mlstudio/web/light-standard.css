@@ -1,0 +1,60 @@
+/* Standard light palette: clear contrast, defined surfaces and restrained purple accents. */
+html[data-theme="pastel"]:root{
+ --bg:#e9edf4;--surface:#ffffff;--surface-soft:#f0f3f8;--surface-raised:#ffffff;
+ --ink:#18263d;--muted:#42536b;--quiet:#52627a;--border:#bac5d5;--line:#d1d9e5;
+ --purple:#6342c4;--accent:#5130a9;--purple-light:#e8e0fa;--focus:#6542c7;
+ --green:#126348;--green-bg:#e3f2e9;--orange:#854509;--orange-bg:#ffecd2;
+ --blue:#245caa;--blue-bg:#e5eefb;--red:#9e3046;--red-bg:#fce7ec;
+ --shadow:0 3px 11px #26364d0b,0 1px 3px #26364d09;
+}
+html[data-theme="pastel"] .student-workspace .app-shell{background:var(--bg)}
+html[data-theme="pastel"] .student-workspace .sidebar{border-right:1px solid #bdc8d8;box-shadow:2px 0 10px #23314c05}
+html[data-theme="pastel"] .student-workspace .topbar{border-bottom:1px solid #bcc8d9;background:#fff}
+html[data-theme="pastel"] .student-workspace .statusbar{border-top:1px solid #c0cbd9;color:#43536b}
+html[data-theme="pastel"] .student-workspace .workspace-switch{background:#f0f3f8;border-color:#bec9d9;box-shadow:0 1px 2px #26364d06}
+html[data-theme="pastel"] .student-workspace .panel{border-radius:12px;border:1px solid #bcc7d7;box-shadow:var(--shadow)}
+html[data-theme="pastel"] .student-workspace .panel-head{background:#f6f8fb;border-bottom:1px solid #ced7e4;border-radius:11px 11px 0 0}
+html[data-theme="pastel"] .student-workspace :is(h1,h2,h3,h4){color:#18263d}
+html[data-theme="pastel"] .student-workspace .panel-head h2{font-weight:700}
+html[data-theme="pastel"] .student-workspace :is(.hint,.panel-head p,.form-field label,.subtle){color:#42536b;font-weight:450}
+html[data-theme="pastel"] .student-workspace :is(input:not([type=checkbox]):not([type=radio]),select,textarea){background:#fff;color:#1e304a;border:1px solid #9eafc5;font-weight:450;box-shadow:0 1px 2px #26364d04}
+html[data-theme="pastel"] .student-workspace :is(input:not([type=checkbox]):not([type=radio]),textarea)::placeholder{color:#64738a;opacity:1}
+html[data-theme="pastel"] .student-workspace :is(input,select,textarea):focus{border-color:#6542c7;box-shadow:0 0 0 3px #6542c71a}
+html[data-theme="pastel"] .student-workspace input[type=checkbox],html[data-theme="pastel"] .student-workspace input[type=radio]{accent-color:#6040c0}
+html[data-theme="pastel"] .student-workspace .button{background:#fff;border-color:#a9b8cc;color:#253750;font-weight:600;box-shadow:0 1px 2px #26364d07}
+html[data-theme="pastel"] .student-workspace .button:hover:not(:disabled){background:#f0f3f9;border-color:#7f91ad}
+html[data-theme="pastel"] .student-workspace .button.primary{background:#6040be;border-color:#6040be;color:#fff;box-shadow:0 2px 5px #5233aa24}
+html[data-theme="pastel"] .student-workspace .button.primary:hover:not(:disabled){background:#5233ad;border-color:#5233ad;color:#fff}
+html[data-theme="pastel"] .student-workspace .button:disabled,html[data-theme="pastel"] .student-workspace .icon-button:disabled{opacity:1;background:#edf1f6;border-color:#d0d8e4;color:#6c7c93;box-shadow:none}
+html[data-theme="pastel"] .student-workspace .icon-button{background:#fff;border-color:#b6c2d4;color:#354966}
+html[data-theme="pastel"] .student-workspace #remove-dataset{color:#3f5068;border-color:#a9b8cc}
+html[data-theme="pastel"] .student-workspace .student-help-button{background:#e8e0fa;border-color:#c7b8eb;color:#5130a9}
+html[data-theme="pastel"] .student-workspace #navigation .nav-item{color:#455570;font-weight:600}
+html[data-theme="pastel"] .student-workspace #navigation .nav-item:hover{background:#eef1f8;color:#273a58}
+html[data-theme="pastel"] .student-workspace #navigation .nav-item.active{background:#e7defa;color:#4f2da6;font-weight:700}
+html[data-theme="pastel"] .student-workspace .prep-finding{background:#f6f8fb;border-color:#bbc7d8;box-shadow:0 1px 2px #26364d05}
+html[data-theme="pastel"] .student-workspace .prep-finding b{color:#21324c;font-weight:700}
+html[data-theme="pastel"] .student-workspace .prep-finding small{color:#4b5c75;font-weight:450}
+html[data-theme="pastel"] .student-workspace .prep-finding:hover{border-color:#8975be;background:#f2eefb}
+html[data-theme="pastel"] .student-workspace .prep-finding.active{background:#e9e1fb;border:1px solid #7051bf;box-shadow:inset 3px 0 0 #6b46c3}
+html[data-theme="pastel"] .student-workspace :is(.prep-filters .tab,.requirement-chip){background:#f6f8fb;border-color:#b9c5d7;color:#3e506b}
+html[data-theme="pastel"] .student-workspace .prep-filters .tab.active{background:#6342c4;color:#fff;border-color:#6342c4;font-weight:700}
+html[data-theme="pastel"] .student-workspace :is(.help-details,.student-quick-help){background:#f7f9fc;border-color:#bdc8d9}
+html[data-theme="pastel"] .student-workspace :is(.help-details>summary,.student-quick-help>summary){color:#354764;font-weight:600}
+html[data-theme="pastel"] .student-workspace :is(.student-journey button>span,.feature-choices label,.dv-measurements label,.easy-column-list label){border-color:#b2c0d4;background:#f7f9fc}
+html[data-theme="pastel"] .student-workspace .student-journey button.current{background:#e7defa;color:#5130a9}
+html[data-theme="pastel"] .student-workspace .student-journey button.current>span{background:#6040be;color:#fff;border-color:#6040be}
+html[data-theme="pastel"] .student-workspace :is(.minimal-metric,.insight-metric,.schema-card,.prep-preview-counts>span,.easy-training-plan){background:#f0f3f8;border-color:#bdc8d9}
+html[data-theme="pastel"] .student-workspace :is(.minimal-workflow-step,.minimal-hub-card){background:#f7f9fc;border-color:#bac7d9}
+html[data-theme="pastel"] .student-workspace .minimal-workflow-step:hover,html[data-theme="pastel"] .student-workspace .minimal-hub-card:hover{background:#ede7fa;border-color:#8f7bbd}
+html[data-theme="pastel"] .student-workspace .tag.purple{background:#e8e0fa;color:#5130a9;border-color:#c8b9e9}
+html[data-theme="pastel"] .student-workspace .tag.orange{background:#ffebce;color:#844607;border-color:#e5c598}
+html[data-theme="pastel"] .student-workspace th{background:#eaf0f7;color:#344965;border-bottom:1px solid #bdc9da}
+html[data-theme="pastel"] .student-workspace td{color:#263953;border-bottom-color:#dde4ee}
+html[data-theme="pastel"] .student-workspace tbody tr:nth-child(even){background:#f7f9fc}
+html[data-theme="pastel"] .student-workspace tbody tr:hover{background:#edf0fa}
+html[data-theme="pastel"] .student-workspace .table-scroll{border-color:#bac7d8}
+html[data-theme="pastel"] .student-workspace .dv-chart-tabs button{background:#f4f7fb;border-color:#b9c5d7}
+html[data-theme="pastel"] .student-workspace .dv-chart-tabs button.active{background:#e7defa;border-color:#7051bf}
+html[data-theme="pastel"] .student-workspace .prep-empty{background:#f8fafc;border:1px dashed #b9c7da;border-radius:11px;margin:4px}
+html[data-theme="pastel"] .student-workspace .prep-empty>p{color:#4d607b}

@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "checks": [
+    "Dataset visuals immediately below My dataset; automatic scatter and exact flagged row 121",
+    "All five chart tabs produce real dataset charts",
+    "Pearson, Spearman and Kendall share actual pair-count evidence",
+    "Custom title, expand/Escape and actual image/table/outlier/pair exports"
+  ]
+}

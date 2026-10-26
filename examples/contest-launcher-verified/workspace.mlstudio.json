@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "source": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\contest-launcher-verified\\cleaning-source.csv",
+  "fingerprint": "f001c382c18f3eb6d6a74705ad0fe460f0f59b8a9f294552e8785f11d9a15b50",
+  "import": {
+    "delimiter": ",",
+    "encoding": "utf-8-sig",
+    "header": true,
+    "decimal": "."
+  },
+  "operations": [],
+  "workflow": {
+    "nodes": {
+      "1": {
+        "type": "Dataset",
+        "position": [
+          35.0,
+          90.0
+        ]
+      },
+      "2": {
+        "type": "Remove duplicates",
+        "position": [
+          245.0,
+          90.0
+        ]
+      },
+      "3": {
+        "type": "Train model",
+        "position": [
+          455.0,
+          90.0
+        ]
+      }
+    },
+    "edges": [
+      [
+        "1",
+        "2"
+      ],
+      [
+        "2",
+        "3"
+      ]
+    ]
+  },
+  "target": "target",
+  "algorithm": "Decision Tree"
+}

@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "checks": [
+    "All 18 pages retain every existing action/input identity after student presentation",
+    "Context help and searchable glossary open, filter, close and restore keyboard focus",
+    "Friendly Train button runs a real model and displays actual holdout metrics",
+    "Example question -> reviewable plan -> calculated visual result",
+    "Unusual-values card keeps exact records, expandable limits, caution and before/after controls",
+    "Light/Dark page screenshots and representative text contrast >=4.5:1"
+  ],
+  "control_inventory": [
+    {
+      "page": "home",
+      "existing_controls": 4,
+      "after_student_controls": 4
+    },
+    {
+      "page": "data",
+      "existing_controls": 4,
+      "after_student_controls": 4
+    },
+    {
+      "page": "preprocessing",
+      "existing_controls": 14,
+      "after_student_controls": 14
+    },
+    {
+      "page": "analytics",
+      "existing_controls": 35,
+      "after_student_controls": 35
+    },
+    {
+      "page": "models",
+      "existing_controls": 6,
+      "after_student_controls": 6
+    },
+    {
+      "page": "results",
+      "existing_controls": 2,
+      "after_student_controls": 2
+    },
+    {
+      "page": "advanced",
+      "existing_controls": 0,
+      "after_student_controls": 0
+    },
+    {
+      "page": "analyzer",
+      "existing_controls": 11,
+      "after_student_controls": 11
+    },
+    {
+      "page": "safety",
+      "existing_controls": 8,
+      "after_student_controls": 8
+    },
+    {
+      "page": "reliability",
+      "existing_controls": 1,
+      "after_student_controls": 1
+    },
+    {
+      "page": "impact",
+      "existing_controls": 2,
+      "after_student_controls": 2
+    },
+    {
+      "page": "errors",
+      "existing_controls": 0,
+      "after_student_controls": 0
+    },
+    {
+      "page": "researchpack",
+      "existing_controls": 1,
+      "after_student_controls": 1
+    },
+    {
+      "page": "workflow",
+      "existing_controls": 12,
+      "after_student_controls": 12
+    },
+    {
+      "page": "history",
+      "existing_controls": 1,
+      "after_student_controls": 1
+    },
+    {
+      "page": "predictions",
+      "existing_controls": 0,
+      "after_student_controls": 0
+    },
+    {
+      "page": "reports",
+      "existing_controls": 5,
+      "after_student_controls": 5
+    },
+    {
+      "page": "settings",
+      "existing_controls": 5,
+      "after_student_controls": 5
+    }
+  ]
+}

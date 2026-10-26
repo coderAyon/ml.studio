@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\STUDY\8th sem\project\ML Studio\src\mlstudio\appearance_smoke.py", line 45, in run
+    assert measurements,(label,page,"Contrast measurement produced no values")
+           ^^^^^^^^^^^^
+AssertionError: ('light', 'home', 'Contrast measurement produced no values')

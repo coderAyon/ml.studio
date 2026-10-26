@@ -1,0 +1,26 @@
+// Guided group summaries for the lab tasks, using actual full-dataset calculations.
+const labView={source:null,group:'',columns:[],statistic:'mean',layout:'combined',title:'',xlabel:'',ylabel:''};
+function labControls(){
+ const d=state.dataset;if(!d)return '';
+ const names=d.fields.map(f=>f.name),numeric=d.fields.filter(f=>/int|float|double/i.test(f.type)).map(f=>f.name);
+ if(labView.source!==d.source){Object.assign(labView,{source:d.source,group:names.find(n=>/species|class|category|target/i.test(n))||names.find(n=>!numeric.includes(n))||names[0],columns:[],title:'',xlabel:'',ylabel:''});labView.columns=numeric.filter(n=>n!==labView.group&&!/^id$/i.test(n)).slice(0,4);}
+ labView.columns=labView.columns.filter(n=>numeric.includes(n)&&n!==labView.group);
+ const r=state.lab;
+ return `<section class="panel" id="lab-studio">${panelHead('Group summaries · Lab studio','Choose a question, then select your columns. Works with any suitable CSV.')}<div class="panel-body">
+ <div class="actions" style="flex-wrap:wrap;margin-bottom:20px">${button('1 · Average by group','','lab_mean')}${button('2 · Count each group','','lab_count')}${button('3 · Feature means per group','','lab_subplots')}</div>
+ <div class="form-row"><div class="form-field"><label for="lab-group">Group / category column</label><select id="lab-group">${options(names,labView.group)}</select></div><div class="form-field"><label for="lab-statistic">Calculate</label><select id="lab-statistic">${['mean','count','median','sum','min','max','std'].map(s=>`<option value="${s}" ${labView.statistic===s?'selected':''}>${{mean:'Average (mean)',count:'Number of rows',median:'Middle value (median)',sum:'Total (sum)',min:'Minimum',max:'Maximum',std:'Sample standard deviation'}[s]}</option>`).join('')}</select></div><div class="form-field"><label for="lab-layout">Chart layout</label><select id="lab-layout"><option value="combined" ${labView.layout==='combined'?'selected':''}>One grouped bar chart</option><option value="subplots" ${labView.layout==='subplots'?'selected':''}>Separate vertical subplot per group</option></select></div></div>
+ ${labView.statistic==='count'?'<p class="hint">Counts every row in each group. No numeric measurement is required.</p>':`<p><b>Measurements</b> · Select up to 12 numeric columns</p><div class="feature-choices">${numeric.filter(n=>n!==labView.group).map((n,i)=>`<label><input id="lab-feature-${i}" type="checkbox" data-lab-feature="${esc(n)}" ${labView.columns.includes(n)?'checked':''}>${esc(n)}</label>`).join('')||'<p>No numeric measurements available. Check column types in Dataset Explorer.</p>'}</div>`}
+ <details style="margin:18px 0"><summary>Chart title & axis labels</summary><div class="form-row" style="margin-top:14px">${[['title','Chart title'],['xlabel','X axis label'],['ylabel','Y axis label']].map(([key,label])=>`<div class="form-field"><label for="lab-${key}">${label}</label><input id="lab-${key}" class="input" maxlength="120" value="${esc(labView[key])}" placeholder="Automatic label"></div>`).join('')}</div></details>
+ ${button('Calculate & draw chart','chart','lab_run',true,state.busy)}<p class="hint">Uses all rows. Maximum 30 groups. Blank group labels are included as a separate group.</p>
+ ${r?`<hr><h3>${esc(r.title)}</h3><p class="hint">${esc(r.note)}</p><div class="table-scroll">${table(r.table,[],30)}</div><img class="chart-image" alt="Grouped bar chart calculated from the imported dataset" src="${r.chart}"><div class="actions" style="flex-wrap:wrap">${button('Export summary CSV','download','lab_csv')}${button('Save chart PNG','download','lab_png')}${button('Save chart SVG','download','lab_svg')}</div>`:''}
+ </div></section>`;
+}
+const labAnalytics=renderAnalytics;renderAnalytics=function(){return labControls()+labAnalytics();};
+const labAction=doAction;doAction=function(action){
+ if(['lab_mean','lab_count','lab_subplots'].includes(action)){labView.statistic=action==='lab_count'?'count':'mean';labView.layout=action==='lab_subplots'?'subplots':'combined';labView.title=labView.xlabel=labView.ylabel='';if(action==='lab_mean')labView.columns=labView.columns.slice(0,1);if(action==='lab_subplots')labView.columns=state.dataset.fields.filter(f=>/int|float|double/i.test(f.type)&&f.name!==labView.group&&!/^id$/i.test(f.name)).map(f=>f.name).slice(0,4);render();document.getElementById('lab-studio')?.scrollIntoView({block:'start'});return;}
+ if(action==='lab_run'){cmd('lab_analyze',{group:labView.group,columns:labView.columns,statistic:labView.statistic,layout:labView.layout,title:labView.title,xlabel:labView.xlabel,ylabel:labView.ylabel});return;}
+ if(['lab_csv','lab_png','lab_svg'].includes(action)){cmd('lab_export',{format:action.slice(4)});return;}
+ return labAction(action);
+};
+document.addEventListener('change',event=>{const el=event.target;if(el.dataset.labFeature){labView.columns=Array.from(document.querySelectorAll('[data-lab-feature]:checked')).map(n=>n.dataset.labFeature);return;}const key={'lab-group':'group','lab-statistic':'statistic','lab-layout':'layout'}[el.id];if(key){labView[key]=el.value;render();}});
+document.addEventListener('input',event=>{const key={'lab-title':'title','lab-xlabel':'xlabel','lab-ylabel':'ylabel'}[event.target.id];if(key)labView[key]=event.target.value;});

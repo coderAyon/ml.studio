@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "fixture": "Synthetic 245-row dataset",
+  "checks": [
+    "Pastel dashboard and automatic histogram/scatter/bar charts",
+    "Full-dataset search including last row",
+    "Sorting, pagination, visibility and row selection",
+    "Actual column statistics",
+    "Rename preview, apply and undo",
+    "Health formula and multi-step cleaning-plan preview",
+    "HTML, CSV and PDF health exports",
+    "Workflow search, auto layout and minimap",
+    "Existing-project autosave"
+  ]
+}

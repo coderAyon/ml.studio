@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "data": "synthetic acceptance fixture",
+  "checks": [
+    "Qt startup",
+    "CSV import",
+    "analysis",
+    "training",
+    "prediction",
+    "chart rendering",
+    "HTML export"
+  ],
+  "metrics": {
+    "Accuracy": 1.0,
+    "Precision (weighted)": 1.0,
+    "Recall (weighted)": 1.0,
+    "F1 (weighted)": 1.0,
+    "Confusion matrix": [
+      [
+        10,
+        0
+      ],
+      [
+        0,
+        10
+      ]
+    ],
+    "Class labels": [
+      "0",
+      "1"
+    ],
+    "Per-class report": {
+      "0": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 20.0
+      }
+    },
+    "ROC-AUC": 1.0
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "feature": "Unavailable capability clearly disabled",
+    "status": "passed",
+    "detail": "Deep Learning is not implemented and is not counted as a working feature."
+  },
+  {
+    "feature": "Default CSV import",
+    "status": "passed",
+    "detail": "Actual file parsed and profiled; no target guessed."
+  }
+]

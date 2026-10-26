@@ -1,0 +1,304 @@
+<!doctype html><meta charset="utf-8"><title>ML Studio report</title><style>body{max-width:1000px;margin:48px auto;font:16px Segoe UI;color:#24324b}pre{white-space:pre-wrap;background:#f4f6fa;padding:24px;border-radius:12px}</style><h1>ML Studio · Experiment report</h1><p>Local analysis. Potential findings require domain review. Statistical association does not establish causation.</p><pre>{
+  &quot;version&quot;: &quot;0.4.0&quot;,
+  &quot;generated&quot;: &quot;2026-10-26T02:55:54.108062+06:00&quot;,
+  &quot;dataset&quot;: {
+    &quot;rows&quot;: 120,
+    &quot;columns&quot;: 6,
+    &quot;bytes&quot;: 17092,
+    &quot;fields&quot;: [
+      {
+        &quot;name&quot;: &quot;x&quot;,
+        &quot;type&quot;: &quot;float64&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 120,
+        &quot;missing_percent&quot;: 0.0,
+        &quot;mean&quot;: 0.07771421571509543,
+        &quot;median&quot;: 0.09515917816082532,
+        &quot;std&quot;: 0.9982620492856873,
+        &quot;min&quot;: -3.0783319101980338,
+        &quot;max&quot;: 2.024827715003513,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot;1.8267565599574231&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;-3.0783319101980338&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;0.9580639753088469&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;0.06963722766094482&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;1.3182500241810684&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;0.385629249998389&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;1.8272586275861753&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;0.0317437591517664&quot;,
+            &quot;count&quot;: 1
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;amount&quot;,
+        &quot;type&quot;: &quot;float64&quot;,
+        &quot;missing&quot;: 1,
+        &quot;unique&quot;: 119,
+        &quot;missing_percent&quot;: 0.8333333333333334,
+        &quot;mean&quot;: 10.230512713350167,
+        &quot;median&quot;: 10.486152520288641,
+        &quot;std&quot;: 5.4082982238909585,
+        &quot;min&quot;: 1.015524513789258,
+        &quot;max&quot;: 19.990175643144863,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot;19.581168160732407&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;1.8170786425445602&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;15.129614333190679&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2.155879253227751&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;4.411454065797654&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;15.267200112779545&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;18.265385969658432&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;15.73246047325299&quot;,
+            &quot;count&quot;: 1
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;category&quot;,
+        &quot;type&quot;: &quot;str&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 3,
+        &quot;missing_percent&quot;: 0.0,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot; A&quot;,
+            &quot;count&quot;: 40
+          },
+          {
+            &quot;value&quot;: &quot;B&quot;,
+            &quot;count&quot;: 40
+          },
+          {
+            &quot;value&quot;: &quot;C&quot;,
+            &quot;count&quot;: 40
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;target&quot;,
+        &quot;type&quot;: &quot;int64&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 2,
+        &quot;missing_percent&quot;: 0.0,
+        &quot;mean&quot;: 0.5,
+        &quot;median&quot;: 0.5,
+        &quot;std&quot;: 0.5020964452534338,
+        &quot;min&quot;: 0.0,
+        &quot;max&quot;: 1.0,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot;0&quot;,
+            &quot;count&quot;: 60
+          },
+          {
+            &quot;value&quot;: &quot;1&quot;,
+            &quot;count&quot;: 60
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;event_date&quot;,
+        &quot;type&quot;: &quot;str&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 120,
+        &quot;missing_percent&quot;: 0.0,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot;2024-01-01&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-02&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-03&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-04&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-05&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-06&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-07&quot;,
+            &quot;count&quot;: 1
+          },
+          {
+            &quot;value&quot;: &quot;2024-01-08&quot;,
+            &quot;count&quot;: 1
+          }
+        ]
+      },
+      {
+        &quot;name&quot;: &quot;edge&quot;,
+        &quot;type&quot;: &quot;float64&quot;,
+        &quot;missing&quot;: 0,
+        &quot;unique&quot;: 2,
+        &quot;missing_percent&quot;: 0.0,
+        &quot;mean&quot;: 1.0,
+        &quot;median&quot;: 1.0,
+        &quot;std&quot;: 0.0,
+        &quot;min&quot;: 1.0,
+        &quot;max&quot;: 1.0,
+        &quot;top_values&quot;: [
+          {
+            &quot;value&quot;: &quot;1.0&quot;,
+            &quot;count&quot;: 119
+          },
+          {
+            &quot;value&quot;: &quot;inf&quot;,
+            &quot;count&quot;: 1
+          }
+        ]
+      }
+    ]
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;title&quot;: &quot;Potential outliers&quot;,
+      &quot;severity&quot;: &quot;Low&quot;,
+      &quot;status&quot;: &quot;Potential Issue&quot;,
+      &quot;columns&quot;: [
+        &quot;x&quot;
+      ],
+      &quot;count&quot;: 2,
+      &quot;method&quot;: &quot;1.5 × IQR fences&quot;,
+      &quot;explanation&quot;: &quot;Extreme observations are not necessarily errors.&quot;,
+      &quot;recommendation&quot;: &quot;Review a box plot and original records.&quot;,
+      &quot;risk&quot;: &quot;Deleting extremes can bias the data.&quot;,
+      &quot;evidence&quot;: [
+        -3.0783319101980338,
+        -2.683103555466855
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;2&quot;,
+      &quot;title&quot;: &quot;Missing values&quot;,
+      &quot;severity&quot;: &quot;Medium&quot;,
+      &quot;status&quot;: &quot;Confirmed Issue&quot;,
+      &quot;columns&quot;: [
+        &quot;amount&quot;
+      ],
+      &quot;count&quot;: 1,
+      &quot;method&quot;: &quot;isna&quot;,
+      &quot;explanation&quot;: &quot;0.8% of this column is missing.&quot;,
+      &quot;recommendation&quot;: &quot;Review median or most-frequent imputation inside the training pipeline.&quot;,
+      &quot;risk&quot;: &quot;No imputation strategy suits every dataset; whole-data imputation can leak validation information.&quot;,
+      &quot;evidence&quot;: [
+        3
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;3&quot;,
+      &quot;title&quot;: &quot;Surrounding whitespace&quot;,
+      &quot;severity&quot;: &quot;Low&quot;,
+      &quot;status&quot;: &quot;Confirmed Issue&quot;,
+      &quot;columns&quot;: [
+        &quot;category&quot;
+      ],
+      &quot;count&quot;: 40,
+      &quot;method&quot;: &quot;Compare stripped labels&quot;,
+      &quot;explanation&quot;: &quot;Whitespace can split equivalent labels.&quot;,
+      &quot;recommendation&quot;: &quot;Preview trimming whitespace.&quot;,
+      &quot;risk&quot;: &quot;Whitespace can occasionally be meaningful.&quot;,
+      &quot;evidence&quot;: [
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;,
+        &quot; A&quot;
+      ]
+    },
+    {
+      &quot;id&quot;: &quot;4&quot;,
+      &quot;title&quot;: &quot;High cardinality / possible identifier&quot;,
+      &quot;severity&quot;: &quot;Medium&quot;,
+      &quot;status&quot;: &quot;Potential Issue&quot;,
+      &quot;columns&quot;: [
+        &quot;event_date&quot;
+      ],
+      &quot;count&quot;: 120,
+      &quot;method&quot;: &quot;Distinct ratio &gt; 90%&quot;,
+      &quot;explanation&quot;: &quot;Nearly every record has a different label.&quot;,
+      &quot;recommendation&quot;: &quot;Check whether this is an identifier before modeling.&quot;,
+      &quot;risk&quot;: &quot;Removing a meaningful feature can reduce predictive value.&quot;,
+      &quot;evidence&quot;: []
+    },
+    {
+      &quot;id&quot;: &quot;5&quot;,
+      &quot;title&quot;: &quot;Infinite numeric values&quot;,
+      &quot;severity&quot;: &quot;High&quot;,
+      &quot;status&quot;: &quot;Confirmed Issue&quot;,
+      &quot;columns&quot;: [
+        &quot;edge&quot;
+      ],
+      &quot;count&quot;: 1,
+      &quot;method&quot;: &quot;Positive or negative infinity&quot;,
+      &quot;explanation&quot;: &quot;Some numeric entries are infinite and cannot be used directly by the training pipeline.&quot;,
+      &quot;recommendation&quot;: &quot;Review these rows. Preview replacing infinity with missing, then let training handle missing values inside its split.&quot;,
+      &quot;risk&quot;: &quot;Infinity may carry domain meaning; review the original values before changing them.&quot;,
+      &quot;evidence&quot;: [
+        0
+      ]
+    }
+  ],
+  &quot;transformations&quot;: [],
+  &quot;results&quot;: {}
+}</pre>

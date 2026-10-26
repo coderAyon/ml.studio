@@ -1,0 +1,74 @@
+"""Restricted, versioned directed graphs with explicit port validation."""
+from dataclasses import dataclass, field
+import json
+from pathlib import Path
+from .data import Transformation
+from .training import train
+
+PORTS = {"Dataset": (None, "data"), "Remove duplicates": ("data", "data"), "Fill missing": ("data", "data"), "Train model": ("data", "result")}
+
+
+@dataclass
+class Graph:
+    nodes: dict = field(default_factory=dict)
+    edges: list = field(default_factory=list)
+
+    def order(self):
+        if not self.nodes:
+            raise ValueError("Add a Dataset node before validating or running a workflow.")
+        incoming = {key: 0 for key in self.nodes}
+        for key, node in self.nodes.items():
+            if node.get("type") not in PORTS:
+                raise ValueError(f"Unavailable node type: {node.get('type')}")
+        for a, b in self.edges:
+            if a not in self.nodes or b not in self.nodes or a == b:
+                raise ValueError("Invalid connection endpoint.")
+            if PORTS[self.nodes[a]["type"]][1] != PORTS[self.nodes[b]["type"]][0]:
+                raise ValueError("Incompatible port types.")
+            incoming[b] += 1
+            if incoming[b] > 1:
+                raise ValueError("This input accepts one connection.")
+        for key, degree in incoming.items():
+            if PORTS[self.nodes[key]["type"]][0] and degree == 0:
+                raise ValueError("A required data input is disconnected.")
+        ready = [key for key in incoming if incoming[key] == 0]
+        order = []
+        while ready:
+            key = ready.pop(0)
+            order.append(key)
+            for a, b in self.edges:
+                if a == key:
+                    incoming[b] -= 1
+                    if incoming[b] == 0:
+                        ready.append(b)
+        if len(order) != len(self.nodes):
+            raise ValueError("Workflow contains a cycle.")
+        return order
+
+    def execute(self, frame, target, algorithm, preparation=None):
+        results = {}
+        for key in self.order():
+            kind = self.nodes[key]["type"]
+            parents = [a for a, b in self.edges if b == key]
+            data = results[parents[0]] if parents else frame.copy(deep=True)
+            if kind == "Dataset":
+                results[key] = data
+            elif kind == "Train model":
+                results[key] = train(data, target, algorithm,preparation=preparation)
+            elif kind == "Fill missing":
+                raise ValueError("Exploratory imputation cannot precede evaluation. Training already fits imputation within the training split.")
+            else:
+                results[key] = Transformation("Remove duplicates", []).preview(data)
+        return results
+
+    def save(self, path):
+        Path(path).write_text(json.dumps({"version": 1, "nodes": self.nodes, "edges": self.edges}, indent=2), encoding="utf-8")
+
+    @classmethod
+    def load(cls, path):
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+        if payload.get("version") != 1 or not isinstance(payload.get("nodes"), dict) or not isinstance(payload.get("edges"), list):
+            raise ValueError("Unsupported workflow schema.")
+        graph = cls(payload["nodes"], payload["edges"])
+        graph.order()
+        return graph

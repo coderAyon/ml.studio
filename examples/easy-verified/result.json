@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": [
+    "All 14 columns, searchable column selection, Show all, sideways scroll and expanded preview",
+    "Reviewable goal suggestion and one-click real train/test with chosen 80/20 share",
+    "Click-to-add round nodes, automatic edges, whole-node reconnect and actual workflow execution",
+    "Native mouse drag moves round nodes and saves their new graph positions",
+    "Existing drag/drop node creation remains available"
+  ]
+}

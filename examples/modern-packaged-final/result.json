@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "fixture": "Explicitly synthetic UI acceptance data",
+  "checks": [
+    "Embedded WebEngine startup",
+    "Offline asset load",
+    "QWebChannel handshake",
+    "Preview and Apply through the web bridge",
+    "Dataset undo through the web bridge",
+    "Real workflow creation from the canvas toolbar",
+    "Training and metric rendering from the embedded UI",
+    "Six-model comparison rendered with actual metrics",
+    "Workflow training executed through the web canvas",
+    "Actual Matplotlib chart displayed in the web interface"
+  ],
+  "version": "0.2.0"
+}

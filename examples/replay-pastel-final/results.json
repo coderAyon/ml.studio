@@ -1,0 +1,1364 @@
+{
+  "config": {
+    "target": "outcome",
+    "task": "classification",
+    "protocol": "random",
+    "group": "",
+    "time_column": "",
+    "excluded": [
+      "patient_id",
+      "visit_date"
+    ],
+    "folds": 3,
+    "repeats": 2,
+    "seed": 42
+  },
+  "features": [
+    "measurement",
+    "secondary",
+    "category"
+  ],
+  "metric": "Macro F1",
+  "development_rows": 144,
+  "reserved_final_rows": 36,
+  "fold_count": 6,
+  "final_used": true,
+  "comparison": {
+    "models": [
+      {
+        "algorithm": "Logistic Regression",
+        "variant": "baseline",
+        "label": "Median + scaling",
+        "scores": [
+          0.7658536585365854,
+          0.8021071919377004,
+          0.6262024736601008,
+          0.7077283372365339,
+          0.8285714285714285,
+          0.6613756613756614
+        ],
+        "mean": 0.7319731252196684,
+        "std": 0.0801961999593188,
+        "seconds": 0.28001320001203567,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.7708333333333334,
+            "Balanced accuracy": 0.7678571428571428,
+            "Macro F1": 0.7658536585365854,
+            "Weighted F1": 0.7715447154471544
+          },
+          {
+            "Accuracy": 0.8125,
+            "Balanced accuracy": 0.7964285714285715,
+            "Macro F1": 0.8021071919377004,
+            "Weighted F1": 0.8096655978011911
+          },
+          {
+            "Accuracy": 0.6458333333333334,
+            "Balanced accuracy": 0.625,
+            "Macro F1": 0.6262024736601008,
+            "Weighted F1": 0.6404794625133609
+          },
+          {
+            "Accuracy": 0.7291666666666666,
+            "Balanced accuracy": 0.7035714285714285,
+            "Macro F1": 0.7077283372365339,
+            "Weighted F1": 0.7209211553473849
+          },
+          {
+            "Accuracy": 0.8333333333333334,
+            "Balanced accuracy": 0.8285714285714285,
+            "Macro F1": 0.8285714285714285,
+            "Weighted F1": 0.8333333333333334
+          },
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.6642857142857144,
+            "Macro F1": 0.6613756613756614,
+            "Weighted F1": 0.6684303350970017
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "C": 1.0,
+          "class_weight": null,
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 100,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": null,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        },
+        "paired_difference_to_leader": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mean_difference_to_leader": 0.0,
+        "beats_baseline": true
+      },
+      {
+        "algorithm": "Decision Tree",
+        "variant": "baseline",
+        "label": "Median + scaling",
+        "scores": [
+          0.6571428571428571,
+          0.7386569872958257,
+          0.6,
+          0.7428571428571429,
+          0.7699346405228757,
+          0.6444444444444444
+        ],
+        "mean": 0.6921726787105243,
+        "std": 0.06749445014411622,
+        "seconds": 0.2143762999912724,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.6571428571428571,
+            "Macro F1": 0.6571428571428571,
+            "Weighted F1": 0.6666666666666666
+          },
+          {
+            "Accuracy": 0.75,
+            "Balanced accuracy": 0.7357142857142858,
+            "Macro F1": 0.7386569872958257,
+            "Weighted F1": 0.7477313974591652
+          },
+          {
+            "Accuracy": 0.625,
+            "Balanced accuracy": 0.6,
+            "Macro F1": 0.6,
+            "Weighted F1": 0.6166666666666666
+          },
+          {
+            "Accuracy": 0.75,
+            "Balanced accuracy": 0.7428571428571429,
+            "Macro F1": 0.7428571428571429,
+            "Weighted F1": 0.75
+          },
+          {
+            "Accuracy": 0.7708333333333334,
+            "Balanced accuracy": 0.7821428571428571,
+            "Macro F1": 0.7699346405228757,
+            "Weighted F1": 0.7723311546840957
+          },
+          {
+            "Accuracy": 0.6458333333333334,
+            "Balanced accuracy": 0.6535714285714285,
+            "Macro F1": 0.6444444444444444,
+            "Weighted F1": 0.648148148148148
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "ccp_alpha": 0.0,
+          "class_weight": null,
+          "criterion": "gini",
+          "max_depth": null,
+          "max_features": null,
+          "max_leaf_nodes": null,
+          "min_impurity_decrease": 0.0,
+          "min_samples_leaf": 1,
+          "min_samples_split": 2,
+          "min_weight_fraction_leaf": 0.0,
+          "monotonic_cst": null,
+          "random_state": null,
+          "splitter": "best"
+        },
+        "paired_difference_to_leader": [
+          -0.10871080139372824,
+          -0.06345020464187467,
+          -0.026202473660100867,
+          0.03512880562060894,
+          -0.05863678804855277,
+          -0.01693121693121702
+        ],
+        "mean_difference_to_leader": -0.039800446509144105,
+        "beats_baseline": true
+      }
+    ],
+    "metric": "Macro F1",
+    "higher_is_better": true,
+    "baseline": {
+      "name": "Majority-class baseline",
+      "scores": [
+        0.3684210526315789,
+        0.3684210526315789,
+        0.3684210526315789,
+        0.3684210526315789,
+        0.3684210526315789,
+        0.3684210526315789
+      ],
+      "mean": 0.3684210526315789,
+      "std": 0.0
+    },
+    "fold_count": 6,
+    "development_rows": 144,
+    "reserved_final_rows": 36,
+    "caution": "Mean \u00b1 sample SD describes observed fold variation, not a confidence interval. Repeated folds share data and are not independent. Close scores and differences are exploratory; no statistical significance or universal winner is claimed.",
+    "protocol": "random"
+  },
+  "impact": {
+    "algorithm": "Logistic Regression",
+    "metric": "Macro F1",
+    "higher_is_better": true,
+    "variants": [
+      {
+        "algorithm": "Logistic Regression",
+        "variant": "baseline",
+        "label": "Median + scaling",
+        "scores": [
+          0.7658536585365854,
+          0.8021071919377004,
+          0.6262024736601008,
+          0.7077283372365339,
+          0.8285714285714285,
+          0.6613756613756614
+        ],
+        "mean": 0.7319731252196684,
+        "std": 0.0801961999593188,
+        "seconds": 0.24215650002588518,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.7708333333333334,
+            "Balanced accuracy": 0.7678571428571428,
+            "Macro F1": 0.7658536585365854,
+            "Weighted F1": 0.7715447154471544
+          },
+          {
+            "Accuracy": 0.8125,
+            "Balanced accuracy": 0.7964285714285715,
+            "Macro F1": 0.8021071919377004,
+            "Weighted F1": 0.8096655978011911
+          },
+          {
+            "Accuracy": 0.6458333333333334,
+            "Balanced accuracy": 0.625,
+            "Macro F1": 0.6262024736601008,
+            "Weighted F1": 0.6404794625133609
+          },
+          {
+            "Accuracy": 0.7291666666666666,
+            "Balanced accuracy": 0.7035714285714285,
+            "Macro F1": 0.7077283372365339,
+            "Weighted F1": 0.7209211553473849
+          },
+          {
+            "Accuracy": 0.8333333333333334,
+            "Balanced accuracy": 0.8285714285714285,
+            "Macro F1": 0.8285714285714285,
+            "Weighted F1": 0.8333333333333334
+          },
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.6642857142857144,
+            "Macro F1": 0.6613756613756614,
+            "Weighted F1": 0.6684303350970017
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "C": 1.0,
+          "class_weight": null,
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 100,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": null,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        },
+        "paired_differences": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mean_difference": 0.0
+      },
+      {
+        "algorithm": "Logistic Regression",
+        "variant": "mean",
+        "label": "Mean + scaling",
+        "scores": [
+          0.7658536585365854,
+          0.8021071919377004,
+          0.6262024736601008,
+          0.7077283372365339,
+          0.8285714285714285,
+          0.6613756613756614
+        ],
+        "mean": 0.7319731252196684,
+        "std": 0.0801961999593188,
+        "seconds": 0.25371419999282807,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.7708333333333334,
+            "Balanced accuracy": 0.7678571428571428,
+            "Macro F1": 0.7658536585365854,
+            "Weighted F1": 0.7715447154471544
+          },
+          {
+            "Accuracy": 0.8125,
+            "Balanced accuracy": 0.7964285714285715,
+            "Macro F1": 0.8021071919377004,
+            "Weighted F1": 0.8096655978011911
+          },
+          {
+            "Accuracy": 0.6458333333333334,
+            "Balanced accuracy": 0.625,
+            "Macro F1": 0.6262024736601008,
+            "Weighted F1": 0.6404794625133609
+          },
+          {
+            "Accuracy": 0.7291666666666666,
+            "Balanced accuracy": 0.7035714285714285,
+            "Macro F1": 0.7077283372365339,
+            "Weighted F1": 0.7209211553473849
+          },
+          {
+            "Accuracy": 0.8333333333333334,
+            "Balanced accuracy": 0.8285714285714285,
+            "Macro F1": 0.8285714285714285,
+            "Weighted F1": 0.8333333333333334
+          },
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.6642857142857144,
+            "Macro F1": 0.6613756613756614,
+            "Weighted F1": 0.6684303350970017
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "C": 1.0,
+          "class_weight": null,
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 100,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": null,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        },
+        "paired_differences": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mean_difference": 0.0
+      },
+      {
+        "algorithm": "Logistic Regression",
+        "variant": "unscaled",
+        "label": "Median without scaling",
+        "scores": [
+          0.7428571428571429,
+          0.8021071919377004,
+          0.6262024736601008,
+          0.7077283372365339,
+          0.8285714285714285,
+          0.6807095343680709
+        ],
+        "mean": 0.7313626847718296,
+        "std": 0.07585438914422991,
+        "seconds": 0.21845389998634346,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.75,
+            "Balanced accuracy": 0.7428571428571429,
+            "Macro F1": 0.7428571428571429,
+            "Weighted F1": 0.75
+          },
+          {
+            "Accuracy": 0.8125,
+            "Balanced accuracy": 0.7964285714285715,
+            "Macro F1": 0.8021071919377004,
+            "Weighted F1": 0.8096655978011911
+          },
+          {
+            "Accuracy": 0.6458333333333334,
+            "Balanced accuracy": 0.625,
+            "Macro F1": 0.6262024736601008,
+            "Weighted F1": 0.6404794625133609
+          },
+          {
+            "Accuracy": 0.7291666666666666,
+            "Balanced accuracy": 0.7035714285714285,
+            "Macro F1": 0.7077283372365339,
+            "Weighted F1": 0.7209211553473849
+          },
+          {
+            "Accuracy": 0.8333333333333334,
+            "Balanced accuracy": 0.8285714285714285,
+            "Macro F1": 0.8285714285714285,
+            "Weighted F1": 0.8333333333333334
+          },
+          {
+            "Accuracy": 0.6875,
+            "Balanced accuracy": 0.6821428571428572,
+            "Macro F1": 0.6807095343680709,
+            "Weighted F1": 0.688470066518847
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "C": 1.0,
+          "class_weight": null,
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 100,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": null,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        },
+        "paired_differences": [
+          -0.022996515679442497,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.019333872992409518
+        ],
+        "mean_difference": -0.00061044044783883
+      },
+      {
+        "algorithm": "Logistic Regression",
+        "variant": "indicator",
+        "label": "Median + missing indicators + scaling",
+        "scores": [
+          0.7658536585365854,
+          0.8021071919377004,
+          0.6515426497277677,
+          0.7077283372365339,
+          0.8285714285714285,
+          0.6571428571428571
+        ],
+        "mean": 0.7354910205254789,
+        "std": 0.07480654609195472,
+        "seconds": 0.2792399000318255,
+        "fold_metrics": [
+          {
+            "Accuracy": 0.7708333333333334,
+            "Balanced accuracy": 0.7678571428571428,
+            "Macro F1": 0.7658536585365854,
+            "Weighted F1": 0.7715447154471544
+          },
+          {
+            "Accuracy": 0.8125,
+            "Balanced accuracy": 0.7964285714285715,
+            "Macro F1": 0.8021071919377004,
+            "Weighted F1": 0.8096655978011911
+          },
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.65,
+            "Macro F1": 0.6515426497277677,
+            "Weighted F1": 0.6636418632788869
+          },
+          {
+            "Accuracy": 0.7291666666666666,
+            "Balanced accuracy": 0.7035714285714285,
+            "Macro F1": 0.7077283372365339,
+            "Weighted F1": 0.7209211553473849
+          },
+          {
+            "Accuracy": 0.8333333333333334,
+            "Balanced accuracy": 0.8285714285714285,
+            "Macro F1": 0.8285714285714285,
+            "Weighted F1": 0.8333333333333334
+          },
+          {
+            "Accuracy": 0.6666666666666666,
+            "Balanced accuracy": 0.6571428571428571,
+            "Macro F1": 0.6571428571428571,
+            "Weighted F1": 0.6666666666666666
+          }
+        ],
+        "fold_ids": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "parameters": {
+          "C": 1.0,
+          "class_weight": null,
+          "dual": false,
+          "fit_intercept": true,
+          "intercept_scaling": 1,
+          "l1_ratio": 0.0,
+          "max_iter": 100,
+          "n_jobs": null,
+          "penalty": "deprecated",
+          "random_state": null,
+          "solver": "lbfgs",
+          "tol": 0.0001,
+          "verbose": 0,
+          "warm_start": false
+        },
+        "paired_differences": [
+          0.0,
+          0.0,
+          0.02534017606766681,
+          0.0,
+          0.0,
+          -0.004232804232804255
+        ],
+        "mean_difference": 0.0035178953058104256
+      }
+    ],
+    "caution": "Every variant uses identical development folds. Differences are observed associations under these settings, not proof of a general causal benefit. Categorical encoding is held fixed; only numeric imputation/scaling/indicators change. No numeric features or no missing values can make variants identical."
+  },
+  "final": {
+    "algorithm": "Logistic Regression",
+    "variant": "baseline",
+    "metrics": {
+      "Accuracy": 0.8055555555555556,
+      "Balanced accuracy": 0.7761904761904761,
+      "Macro F1": 0.7855319148936171,
+      "Weighted F1": 0.7964539007092198
+    },
+    "seconds": 0.059613199991872534,
+    "predictions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "positions": [
+      68,
+      15,
+      152,
+      151,
+      26,
+      165,
+      36,
+      120,
+      168,
+      74,
+      107,
+      12,
+      3,
+      79,
+      39,
+      94,
+      53,
+      96,
+      144,
+      132,
+      54,
+      128,
+      48,
+      163,
+      160,
+      108,
+      1,
+      89,
+      35,
+      25,
+      154,
+      61,
+      175,
+      176,
+      17,
+      76
+    ],
+    "errors": {
+      "task": "classification",
+      "total": 36,
+      "error_count": 7,
+      "error_rate": 0.19444444444444445,
+      "mae": null,
+      "rows": [
+        {
+          "position": 168,
+          "csv_row": 170,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.02344391855484465,
+            "secondary": -0.7272544472524123,
+            "category": "A"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 54,
+          "csv_row": 56,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.1887821253507493,
+            "secondary": -0.2957062213323259,
+            "category": "A"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 1,
+          "csv_row": 3,
+          "actual": 0,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.2987455375084699,
+            "secondary": 1.8708757733280048,
+            "category": "B"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 25,
+          "csv_row": 27,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.18693094462995438,
+            "secondary": 1.0626506057881553,
+            "category": "B"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 61,
+          "csv_row": 63,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.46330757653841514,
+            "secondary": -1.67135248657008,
+            "category": "B"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 17,
+          "csv_row": 19,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.45761576104021817,
+            "secondary": -0.7793111280321169,
+            "category": "C"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 76,
+          "csv_row": 78,
+          "actual": 1,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.32721342022219785,
+            "secondary": -0.04817648250735862,
+            "category": "B"
+          },
+          "error": true,
+          "absolute_error": null
+        },
+        {
+          "position": 68,
+          "csv_row": 70,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.323527792484255,
+            "secondary": -0.5015972714256735,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 15,
+          "csv_row": 17,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.6953031944582878,
+            "secondary": null,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 152,
+          "csv_row": 154,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.5602310505028996,
+            "secondary": -1.121809627226926,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 151,
+          "csv_row": 153,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.3266852600022522,
+            "secondary": -0.0937919279761702,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 26,
+          "csv_row": 28,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -2.516759710820513,
+            "secondary": 1.0847512652964209,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 165,
+          "csv_row": 167,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.6320525539349078,
+            "secondary": -0.10391554918407729,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 36,
+          "csv_row": 38,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.0325217049455206,
+            "secondary": 0.21642485112762316,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 120,
+          "csv_row": 122,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.08930648576905029,
+            "secondary": 0.24393336794842915,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 74,
+          "csv_row": 76,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 1.2570149772868198,
+            "secondary": -1.026889738609049,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 107,
+          "csv_row": 109,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.49301329141235634,
+            "secondary": -0.7432748910532813,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 12,
+          "csv_row": 14,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.10541424899789856,
+            "secondary": null,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 3,
+          "csv_row": 5,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.8905918387572742,
+            "secondary": 0.05581054640855185,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 79,
+          "csv_row": 81,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 1.5235294004561601,
+            "secondary": 0.0035081514639604466,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 39,
+          "csv_row": 41,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.11170194958415963,
+            "secondary": -0.784130073815894,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 94,
+          "csv_row": 96,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.005399560671626605,
+            "secondary": -0.10206924318890695,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 53,
+          "csv_row": 55,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.5766895836701853,
+            "secondary": -0.383700881075084,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 96,
+          "csv_row": 98,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.2908932453234871,
+            "secondary": 0.9584629538811972,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 144,
+          "csv_row": 146,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.6260730997201972,
+            "secondary": 0.8205786858900587,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 132,
+          "csv_row": 134,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": 0.1309512075847998,
+            "secondary": -1.3904357764629918,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 128,
+          "csv_row": 130,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.7460964753739088,
+            "secondary": -1.3347090097585461,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 48,
+          "csv_row": 50,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.6414703941072214,
+            "secondary": 0.4638314564560598,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 163,
+          "csv_row": 165,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.454024302481208,
+            "secondary": -1.0433044311523152,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 160,
+          "csv_row": 162,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.0540937876234928,
+            "secondary": -0.607621275254437,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 108,
+          "csv_row": 110,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.1764060659057582,
+            "secondary": -1.1294966463420033,
+            "category": "A"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 89,
+          "csv_row": 91,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 0.6530885027011638,
+            "secondary": 0.5876750425777528,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 35,
+          "csv_row": 37,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.8075346753318965,
+            "secondary": -0.19123540391952007,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 154,
+          "csv_row": 156,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -0.3752668396769557,
+            "secondary": -0.038673379535105926,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 175,
+          "csv_row": 177,
+          "actual": 0,
+          "predicted": 0,
+          "features": {
+            "measurement": -1.2161027602081953,
+            "secondary": 0.06712129942835174,
+            "category": "B"
+          },
+          "error": false,
+          "absolute_error": null
+        },
+        {
+          "position": 176,
+          "csv_row": 178,
+          "actual": 1,
+          "predicted": 1,
+          "features": {
+            "measurement": 1.3355318553000226,
+            "secondary": -1.3428604171407572,
+            "category": "C"
+          },
+          "error": false,
+          "absolute_error": null
+        }
+      ],
+      "row_limit": 1000,
+      "slices": {
+        "missingness": [
+          {
+            "label": "No missing features",
+            "count": 34,
+            "error_rate": 0.20588235294117646,
+            "small_group": false
+          },
+          {
+            "label": "Has missing features",
+            "count": 2,
+            "error_rate": 0.0,
+            "small_group": true
+          }
+        ],
+        "actual_class": [
+          {
+            "label": "0",
+            "count": 21,
+            "error_rate": 0.047619047619047616,
+            "small_group": false
+          },
+          {
+            "label": "1",
+            "count": 15,
+            "error_rate": 0.4,
+            "small_group": true
+          }
+        ],
+        "measurement": [
+          {
+            "label": "(-2.518, -0.683]",
+            "count": 9,
+            "error_rate": 0.0,
+            "small_group": true
+          },
+          {
+            "label": "(0.112, 1.524]",
+            "count": 9,
+            "error_rate": 0.1111111111111111,
+            "small_group": true
+          },
+          {
+            "label": "(-0.683, -0.258]",
+            "count": 9,
+            "error_rate": 0.3333333333333333,
+            "small_group": true
+          },
+          {
+            "label": "(-0.258, 0.112]",
+            "count": 9,
+            "error_rate": 0.3333333333333333,
+            "small_group": true
+          }
+        ],
+        "secondary": [
+          {
+            "label": "(-0.783, -0.148]",
+            "count": 8,
+            "error_rate": 0.375,
+            "small_group": true
+          },
+          {
+            "label": "Missing",
+            "count": 2,
+            "error_rate": 0.0,
+            "small_group": true
+          },
+          {
+            "label": "(-1.672, -0.783]",
+            "count": 9,
+            "error_rate": 0.1111111111111111,
+            "small_group": true
+          },
+          {
+            "label": "(-0.148, 0.179]",
+            "count": 8,
+            "error_rate": 0.125,
+            "small_group": true
+          },
+          {
+            "label": "(0.179, 1.871]",
+            "count": 9,
+            "error_rate": 0.2222222222222222,
+            "small_group": true
+          }
+        ],
+        "category": [
+          {
+            "label": "C",
+            "count": 11,
+            "error_rate": 0.09090909090909091,
+            "small_group": true
+          },
+          {
+            "label": "A",
+            "count": 14,
+            "error_rate": 0.14285714285714285,
+            "small_group": true
+          },
+          {
+            "label": "B",
+            "count": 11,
+            "error_rate": 0.36363636363636365,
+            "small_group": true
+          }
+        ]
+      },
+      "caution": "Slices describe this final test sample only. Groups with fewer than 20 rows are marked small; differences may be noise and do not prove bias or causation. Revising models after inspecting these errors makes this test set exploratory.",
+      "row_note": "Positions refer to the active dataset version (zero-based); CSV row is the row in the exported active dataset including its header, not necessarily the original source file."
+    },
+    "caution": "Final test inspected once. Subsequent decisions informed by these outcomes require a new external final dataset. Restarting a session does not make the same data independent.",
+    "class_labels": [
+      "0",
+      "1"
+    ],
+    "confusion_matrix": [
+      [
+        20,
+        1
+      ],
+      [
+        6,
+        9
+      ]
+    ],
+    "per_class": {
+      "0": {
+        "precision": 0.7692307692307693,
+        "recall": 0.9523809523809523,
+        "f1-score": 0.851063829787234,
+        "support": 21.0
+      },
+      "1": {
+        "precision": 0.9,
+        "recall": 0.6,
+        "f1-score": 0.72,
+        "support": 15.0
+      },
+      "accuracy": 0.8055555555555556,
+      "macro avg": {
+        "precision": 0.8346153846153846,
+        "recall": 0.7761904761904761,
+        "f1-score": 0.7855319148936171,
+        "support": 36.0
+      },
+      "weighted avg": {
+        "precision": 0.8237179487179487,
+        "recall": 0.8055555555555556,
+        "f1-score": 0.7964539007092198,
+        "support": 36.0
+      }
+    }
+  },
+  "safety": [
+    {
+      "code": "possible_group",
+      "title": "Possible repeated-subject identifier",
+      "columns": [
+        "patient_id"
+      ],
+      "evidence": "45 distinct values across 180 rows.",
+      "action": "If records belong to the same entity, choose group-wise validation and this column. It will be excluded from model features.",
+      "severity": "Medium",
+      "status": "Potential issue"
+    },
+    {
+      "code": "possible_time",
+      "title": "Possible temporal ordering",
+      "columns": [
+        "visit_date"
+      ],
+      "evidence": "Column name 'visit_date' suggests time; interpretation requires review.",
+      "action": "For future prediction choose chronological validation and a valid date/time column. The split does not infer the deployment scenario.",
+      "severity": "Medium",
+      "status": "Potential issue"
+    },
+    {
+      "code": "protocol",
+      "title": "Selected validation protocol",
+      "columns": [],
+      "evidence": "random",
+      "action": "The final 20% is reserved before development CV. Group/time columns are excluded from model features. No safety scan can certify absence of leakage.",
+      "severity": "Informational",
+      "status": "Configuration"
+    }
+  ],
+  "fold_summary": [
+    {
+      "fold": 1,
+      "training_rows": 96,
+      "validation_rows": 48
+    },
+    {
+      "fold": 2,
+      "training_rows": 96,
+      "validation_rows": 48
+    },
+    {
+      "fold": 3,
+      "training_rows": 96,
+      "validation_rows": 48
+    },
+    {
+      "fold": 4,
+      "training_rows": 96,
+      "validation_rows": 48
+    },
+    {
+      "fold": 5,
+      "training_rows": 96,
+      "validation_rows": 48
+    },
+    {
+      "fold": 6,
+      "training_rows": 96,
+      "validation_rows": 48
+    }
+  ],
+  "time_note": ""
+}

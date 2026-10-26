@@ -1,0 +1,120 @@
+{
+  "title": "Setosa sepal distribution",
+  "table": {
+    "columns": [
+      "Bin start",
+      "Bin end",
+      "Count"
+    ],
+    "index": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "data": [
+      [
+        4.3,
+        4.425,
+        4
+      ],
+      [
+        4.425,
+        4.55,
+        1
+      ],
+      [
+        4.55,
+        4.675,
+        4
+      ],
+      [
+        4.675,
+        4.8,
+        2
+      ],
+      [
+        4.8,
+        4.925,
+        9
+      ],
+      [
+        4.925,
+        5.05,
+        8
+      ],
+      [
+        5.05,
+        5.175,
+        8
+      ],
+      [
+        5.175,
+        5.3,
+        3
+      ],
+      [
+        5.3,
+        5.425,
+        6
+      ],
+      [
+        5.425,
+        5.55,
+        2
+      ],
+      [
+        5.55,
+        5.675,
+        0
+      ],
+      [
+        5.675,
+        5.8,
+        3
+      ]
+    ]
+  },
+  "support": null,
+  "insights": [
+    "50 finite values; mean 5.006, median 5, range 4.3–5.8."
+  ],
+  "protocol": "50 of 150 active rows after filtering. Filter: species eq setosa. Bin intervals include the left edge and exclude the right edge, except the final bin includes both. Missing and infinite numeric measurements are excluded; no values are imputed.",
+  "plan": {
+    "kind": "histogram",
+    "group": "",
+    "columns": [
+      "sepal_length"
+    ],
+    "statistic": "mean",
+    "layout": "combined",
+    "orientation": "vertical",
+    "top_n": null,
+    "order": "original",
+    "bins": 12,
+    "title": "Setosa sepal distribution",
+    "xlabel": "",
+    "ylabel": "",
+    "filter_column": "species",
+    "filter_operator": "eq",
+    "filter_value": "setosa"
+  },
+  "rows_total": 150,
+  "rows_used": 50,
+  "columns_used": [
+    "sepal_length"
+  ],
+  "question": "Show a histogram of sepal_length with 12 bins",
+  "dataset": {
+    "name": "iris-validation.csv",
+    "version": 0
+  }
+}

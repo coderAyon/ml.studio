@@ -1,0 +1,84 @@
+<!doctype html><meta charset='utf-8'><h1>Dataset health report</h1><p>D:\STUDY\8th sem\project\ML Studio\examples\polish-core-verified\cleaning-source.csv</p><p>Dataset version: 0</p><p>Health indicator: 99.93/100. Mean of completeness (99.86%) and exact-row uniqueness (100.00%). This is not a measure of predictive accuracy or validity.</p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>id</th>
+      <th>title</th>
+      <th>severity</th>
+      <th>status</th>
+      <th>columns</th>
+      <th>count</th>
+      <th>method</th>
+      <th>explanation</th>
+      <th>recommendation</th>
+      <th>risk</th>
+      <th>evidence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Potential outliers</td>
+      <td>Low</td>
+      <td>Potential Issue</td>
+      <td>[x]</td>
+      <td>2</td>
+      <td>1.5 × IQR fences</td>
+      <td>Extreme observations are not necessarily errors.</td>
+      <td>Review a box plot and original records.</td>
+      <td>Deleting extremes can bias the data.</td>
+      <td>[-3.078332, -2.683104]</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Missing values</td>
+      <td>Medium</td>
+      <td>Confirmed Issue</td>
+      <td>[amount]</td>
+      <td>1</td>
+      <td>isna</td>
+      <td>0.8% of this column is missing.</td>
+      <td>Review median or most-frequent imputation inside the training pipeline.</td>
+      <td>No imputation strategy suits every dataset; whole-data imputation can leak validation information.</td>
+      <td>[3]</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Surrounding whitespace</td>
+      <td>Low</td>
+      <td>Confirmed Issue</td>
+      <td>[category]</td>
+      <td>40</td>
+      <td>Compare stripped labels</td>
+      <td>Whitespace can split equivalent labels.</td>
+      <td>Preview trimming whitespace.</td>
+      <td>Whitespace can occasionally be meaningful.</td>
+      <td>[ A,&nbsp;&nbsp;A,&nbsp;&nbsp;A,&nbsp;&nbsp;A,&nbsp;&nbsp;A,&nbsp;&nbsp;A,&nbsp;&nbsp;A,&nbsp;&nbsp;A]</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>High cardinality / possible identifier</td>
+      <td>Medium</td>
+      <td>Potential Issue</td>
+      <td>[event_date]</td>
+      <td>120</td>
+      <td>Distinct ratio &gt; 90%</td>
+      <td>Nearly every record has a different label.</td>
+      <td>Check whether this is an identifier before modeling.</td>
+      <td>Removing a meaningful feature can reduce predictive value.</td>
+      <td>[]</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Infinite numeric values</td>
+      <td>High</td>
+      <td>Confirmed Issue</td>
+      <td>[edge]</td>
+      <td>1</td>
+      <td>Positive or negative infinity</td>
+      <td>Some numeric entries are infinite and cannot be used directly by the training pipeline.</td>
+      <td>Review these rows. Preview replacing infinity with missing, then let training handle missing values inside its split.</td>
+      <td>Infinity may carry domain meaning; review the original values before changing them.</td>
+      <td>[0]</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "light_only": true,
+  "minimum_measured_text_contrast": 6.394288990259357,
+  "measurements": [
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "home"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "home"
+    },
+    {
+      "name": "heading",
+      "ratio": 14.267433745560512,
+      "page": "home"
+    },
+    {
+      "name": "supporting text",
+      "ratio": 7.361663095607871,
+      "page": "home"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "home"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "data"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "data"
+    },
+    {
+      "name": "heading",
+      "ratio": 14.267433745560512,
+      "page": "data"
+    },
+    {
+      "name": "supporting text",
+      "ratio": 7.361663095607871,
+      "page": "data"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "data"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "preprocessing"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "preprocessing"
+    },
+    {
+      "name": "heading",
+      "ratio": 14.267433745560512,
+      "page": "preprocessing"
+    },
+    {
+      "name": "supporting text",
+      "ratio": 7.361663095607871,
+      "page": "preprocessing"
+    },
+    {
+      "name": "finding label",
+      "ratio": 6.394288990259357,
+      "page": "preprocessing"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "preprocessing"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "models"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "models"
+    },
+    {
+      "name": "heading",
+      "ratio": 14.267433745560512,
+      "page": "models"
+    },
+    {
+      "name": "supporting text",
+      "ratio": 7.361663095607871,
+      "page": "models"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "models"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "dataset_visuals"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "dataset_visuals"
+    },
+    {
+      "name": "heading",
+      "ratio": 14.267433745560512,
+      "page": "dataset_visuals"
+    },
+    {
+      "name": "supporting text",
+      "ratio": 7.361663095607871,
+      "page": "dataset_visuals"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "dataset_visuals"
+    },
+    {
+      "name": "navigation",
+      "ratio": 7.536573808753756,
+      "page": "workflow"
+    },
+    {
+      "name": "active navigation",
+      "ratio": 7.1849177250833,
+      "page": "workflow"
+    },
+    {
+      "name": "button",
+      "ratio": 8.207254658273849,
+      "page": "workflow"
+    }
+  ]
+}
