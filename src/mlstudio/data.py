@@ -39,6 +39,11 @@ class Transformation:
             from .preprocessing import apply_operation
             return apply_operation(frame,self.operation,self.columns[0] if self.columns else '',self.value)
         result = frame.copy(deep=True)
+        if self.operation == 'Select row positions':
+            import json
+            positions=json.loads(self.value)
+            if not isinstance(positions,list) or not positions or len(set(positions))!=len(positions) or any(type(p) is not int or not 0<=p<len(frame) for p in positions):raise ValueError('Choose valid distinct row positions.')
+            return result.iloc[positions].reset_index(drop=True)
         if self.operation == "Remove duplicates":
             return result.drop_duplicates().reset_index(drop=True)
         if self.operation == "Drop columns":

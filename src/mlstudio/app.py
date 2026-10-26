@@ -137,6 +137,7 @@ class WorkflowCanvas(QGraphicsView):
         self.graph = Graph()
         for key, node in graph.nodes.items():
             self.add_node(node["type"], key, node.get("position", [40, 40]))
+            self.graph.nodes[key].update(copy.deepcopy(node))
         self.graph.edges = graph.edges
         self.redraw_edges()
 
@@ -482,7 +483,7 @@ class MainWindow(QMainWindow):
     def train_model(self):
         return self.train_with_split(.25)
 
-    def train_with_split(self, test_size=.25):
+    def train_with_split(self, test_size=.25,parameters=None,tune=False):
         frame = self.require_data()
         from .training_prep import assert_evaluation_ready
         assert_evaluation_ready(self.dataset)
@@ -491,7 +492,7 @@ class MainWindow(QMainWindow):
         self.metrics.clear()
         self.model_info.clear()
         preparation=copy.deepcopy(self.preparation)
-        self.background(lambda: train(frame, target, algorithm,test_size=test_size,preparation=preparation), self.training_done, "Training and testing model locally…")
+        self.background(lambda: train(frame, target, algorithm,test_size=test_size,preparation=preparation,parameters=parameters,tune=tune), self.training_done, "Training and testing model locally…")
 
     def training_done(self, result):
         self.result = result
@@ -550,6 +551,10 @@ class MainWindow(QMainWindow):
             for value in results.values():
                 if isinstance(value, TrainingResult):
                     self.training_done(value)
+                elif isinstance(value,list):
+                    for result in value:
+                        if isinstance(result,TrainingResult):self.store.add(result.metadata['algorithm'],{'metrics':result.metrics,'metadata':result.metadata})
+                    self.refresh_history()
             self.statusBar().showMessage(f"Workflow completed: {len(results)} nodes")
         preparation=copy.deepcopy(self.preparation)
         self.background(lambda: graph.execute(frame, target, algorithm,preparation=preparation), complete, "Executing workflow…")
@@ -562,8 +567,10 @@ class MainWindow(QMainWindow):
             if Path(path).resolve() in {Path(self.source).resolve(), self.store.path.resolve()}:
                 raise ValueError("Choose a new project path to preserve the source CSV.")
             graph = self.canvas.snapshot()
-            payload = {"version": 1, "source": str(Path(self.source).resolve()), "fingerprint": hashlib.sha256(Path(self.source).read_bytes()).hexdigest(), "import": self.import_options, "operations": self.dataset.log[:self.dataset.index], "workflow": {"nodes": graph.nodes, "edges": graph.edges}, "target": self.target.currentText(), "algorithm": self.algorithm.currentText()}
+            payload = {"version": 1, "source": str(Path(self.source).resolve()), "fingerprint": hashlib.sha256(Path(self.source).read_bytes()).hexdigest() if Path(self.source).is_file() else None, "import": self.import_options, "operations": self.dataset.log[:self.dataset.index], "workflow": {"nodes": graph.nodes, "edges": graph.edges}, "target": self.target.currentText(), "algorithm": self.algorithm.currentText()}
             payload["preparation"] = self.preparation
+            from .project_data import pack_frame
+            payload['embedded_source']=pack_frame(self.dataset.versions[0])
             from uuid import uuid4
             temporary = Path(path).with_name(Path(path).name+"."+uuid4().hex+".tmp")
             try:
@@ -583,11 +590,16 @@ class MainWindow(QMainWindow):
             raise ValueError("Unsupported or corrupted project schema.")
         graph = Graph(**payload["workflow"])
         if graph.nodes:
-            graph.order()
+            graph.order(allow_disconnected=True)
         def read():
-            if payload.get("fingerprint") != hashlib.sha256(Path(payload["source"]).read_bytes()).hexdigest():
-                raise ValueError("The source CSV has changed since this project was saved. Import the changed file as a new dataset.")
-            frame = load_csv(payload["source"], **payload["import"])
+            embedded=payload.get('embedded_source')
+            if embedded:
+                from .project_data import unpack_frame
+                frame=unpack_frame(embedded)
+            else:
+                if payload.get("fingerprint") != hashlib.sha256(Path(payload["source"]).read_bytes()).hexdigest():
+                    raise ValueError("The source CSV has changed since this project was saved. Import the changed file as a new dataset.")
+                frame = load_csv(payload["source"], **payload["import"])
             versions = DatasetVersions(frame)
             for operation in payload["operations"]:
                 versions.apply(Transformation(**operation))
@@ -624,13 +636,32 @@ class MainWindow(QMainWindow):
         if Path(path).resolve() in [Path(p).resolve() for p in protected if p]:
             raise ValueError("Choose a separate output file to preserve your dataset, saved project and history.")
 
-    def predict_csv(self):
+    def save_model(self):
+        from .model_io import save_model
+        if self.result is None:raise ValueError('Train or load a model first.')
+        path,_=QFileDialog.getSaveFileName(self,'Save trained model','trained-model.mlmodel','ML Studio model (*.mlmodel)')
+        if not path:return
+        self.protect_output(path)
+        save_model(path,self.result)
+        self.statusBar().showMessage('Trained pipeline saved. It can predict after reopening.')
+
+    def load_model(self):
+        from .model_io import load_model
+        path,_=QFileDialog.getOpenFileName(self,'Open trained model','','ML Studio model (*.mlmodel)')
+        if not path:return
+        def complete(result):
+            self.result=result
+            self.model_info.setPlainText(json.dumps(result.metadata,indent=2))
+            self.statusBar().showMessage('Trained model loaded. Ready to predict a compatible CSV.')
+        self.background(lambda:load_model(path),complete,'Loading saved prediction pipeline…')
+
+    def predict_csv(self,options=None):
         if self.result is None:
             raise ValueError("Train a model first.")
         path, _ = QFileDialog.getOpenFileName(self, "Prediction input", "", "CSV (*.csv)")
         if not path:
             return
-        data = load_csv(path)
+        data = load_csv(path,**(options or getattr(self,'import_options',{}) or {}))
         expected = self.result.metadata["features"]
         if set(data.columns) != set(expected):
             raise ValueError(f"Input columns must match exactly. Expected: {expected}")
@@ -638,7 +669,7 @@ class MainWindow(QMainWindow):
         output, _ = QFileDialog.getSaveFileName(self, "Save predictions", "predictions.csv", "CSV (*.csv)")
         if output:
             self.protect_output(output)
-            if Path(output).resolve() in [Path(path).resolve(), Path(self.source).resolve()]:
+            if Path(output).resolve() in [Path(p).resolve() for p in [path,self.source] if p]:
                 raise ValueError("Choose a new output path to preserve input data.")
             name = "prediction"
             while name in data:
@@ -677,6 +708,34 @@ def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
     app.setStyleSheet(THEME)
+    if '--flow-smoke' in sys.argv:
+        from .flow_smoke import run
+        index=sys.argv.index('--flow-smoke')
+        try:run(sys.argv[index+1])
+        except Exception:
+            import traceback
+            output=Path(sys.argv[index+1]);output.mkdir(parents=True,exist_ok=True)
+            (output/'failure.txt').write_text(traceback.format_exc(),encoding='utf-8');sys.exit(1)
+        return
+    if '--student-upgrade-smoke' in sys.argv:
+        from .student_upgrade_smoke import run
+        index=sys.argv.index('--student-upgrade-smoke')
+        try:run(sys.argv[index+1])
+        except Exception:
+            import traceback
+            output=Path(sys.argv[index+1]);output.mkdir(parents=True,exist_ok=True)
+            (output/'failure.txt').write_text(traceback.format_exc(),encoding='utf-8');sys.exit(1)
+        return
+    if '--audit-fix-smoke' in sys.argv:
+        from .audit_fix_smoke import run
+        index=sys.argv.index('--audit-fix-smoke')
+        try:run(sys.argv[index+1])
+        except Exception:
+            import traceback
+            output=Path(sys.argv[index+1]);output.mkdir(parents=True,exist_ok=True)
+            (output/'failure.txt').write_text(traceback.format_exc(),encoding='utf-8')
+            sys.exit(1)
+        return
     if "--smoke-test" in sys.argv:
         window = MainWindow(directory)
         from .smoke import run

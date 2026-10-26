@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "frozen": true,
+  "checks": [
+    "Real CSV import, simple train/test, holdout mistakes, ROC, baseline and held-out input explanation",
+    "Saved fitted model reopens with no dataset loaded",
+    "Prediction input preview, explicit renamed-column mapping, extra-column opt-in, probabilities and CSV export",
+    "One-record prediction without a CSV",
+    "Light/Dark/High contrast Home and prediction UI",
+    "No unexpected engine errors"
+  ]
+}

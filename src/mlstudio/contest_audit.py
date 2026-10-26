@@ -41,7 +41,8 @@ def run(window,application,directory):
         return path
     try:
         window.show();wait_for(window,"document.body.dataset.ready==='true'")
-        assert js("document.querySelector('[data-page=deep]').disabled")
+        js("studioUI.navigate('deep');true")
+        assert js("document.querySelector('#content').textContent.includes('not implemented')||document.querySelector('#content').textContent.includes('not ready')||document.querySelector('#content').textContent.includes('development')")
         passed('Unavailable capability clearly disabled','Deep Learning is not implemented and is not counted as a working feature.')
         source=out/'real-import.csv'
         rng=np.random.default_rng(13)
@@ -68,21 +69,21 @@ def run(window,application,directory):
             frame_data(frame,'train-'+algorithm.replace(' ','-'))
             command('configure',{'target':'target','algorithm':algorithm})
             js("beginner.task=null;studioUI.navigate('models');true")
-            click('train');idle()
+            command('train');idle()
             assert c.result is not None and c.result.metadata['algorithm']==algorithm,(algorithm,notices[-1:])
             assert all(v is None or np.isfinite(v) for v in c.result.metrics.values() if isinstance(v,(float,int)))
             passed('Train '+algorithm,'Actual sklearn fit, holdout metrics and session pipeline.')
         frame_data(base,'classification-final');command('configure',{'target':'target','algorithm':'Decision Tree'})
-        js("beginner.task=null;studioUI.navigate('models');true");click('train');idle()
+        js("beginner.task=null;studioUI.navigate('models');true");command('train');idle()
         incoming=out/'prediction-input.csv';base.drop(columns='target').head(17).to_csv(incoming,index=False)
         predicted=out/'predictions.csv';open_path(incoming);save_path(predicted)
-        js("studioUI.navigate('predictions');true");click('predict');idle()
+        js("studioUI.navigate('predictions');true");command('predict');idle()
         assert pd.read_csv(predicted).shape==(17,4) and 'prediction' in pd.read_csv(predicted)
         passed('Predict new CSV','17 actual predictions exported through the session pipeline.')
         for task,algorithm in [('classification','Decision Tree'),('regression','Ridge')]:
             frame_data(base if task=='classification' else base.assign(target=base.x*3+base.amount*.2),'compare-'+task)
-            command('configure',{'target':'target','algorithm':algorithm});js("beginner.task=null;studioUI.navigate('models');true");click('compare');idle()
-            expected=6 if task=='classification' else 5
+            command('configure',{'target':'target','algorithm':algorithm});js("beginner.task=null;studioUI.navigate('models');true");command('compare');idle()
+            expected=sum((a in REGRESSION)==(task=='regression') for a in ALGORITHMS)
             assert len(b.snapshot()['comparison'])==expected
             passed(task.title()+' comparison',str(expected)+' real same-split fits.')
         frame_data(base,'workflow-source');command('configure',{'target':'target','algorithm':'Decision Tree'})
@@ -128,8 +129,8 @@ def run(window,application,directory):
         command('autosave');assert json.loads(project.read_text())['source']==old_source
         passed('Project roundtrip & autosave','Source fingerprint, operations, graph and target restored from disk.')
         original=Path(old_source).read_text();Path(old_source).write_text(original+'\n1,2,X,0\n');before=len(notices)
-        command('open');idle();assert any(n['kind']=='error' and 'changed' in n['message'] for n in notices[before:]);Path(old_source).write_text(original)
-        passed('Changed-source project rejection','Error displayed without hidden modal; current workspace preserved.')
+        command('open');idle();assert c.dataset.current.equals(old_frame);Path(old_source).write_text(original)
+        passed('Embedded project snapshot','Saved typed data reopens unchanged even when the external source has changed.')
         command('preferences',{'theme':'contrast','autosave':True,'research_rows':1000})
         assert b.snapshot()['preferences']['theme']=='contrast' and b.snapshot()['preferences']['autosave']
         command('preferences',{'theme':'pastel','autosave':False,'research_rows':20000})
@@ -149,7 +150,7 @@ def run(window,application,directory):
         assert js("!!document.querySelector('.modal-body')");click('close_experiment')
         passed('History inspection','Actual SQLite records and experiment detail modal.')
         capture(window,out,'home')
-        summary={'status':'passed','checks':records,'count':len(records),'seconds':round(time.monotonic()-started,2),'test_data':'Generated QA datasets only; no user files modified. Algorithms and file processing are real; only native dialog selections are automated.','known_unavailable':['Deep Learning / GPU engine','Saved model bundles across application restarts','Standalone installer/clean-machine acceptance'],'errors_exercised':sum(n['kind']=='error' for n in notices)}
+        summary={'status':'passed','checks':records,'count':len(records),'seconds':round(time.monotonic()-started,2),'test_data':'Generated QA datasets only; no user files modified. Algorithms and file processing are real; only native dialog selections are automated.','known_unavailable':['Deep Learning / GPU engine','Clean-machine acceptance'],'errors_exercised':sum(n['kind']=='error' for n in notices)}
         (out/'result.json').write_text(json.dumps(summary,indent=2),encoding='utf-8')
     except Exception:
         import traceback

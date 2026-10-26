@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "frozen": false,
+  "checks": [
+    "Main Visuals navigation and consolidated questions",
+    "16 categorized draggable steps",
+    "Import node waits until a real CSV is loaded",
+    "Native mouse port drag creates arrows and automatically computes",
+    "Real training-only prepared output appears on result click",
+    "Native round-node drag updates arrow geometry without re-fitting; output export works",
+    "Data branch trains and Results node exposes actual metrics; model activation succeeds",
+    "Workflow, node settings and connections saved with the project",
+    "Charts and existing question editor live under Visuals; old links redirect"
+  ]
+}

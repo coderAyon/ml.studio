@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "frozen": false,
+  "runtime": "D:\\STUDY\\8th sem\\project\\ML Studio\\.venv\\Scripts\\python.exe",
+  "checks": [
+    "Unsaved preparation is validated and saved before Continue navigation",
+    "Optional parameter search executes on three training-only folds",
+    "Custom parameter applied; saved model reopened and produces identical predictions",
+    "Selected two-method comparison executes exactly the requested methods",
+    "Prediction encoding, decimal and delimiter controls available",
+    "Native mouse rectangle selects source rows; subset Apply and Undo preserve originals",
+    "Advanced classification lists exactly 10 valid methods",
+    "Advanced regression lists all 12 valid methods",
+    "New round Prepare training and Compare models nodes connect and execute"
+  ]
+}

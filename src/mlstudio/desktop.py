@@ -86,6 +86,10 @@ class StudioBridge(QObject):
         controller.error_handler = lambda message:self.announce(message,"error")
         controller.statusBar().messageChanged.connect(self.on_status)
         self.research=ResearchCoordinator(self)
+        from .prediction_controller import PredictionWorkspace
+        self.predictions=PredictionWorkspace(self)
+        from .flow_controller import FlowCoordinator
+        self.flow=FlowCoordinator(self)
 
     def on_status(self, message):
         self.last_status = message
@@ -178,6 +182,8 @@ class StudioBridge(QObject):
             "model": {"metrics": controller.result.metrics, "metadata": controller.result.metadata} if controller.result else None,
             "target": controller.target.currentText(), "algorithm": controller.algorithm.currentText(),
             "algorithms": [controller.algorithm.itemText(i) for i in range(controller.algorithm.count())],
+            "regression_algorithms":sorted(REGRESSION),
+            "parameter_specs":self.parameter_specs(),
             "workflow": {"nodes": controller.canvas.snapshot().nodes, "edges": controller.canvas.graph.edges},
             "storage": str(controller.directory), "chart": self.chart,
             "preview": self.preview, "events": self.events,
@@ -192,6 +198,8 @@ class StudioBridge(QObject):
             "preprocessing": {"detail":self.preprocess_detail,"preview":self.preprocess_preview,
                               "preparation":self.training_preparation()},
             "dataset_visuals": self.dataset_visual_result,
+            "predictions":self.predictions.state(),
+            "flow":self.flow.state(),
             "preferences": {"theme": controller.settings.value("referenceTheme", "pastel"), "reduce_motion": controller.settings.value("referenceReduceMotion",False,type=bool), "autosave": controller.settings.value("referenceAutosave", False, type=bool), "research_rows":controller.settings.value("researchRowBudget",20000,type=int), "next_storage":controller.settings.value("storageRoot", "")},
         }
 
@@ -209,6 +217,18 @@ class StudioBridge(QObject):
     def training_preparation(self):
         from .training_prep import validate_preparation
         return validate_preparation(getattr(self.controller,'preparation',None))
+
+    def parameter_specs(self):
+        from .training import ALGORITHMS
+        from .model_settings import parameter_specs
+        return {a:parameter_specs(a) for a in ALGORITHMS}
+
+    def prediction_options(self,data):
+        options=data.get('import',{})
+        if not isinstance(options,dict) or set(options)-{'encoding','decimal','delimiter','header'}:raise ValueError('Invalid prediction import settings.')
+        if options.get('encoding','utf-8-sig') not in {'utf-8-sig','cp1252','latin-1','utf-16'} or options.get('decimal','.') not in {'.',','} or options.get('delimiter') not in {None,',',';','\t','|'} or type(options.get('header',True)) is not bool:
+            raise ValueError('Choose supported CSV import settings.')
+        return options
 
     def remove_dataset(self):
         controller = self.controller
@@ -264,6 +284,10 @@ class StudioBridge(QObject):
                 self.research.command(action,data)
                 self.publish()
                 return
+            if action.startswith('prediction_'):
+                self.predictions.command(action,data);self.publish();return
+            if action.startswith('flow_'):
+                self.flow.command(action,data);self.publish();return
             if action in {"simple_train","simple_compare"}:
                 from .training import ALGORITHMS, compare
                 from .training_prep import assert_evaluation_ready,validate_preparation
@@ -283,9 +307,11 @@ class StudioBridge(QObject):
                 controller.target.setCurrentText(target);controller.algorithm.setCurrentText(algorithm)
                 if action=='simple_train':
                     self.comparison_start=None
-                    controller.train_with_split(test_size=test_size)
+                    controller.train_with_split(test_size=test_size,parameters=data.get('parameters'),tune=data.get('tune',False))
                 else:
-                    algorithms=['Ridge','Decision Tree Regressor','Random Forest Regressor'] if task=='regression' else ['Logistic Regression','Decision Tree','Random Forest']
+                    algorithms=data.get('algorithms') or (['Ridge','Decision Tree Regressor','Random Forest Regressor'] if task=='regression' else ['Logistic Regression','Decision Tree','Random Forest'])
+                    if not isinstance(algorithms,list) or not 1<=len(algorithms)<=6 or len(set(algorithms))!=len(algorithms) or any(a not in ALGORITHMS or (a in REGRESSION)!=(task=='regression') for a in algorithms):
+                        raise ValueError('Choose 1–6 distinct methods for the same task.')
                     self.comparison_start=len(controller.store.history())
                     controller.result=None
                     def complete(results):
@@ -304,11 +330,15 @@ class StudioBridge(QObject):
                 "analyze": controller.analyze_current, "train": controller.train_model,
                 "compare": controller.compare_models, "predict": controller.predict_csv,
                 "report": controller.report, "export_log": controller.export_log,
+                "save_model":controller.save_model,"load_model":controller.load_model,
+                "predict_configured":lambda:controller.predict_csv(options=self.prediction_options(data)),
                 "run_workflow": controller.run_graph,
             }
             if action in methods:
                 if action == "compare":
                     self.comparison_start = len(controller.store.history())
+                elif action=='run_workflow' and any(n['type']=='Compare models' for n in controller.canvas.graph.nodes.values()):
+                    self.comparison_start=len(controller.store.history())
                 elif action in {"import", "open", "train", "run_workflow"}:
                     self.comparison_start = None
                 if action in {"import", "import_advanced", "open"}:
@@ -487,6 +517,22 @@ class StudioBridge(QObject):
                 except Exception:
                     self.dataset_visual_result,self.dataset_visual_figure=old_result,old_figure
                     raise
+            elif action in {'dataset_visual_select','dataset_visual_selection_export','dataset_visual_selection_apply'}:
+                from .dataset_visuals import select_region
+                frame=controller.require_data();self.snapshot();result=self.dataset_visual_result
+                if result is None or result['kind']!='scatter':raise ValueError('Create a scatter plot first.')
+                if action=='dataset_visual_select':
+                    self.dataset_visual_result['selection']=select_region(frame,{**data,'columns':result['config']['columns']})
+                else:
+                    selection=result.get('selection')
+                    if not selection or not selection['count']:raise ValueError('Select some points first.')
+                    if action.endswith('export'):
+                        path,_=QFileDialog.getSaveFileName(self.parent(),'Save selected rows','selected-rows.csv','CSV (*.csv)')
+                        if path:controller.protect_output(path);frame.iloc[selection['positions']].to_csv(path,index=False)
+                    else:
+                        controller.dataset.apply(Transformation('Select row positions',[],json.dumps(selection['positions'])))
+                        controller.result=None;controller.analyze_current()
+                        self.announce('Selected records are now the active version. Undo restores the previous dataset.')
             elif action == "dataset_visual_export":
                 from .dataset_visuals import detect_outliers
                 frame=controller.require_data();self.snapshot()
@@ -638,7 +684,7 @@ class StudioBridge(QObject):
                 if not isinstance(nodes, dict) or not isinstance(edges, list) or len(nodes) > 100:
                     raise ValueError("Invalid workflow graph.")
                 for key, node in nodes.items():
-                    if not str(key).isdigit() or node.get("type") not in {"Dataset", "Remove duplicates", "Train model"}:
+                    if not str(key).isdigit() or node.get("type") not in set(PORTS)-{'Fill missing'}:
                         raise ValueError("Unavailable workflow node.")
                     position = node.get("position")
                     if not isinstance(position, list) or len(position) != 2 or not all(isinstance(v, (float, int)) and abs(v) <= 10000 for v in position):

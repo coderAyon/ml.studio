@@ -28,7 +28,7 @@ class ResearchCoordinator(QObject):
 
     def config(self):
         controller=self.bridge.controller
-        return ResearchConfig(target=controller.target.currentText(),task="regression" if controller.algorithm.currentText() in REGRESSION else "classification",**self.options)
+        return ResearchConfig(target=controller.target.currentText(),task="regression" if controller.algorithm.currentText() in REGRESSION else "classification",preparation=self.bridge.training_preparation(),**self.options)
 
     def signature(self):
         controller=self.bridge.controller

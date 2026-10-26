@@ -1,0 +1,36 @@
+{
+  "task": "classification",
+  "algorithms": [
+    "Logistic Regression",
+    "Random Forest",
+    "Decision Tree",
+    "KNN",
+    "SVM",
+    "Naive Bayes",
+    "Extra Trees",
+    "Gradient Boosting",
+    "AdaBoost",
+    "Baseline classifier",
+    "Extra Trees Regressor",
+    "Gradient Boosting Regressor",
+    "AdaBoost Regressor",
+    "KNN Regressor",
+    "Lasso",
+    "Elastic Net",
+    "Baseline Regressor"
+  ],
+  "wrong_task_candidates": [
+    "Extra Trees Regressor",
+    "Gradient Boosting Regressor",
+    "AdaBoost Regressor",
+    "KNN Regressor",
+    "Lasso",
+    "Elastic Net",
+    "Baseline Regressor"
+  ],
+  "unsaved_preparation": {
+    "visible_draft": "minmax",
+    "used_for_training": "default standard scaling",
+    "navigation_blocked": false
+  }
+}

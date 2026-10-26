@@ -1,0 +1,23 @@
+........................................................................ [ 46%]
+........................................................................ [ 92%]
+...........                                                              [100%]
+============================== warnings summary ===============================
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[standard]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[robust]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[minmax]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[maxabs]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[l1]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[l2]
+tests/test_advanced_preparation.py::test_scalers_fit_train_and_transform_future[none]
+  D:\STUDY\8th sem\project\ML Studio\.venv\Lib\site-packages\sklearn\utils\validation.py:2830: UserWarning: X does not have valid feature names, but SimpleImputer was fitted with feature names
+    warnings.warn(
+
+tests/test_advanced_preparation.py::test_binning_and_reduction_are_fitted_and_predictable[uniform-f_test]
+tests/test_advanced_preparation.py::test_binning_and_reduction_are_fitted_and_predictable[uniform-pca]
+tests/test_advanced_preparation.py::test_binning_and_reduction_are_fitted_and_predictable[quantile-f_test]
+tests/test_advanced_preparation.py::test_binning_and_reduction_are_fitted_and_predictable[quantile-pca]
+  D:\STUDY\8th sem\project\ML Studio\.venv\Lib\site-packages\sklearn\preprocessing\_discretization.py:331: UserWarning: Feature 2 is constant and will be replaced with 0.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+155 passed, 11 warnings in 42.41s

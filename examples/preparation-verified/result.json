@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "algorithms": 22.0,
+  "checks": [
+    "5 numeric filling methods / 7 scaling methods visible",
+    "Advanced categorical filling, missing flags, bins and reduction controls visible",
+    "KNN + Min\u2013Max + missing flags + F-test saved through QWebChannel",
+    "Task-specific new algorithms available",
+    "Actual model fit uses saved plan and 2 selected inputs",
+    "Fitted preparation evidence displayed",
+    "Original active data unchanged"
+  ]
+}

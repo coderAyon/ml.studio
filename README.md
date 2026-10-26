@@ -225,3 +225,13 @@ Recommended demo: Import → Safety Advisor (select target, exclude IDs, choose 
 ```
 
 Use the root shortcut `ML Studio - Research.lnk` for the new EXE. Inno Setup scripts target 0.4.0; clean-machine installer testing remains pending.
+# Expanded preparation and model coverage
+
+Visuals is now a main option below My dataset, combining charts and questions. The new reactive Workflow canvas offers a left-hand step library, round drag/drop nodes, typed arrows, automatic connected-step execution and click-to-inspect output. See [workflow usage, safety and verification](docs/REACTIVE_WORKFLOW.md).
+
+Latest student upgrade: redesigned Home, inspectable holdout mistakes and binary ROC, baseline/balanced metrics, held-out input explanation, prediction CSV mapping/probability preview/export and single-record prediction. Exact numeric project snapshots and model-only inference are repaired. See [student upgrade and acceptance coverage](docs/STUDENT_UPGRADE.md).
+
+The Orange/Weka audit repairs add reusable trained-model bundles, shared preparation in Advanced evaluation, selectable comparisons, small training-only parameter search, scatter-to-row selection and portable project snapshots. See [repair details and verification](docs/AUDIT_FIXES.md). The root EXE remains the development launcher; `dist/MLStudio-Research` is the separate bundled Windows distribution and must be copied as a whole folder.
+
+Prepare data now includes numeric/category imputation, Min–Max normalization and other scale choices, missing flags, discretization, constant input removal, F-test selection and PCA, fitted inside training rows. The model registry contains 22 supervised methods. See [feature coverage](docs/FEATURE_COVERAGE.md) for controls, limits and remaining Orange/Weka gaps; complete parity is not claimed.
+

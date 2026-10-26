@@ -40,7 +40,33 @@ class TrainingResult:
     metadata: dict
 
 
-def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test_size: float = .25, preparation=None) -> TrainingResult:
+def build_pipeline(x,algorithm,preparation=None,seed=42,parameters=None):
+    from .training_prep import validate_preparation,numeric_pipeline,BoundedFeatureSelector
+    from .model_settings import model_parameters
+    p=validate_preparation(preparation);numeric=list(x.select_dtypes(include='number').columns)
+    categorical=[c for c in x if c not in numeric]
+    if p['imputation']=='knn' and (len(x)>2000 or len(numeric)>50):
+        raise ValueError('KNN filling supports at most 2,000 rows and 50 numeric inputs. Choose median filling or a smaller extract.')
+    pre=ColumnTransformer([
+        ('numeric',numeric_pipeline(p),numeric),
+        ('categorical',Pipeline([('imputer',SimpleImputer(strategy=p['categorical_imputation'],fill_value=p['categorical_constant'],keep_empty_features=True)),
+            ('encoder',OneHotEncoder(handle_unknown='ignore',sparse_output=False,max_categories=100))]),categorical)])
+    model=ALGORITHMS[algorithm](**model_parameters(algorithm,parameters))
+    if 'random_state' in model.get_params():model.set_params(random_state=seed)
+    if isinstance(model,(KNeighborsClassifier,KNeighborsRegressor)) and model.n_neighbors>len(x):
+        raise ValueError(f'KNN needs at least {model.n_neighbors} training rows for {model.n_neighbors} neighbors. This split/fold has {len(x)}; reduce neighbors in model settings or use more training rows.')
+    steps=[('preprocess',pre)]
+    if p['remove_constant']:
+        from sklearn.feature_selection import VarianceThreshold
+        steps.append(('remove_constant',VarianceThreshold()))
+    if p['feature_selection']=='f_test':steps.append(('feature_selection',BoundedFeatureSelector(p['selection_k'],algorithm in REGRESSION)))
+    if p['feature_selection']=='pca':
+        if p['pca_components']>len(x):raise ValueError('PCA components cannot exceed training rows. Reduce components in Prepare data.')
+        steps.append(('pca',PCA(n_components=p['pca_components'],svd_solver='full')))
+    return Pipeline([*steps,('model',model)])
+
+
+def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test_size: float = .25, preparation=None,parameters=None,tune=False) -> TrainingResult:
     if isinstance(test_size,bool) or not isinstance(test_size,(int,float)) or not np.isfinite(test_size) or not .1<=test_size<=.4:
         raise ValueError("Choose a test share between 10% and 40%.")
     from .training_prep import validate_preparation,numeric_pipeline,BoundedFeatureSelector,fitted_preparation_summary
@@ -80,30 +106,28 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
     x = x.copy()
     for c in categorical:
         x[c] = x[c].map(lambda v: str(v) if pd.notna(v) else np.nan).astype(object)
-    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=seed, test_size=test_size, stratify=None if regression else y)
-    preprocessor = ColumnTransformer([
-        ("numeric", numeric_pipeline(preparation), numeric),
-        ("categorical", Pipeline([("imputer", SimpleImputer(strategy=preparation['categorical_imputation'],fill_value=preparation['categorical_constant'], keep_empty_features=True)), ("encoder", OneHotEncoder(handle_unknown="ignore", sparse_output=False, max_categories=100))]), categorical),
-    ])
-    model = ALGORITHMS[algorithm]()
-    if "random_state" in model.get_params():
-        model.set_params(random_state=seed)
-    steps=[('preprocess',preprocessor)]
-    if preparation['remove_constant']:
-        from sklearn.feature_selection import VarianceThreshold
-        steps.append(('remove_constant',VarianceThreshold()))
-    if preparation['feature_selection']=='f_test':steps.append(('feature_selection',BoundedFeatureSelector(preparation['selection_k'],regression)))
-    if preparation['feature_selection']=='pca':
-        if preparation['pca_components']>len(x_train):raise ValueError('PCA components cannot exceed the number of training rows. Reduce components in Prepare data.')
-        steps.append(('pca',PCA(n_components=preparation['pca_components'],svd_solver='full')))
-    pipeline = Pipeline([*steps, ("model", model)])
+    x_train, x_test, y_train, y_test,train_positions,test_positions = train_test_split(x, y,np.arange(len(frame)), random_state=seed, test_size=test_size, stratify=None if regression else y)
+    pipeline=build_pipeline(x_train,algorithm,preparation,seed,parameters)
+    tuning=None
     started = time.perf_counter()
-    try:pipeline.fit(x_train, y_train)
+    try:
+        if tune:
+            from sklearn.model_selection import GridSearchCV,StratifiedKFold,KFold
+            from .model_settings import search_grid
+            if len(x_train)<9 or (not regression and y_train.value_counts().min()<3):raise ValueError('Parameter search needs at least 9 training rows and 3 training examples per class.')
+            cv=KFold(3,shuffle=True,random_state=seed) if regression else StratifiedKFold(3,shuffle=True,random_state=seed)
+            splits=list(cv.split(x_train,y_train));grid=search_grid(algorithm,min(len(tr) for tr,_ in splits))
+            search=GridSearchCV(pipeline,grid,cv=splits,scoring='neg_root_mean_squared_error' if regression else 'f1_macro',n_jobs=1,error_score='raise')
+            search.fit(x_train,y_train);pipeline=search.best_estimator_
+            tuning={'folds':3,'scope':'Training rows only; holdout untouched during search','best_parameters':search.best_params_,
+                'metric':'negative RMSE' if regression else 'Macro F1','candidates':[{'parameters':p,'mean_score':float(v)} for p,v in zip(search.cv_results_['params'],search.cv_results_['mean_test_score'])]}
+        else:pipeline.fit(x_train, y_train)
     except ValueError as exc:
         if preparation['feature_selection']=='pca':raise ValueError(f'PCA could not fit. Choose components no larger than the remaining encoded input count. Details: {exc}') from exc
         if preparation['remove_constant'] and 'variance threshold' in str(exc):raise ValueError('All input features are constant in training rows. Keep constant features or choose other inputs.') from exc
         raise
     duration = time.perf_counter()-started
+    model=pipeline.named_steps['model']
     pred = pipeline.predict(x_test)
     if regression:
         metrics = {"MAE": mean_absolute_error(y_test, pred), "MSE": mean_squared_error(y_test, pred), "RMSE": float(np.sqrt(mean_squared_error(y_test, pred))), "R2": r2_score(y_test, pred)}
@@ -130,7 +154,17 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
         warnings.append("Small dataset: performance estimates may have high variance.")
     if not regression and y.value_counts(normalize=True).max() > .8:
         warnings.append("Target imbalance: accuracy alone may be misleading. Review per-class recall and F1.")
-    return TrainingResult(pipeline, metrics, {"algorithm": algorithm, "target": target, "features": list(x.columns), "preparation":preparation,"fitted_preparation":fitted_preparation_summary(pipeline),"dataset_fingerprint": hashlib.sha256(pd.util.hash_pandas_object(frame, index=True).values.tobytes()).hexdigest(), "parameters": model.get_params(), "seed": seed, "test_size": test_size, "training_rows": len(x_train), "test_rows": len(x_test), "seconds": duration, "protocol": "Stratified holdout" if not regression else "Random holdout", "warnings": warnings})
+    from .evaluation import holdout_details
+    from sklearn.dummy import DummyClassifier,DummyRegressor
+    from sklearn.metrics import balanced_accuracy_score,f1_score
+    reference=DummyRegressor() if regression else DummyClassifier(strategy='most_frequent')
+    reference.fit(np.zeros((len(y_train),1)),y_train);base=reference.predict(np.zeros((len(y_test),1)))
+    baseline={'name':'Training-mean prediction' if regression else 'Majority-class prediction','metric':'RMSE' if regression else 'Accuracy',
+        'value':float(np.sqrt(mean_squared_error(y_test,base))) if regression else float(accuracy_score(y_test,base))}
+    if not regression:metrics.update({'Balanced accuracy':float(balanced_accuracy_score(y_test,pred)),'Macro F1':float(f1_score(y_test,pred,average='macro',zero_division=0))})
+    result=TrainingResult(pipeline, metrics, {"algorithm": algorithm, "target": target, "features": list(x.columns), "preparation":preparation,"tuning":tuning,"fitted_preparation":fitted_preparation_summary(pipeline),"dataset_fingerprint": hashlib.sha256(pd.util.hash_pandas_object(frame, index=True).values.tobytes()).hexdigest(), "parameters": model.get_params(), "seed": seed, "test_size": test_size, "training_rows": len(x_train), "test_rows": len(x_test), "seconds": duration, "protocol": "Stratified holdout" if not regression else "Random holdout", "warnings": warnings})
+    result.metadata.update({'test_positions':test_positions.tolist(),'diagnostics':holdout_details(frame,list(x.columns),test_positions,y_test,pred,pipeline,baseline,regression)})
+    return result
 
 
 def compare(frame: pd.DataFrame, target: str, algorithms: list[str], seed: int = 42, preparation=None, test_size: float = .25) -> list[TrainingResult]:
@@ -142,7 +176,7 @@ def compare(frame: pd.DataFrame, target: str, algorithms: list[str], seed: int =
     return [train(frame, target, algorithm, seed,test_size=test_size,preparation=preparation) for algorithm in algorithms]
 
 
-def predict(result: TrainingResult, frame: pd.DataFrame):
+def prediction_inputs(result: TrainingResult, frame: pd.DataFrame):
     """Validate the exact input schema and repeat only stateless type conversion."""
     expected = result.metadata["features"]
     if set(frame.columns) != set(expected):
@@ -157,7 +191,11 @@ def predict(result: TrainingResult, frame: pd.DataFrame):
         frame[column] = pd.to_numeric(frame[column], errors="raise")
     for column in categorical:
         frame[column] = frame[column].map(lambda v: str(v) if pd.notna(v) else np.nan).astype(object)
-    return result.pipeline.predict(frame)
+    return frame
+
+
+def predict(result: TrainingResult, frame: pd.DataFrame):
+    return result.pipeline.predict(prediction_inputs(result,frame))
 
 
 def cluster(frame: pd.DataFrame, algorithm: str, clusters: int = 3) -> dict:

@@ -16,7 +16,7 @@ from .training import ALGORITHMS, REGRESSION
 from .safety import safety_advice
 from .error_analysis import error_report
 
-VARIANTS={"baseline":"Median + scaling", "mean":"Mean + scaling", "unscaled":"Median without scaling", "indicator":"Median + missing indicators + scaling"}
+VARIANTS={"baseline":"Saved preparation plan", "mean":"Saved plan + mean filling", "unscaled":"Saved plan without scaling", "indicator":"Saved plan + missing flags"}
 
 
 @dataclass
@@ -30,20 +30,19 @@ class ResearchConfig:
     folds: int = 3
     repeats: int = 2
     seed: int = 42
+    preparation: dict | None = None
 
 
-def pipeline_for(x, algorithm, variant, seed):
+def pipeline_for(x, algorithm, variant, seed,preparation=None):
     if variant not in VARIANTS:raise ValueError("Unknown preprocessing variant.")
     if algorithm not in ALGORITHMS:raise ValueError("Unknown algorithm.")
-    numeric=list(x.select_dtypes(include="number").columns)
-    categorical=[c for c in x if c not in numeric]
-    numeric_steps=[("imputer",SimpleImputer(strategy="mean" if variant=="mean" else "median",add_indicator=variant=="indicator",keep_empty_features=True))]
-    if variant!="unscaled":numeric_steps.append(("scaler",StandardScaler()))
-    preprocessor=ColumnTransformer([("numeric",Pipeline(numeric_steps),numeric),("categorical",Pipeline([("imputer",SimpleImputer(strategy="most_frequent",keep_empty_features=True)),("encoder",OneHotEncoder(handle_unknown="ignore",sparse_output=False,max_categories=50))]),categorical)])
-    model=ALGORITHMS[algorithm]()
-    if "random_state" in model.get_params():model.set_params(random_state=seed)
-    if "n_jobs" in model.get_params() and algorithm!="Logistic Regression":model.set_params(n_jobs=1)
-    return Pipeline([("preprocess",preprocessor),("model",model)])
+    from .training_prep import validate_preparation
+    from .training import build_pipeline
+    p=validate_preparation(preparation)
+    if variant=='mean':p['imputation']='mean'
+    if variant=='unscaled':p['scaling']='none'
+    if variant=='indicator':p['missing_indicators']=True
+    return build_pipeline(x,algorithm,p,seed)
 
 
 def metric_values(y,pred,task):
@@ -60,7 +59,9 @@ class ResearchSession:
         self.config=config
         self.frame=frame.reset_index(drop=True).copy(deep=True)
         self._validate()
-        excluded=set(config.excluded+[config.target]+([config.group] if config.protocol=="group" else [])+([config.time_column] if config.protocol=="time" else []))
+        from .training_prep import validate_preparation
+        self.preparation=validate_preparation(config.preparation,frame.columns,config.target)
+        excluded=set(config.excluded+self.preparation['excluded']+[config.target]+([config.group] if config.protocol=="group" else [])+([config.time_column] if config.protocol=="time" else []))
         self.features=[c for c in frame if c not in excluded]
         if not self.features:raise ValueError("No input features remain after exclusions.")
         self.x=self.frame[self.features].copy()
@@ -154,7 +155,7 @@ class ResearchSession:
         scores=[];metrics=[];durations=[]
         for i,(tr,va) in enumerate(self.folds):
             if progress:progress(f"{algorithm} / {VARIANTS[variant]} · fold {i+1}/{len(self.folds)}")
-            pipeline=pipeline_for(self.x.iloc[tr],algorithm,variant,self.config.seed)
+            pipeline=pipeline_for(self.x.iloc[tr],algorithm,variant,self.config.seed,self.preparation)
             started=time.perf_counter();pipeline.fit(self.x.iloc[tr],self.y.iloc[tr]);pred=pipeline.predict(self.x.iloc[va]);durations.append(time.perf_counter()-started)
             values=metric_values(self.y.iloc[va],pred,self.config.task);metrics.append(values);scores.append(values[self.metric])
         return {"algorithm":algorithm,"variant":variant,"label":VARIANTS[variant],"scores":scores,"mean":float(np.mean(scores)),"std":float(np.std(scores,ddof=1)) if len(scores)>1 else 0.,"seconds":float(sum(durations)),"fold_metrics":metrics,"fold_ids":list(range(len(self.folds))),"parameters":ALGORITHMS[algorithm]().get_params()}
@@ -197,7 +198,7 @@ class ResearchSession:
         if self.final_used:raise ValueError("The reserved final test was already used in this session.")
         self._check_candidate(algorithm)
         self.final_used=True  # lock on first attempt, including failed fitting
-        pipeline=pipeline_for(self.x.iloc[self.development_positions],algorithm,variant,self.config.seed)
+        pipeline=pipeline_for(self.x.iloc[self.development_positions],algorithm,variant,self.config.seed,self.preparation)
         started=time.perf_counter();pipeline.fit(self.x.iloc[self.development_positions],self.y.iloc[self.development_positions]);pred=pipeline.predict(self.x.iloc[self.test_positions])
         actual=self.y.iloc[self.test_positions]
         result={"algorithm":algorithm,"variant":variant,"metrics":metric_values(actual,pred,self.config.task),"seconds":time.perf_counter()-started,"predictions":[v.item() if isinstance(v,np.generic) else v for v in pred],"positions":self.test_positions,"errors":error_report(self.frame[self.features],self.test_positions,actual,pred,self.config.task),"caution":"Final test inspected once. Subsequent decisions informed by these outcomes require a new external final dataset. Restarting a session does not make the same data independent."}

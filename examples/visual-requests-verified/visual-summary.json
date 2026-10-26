@@ -105,7 +105,9 @@
     "ylabel": "",
     "filter_column": "species",
     "filter_operator": "eq",
-    "filter_value": "setosa"
+    "filter_value": "setosa",
+    "x_column": "",
+    "series_column": ""
   },
   "rows_total": 150,
   "rows_used": 50,

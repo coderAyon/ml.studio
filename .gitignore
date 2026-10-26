@@ -4,3 +4,19 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+
+# Generated local acceptance state; keep source tests and reviewable result evidence.
+examples/**/storage/
+examples/**/isolated-store/
+examples/**/*.sqlite3
+examples/**/*.mlmodel
+examples/**/preferences.ini
+examples/**/settings.ini
+examples/**/appearance.ini
+examples/**/acceptance-settings.ini
+examples/**/isolated-settings.ini
+examples/*build*.log
+examples/preparation-smoke.log
+examples/student-contest-audit/
+examples/student-contest-final/
+examples/portable-audit-verified/

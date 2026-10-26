@@ -140,13 +140,32 @@ def build_chart(frame,config):
         if titles['xlabel']:axis.set_xlabel(titles['xlabel'])
         if titles['ylabel']:axis.set_ylabel(titles['ylabel'])
     if config.get('grid',True) and kind!='correlation':axis.grid(axis='y',alpha=.17);axis.set_axisbelow(True)
-    return {'title':title,'kind':kind,'config':config,'table':table,'support':support,'pairs':pair_table,
+    interactive=None
+    if kind=='scatter':
+        interactive={'columns':columns,'points':[[int(pos),float(frame.iloc[pos][columns[0]]),float(frame.iloc[pos][columns[1]])] for pos in chosen],
+            'note':'Up to 5,000 finite points shown. Region selection checks all active rows, including points omitted from this display.'}
+    return {'title':title,'kind':kind,'config':config,'table':table,'support':support,'pairs':pair_table,'interactive':interactive,
             'insights':insights,'outliers':outliers,'rows':len(frame),
             'protocol':' '.join(notes)+' All chart operations are exploratory and leave the active dataset unchanged.'},figure
 
 
 def finite(v):
     return float(v) if pd.notna(v) and np.isfinite(v) else None
+
+
+def select_region(frame,config):
+    columns=config.get('columns',[])
+    if len(columns)!=2 or any(c not in numeric_columns(frame) for c in columns):raise ValueError('Choose two numeric scatter axes.')
+    bounds=[config.get(k) for k in ['xmin','xmax','ymin','ymax']]
+    if any(isinstance(v,bool) or not isinstance(v,(int,float)) or not np.isfinite(v) for v in bounds):raise ValueError('Select a finite plot region.')
+    xmin,xmax,ymin,ymax=bounds
+    if xmin>xmax or ymin>ymax:raise ValueError('Invalid selection bounds.')
+    x,y=frame[columns[0]],frame[columns[1]]
+    mask=(x.between(xmin,xmax)&y.between(ymin,ymax)).fillna(False).to_numpy(dtype=bool)
+    positions=np.flatnonzero(mask).tolist();subset=frame.iloc[positions[:100]]
+    return {'positions':positions,'count':len(positions),'bounds':dict(zip(['xmin','xmax','ymin','ymax'],bounds)),
+        'preview':{'columns':['Active row',*frame.columns],'index':list(range(len(subset))),
+                   'data':[[pos+1,*row] for pos,row in zip(positions,json_values(subset))]}}
 
 
 def json_values(frame):

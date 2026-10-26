@@ -3,9 +3,13 @@ from dataclasses import dataclass, field
 import json
 from pathlib import Path
 from .data import Transformation
-from .training import train
+from .training import train,compare,REGRESSION
 
 PORTS = {"Dataset": (None, "data"), "Remove duplicates": ("data", "data"), "Fill missing": ("data", "data"), "Train model": ("data", "result")}
+PORTS.update({'Prepare training':('data','data'),'Compare models':('data','result')})
+PORTS.update({kind:('data','data') for kind in ['Data table','Select columns','Impute missing','Normalize']})
+PORTS.update({kind:('data','view') for kind in ['Prepared output','Histogram','Scatter plot','Box plot','Bar chart','Correlation']})
+PORTS['Results']=('result','result')
 
 
 @dataclass
@@ -13,7 +17,7 @@ class Graph:
     nodes: dict = field(default_factory=dict)
     edges: list = field(default_factory=list)
 
-    def order(self):
+    def order(self,allow_disconnected=False):
         if not self.nodes:
             raise ValueError("Add a Dataset node before validating or running a workflow.")
         incoming = {key: 0 for key in self.nodes}
@@ -29,7 +33,7 @@ class Graph:
             if incoming[b] > 1:
                 raise ValueError("This input accepts one connection.")
         for key, degree in incoming.items():
-            if PORTS[self.nodes[key]["type"]][0] and degree == 0:
+            if PORTS[self.nodes[key]["type"]][0] and degree == 0 and not allow_disconnected:
                 raise ValueError("A required data input is disconnected.")
         ready = [key for key in incoming if incoming[key] == 0]
         order = []
@@ -55,6 +59,13 @@ class Graph:
                 results[key] = data
             elif kind == "Train model":
                 results[key] = train(data, target, algorithm,preparation=preparation)
+            elif kind=='Prepare training':
+                from .training_prep import validate_preparation
+                validate_preparation(preparation,data.columns,target)
+                results[key]=data  # Learned preparation is intentionally deferred until each fit.
+            elif kind=='Compare models':
+                algorithms=['Ridge','Decision Tree Regressor','Random Forest Regressor'] if algorithm in REGRESSION else ['Logistic Regression','Decision Tree','Random Forest']
+                results[key]=compare(data,target,algorithms,preparation=preparation)
             elif kind == "Fill missing":
                 raise ValueError("Exploratory imputation cannot precede evaluation. Training already fits imputation within the training split.")
             else:

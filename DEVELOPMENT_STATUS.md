@@ -138,3 +138,25 @@ The main sidebar has 7 destinations; all available specialist routes remain acce
 
 Verification: 91 automated tests passed; native acceptance in examples/minimal-verified exercises outliers beyond the first page, inline preview/apply/undo, leakage guard, actual training and 3-method comparison, all 18 available routes, multi-question trend/share results, Light/Dark and original-data preservation. Data shown in acceptance captures is explicitly synthetic QA data, not benchmark claims. See docs/PRODUCT_VALUE.md for the product explanation, demonstration and limitations. Existing launcher/source environment and incomplete standalone installer/model persistence limitations remain.
 
+## Expanded training preparation — 26 October 2026
+
+Training now supports five numeric imputation strategies, configurable category filling, seven numeric scale choices including Min–Max and L1/L2 normalization, missing flags, discretization, constant feature removal, F-test selection and PCA. All learned steps remain inside the training split. The supervised registry contains 22 methods (10 classification, 12 regression), including baseline references. Extra controls remain folded and trained results show actual prepared feature evidence. Full suite: 141 passed. See docs/FEATURE_COVERAGE.md for usage, exact scope and remaining Orange/Weka gaps. Root launcher unchanged.
+
+## Orange/Weka audit repairs — 26 October 2026
+
+The task selector, unsaved preparation handoff and small-KNN failure are repaired. Saved preparation is shared with fold-local Advanced evaluation; fitted models can be saved/opened using versioned skops bundles; prediction CSV options, user-selected comparisons, bounded model settings/search, linked scatter selection, two useful workflow nodes and embedded project snapshots are implemented. Full suite: 150 passed. Native source and rebuilt frozen EXE acceptance both pass all nine repair flows. Details and limits: docs/AUDIT_FIXES.md. The root launcher stays unchanged. The portable folder at dist/MLStudio-Research includes its runtime; a clean Windows VM remains an external validation task.
+
+## Quiet Home page — 26 October 2026
+
+Home now uses a flat layout with separators instead of repeated statistic cards, workflow boxes and promotional panels. It retains actual dataset/version/duplicate information, row/column/missing/finding counts, a contextual next step, four working navigation links, recent real experiments and model status. Empty states are explicit. Detailed tools remain accessible. New styles are scoped to Home and reuse Light/Dark/High contrast colors.
+
+Native visual/navigation acceptance passes in examples/home-quiet-verified/result.json, including a compact window without horizontal overflow and unchanged data. Source and portable index.html/home.css/home.js hashes match. This UI-only update does not rebuild or replace either executable; reopening loads the changed assets.
+
+## Student dashboard and evidence upgrade — 26 October 2026
+
+Home now uses one focused dataset surface with real counts, stronger visual hierarchy and a restrained accent rather than the preceding all-flat layout. Ordinary training results include holdout source rows, clickable confusion-cell filtering, a simple baseline, balanced metrics, binary ROC and optional held-out permutation importance. A new prediction workspace supports input/mapping review, class probabilities, preview/export and single-record inference. Saved-model-only prediction and exact project numeric snapshot roundtrip bugs are fixed. Full suite: 155 passed; refreshed contest audit: 46 checks passed in both source and rebuilt frozen EXE. Native Home, new prediction/evaluation, dataset visualization, visual request and research smoke flows pass; the new student/evaluation flow also passes in the frozen runtime. Root launcher remains unchanged. See docs/STUDENT_UPGRADE.md for exact coverage and remaining gaps.
+
+## Reactive canvas and main Visuals — 26 October 2026
+
+Visuals is a main sidebar destination directly below My dataset and combines chart building/questions. Workflow is a main destination with a 16-step searchable library, free-position round nodes, typed drag connections, animated arrows, automatic background computation, branch-local errors, cached outputs and click-to-open settings/output. CSV/table/columns, branch cleaning and deferred preparation, all five chart types, training/comparison/results and training-only prepared output are implemented. Node parameters and incomplete canvases survive project reopen. Full suite: 167 passed; native mouse linking/movement, real preparation/model outputs/export, and existing question/export flows pass. Rebuilt portable EXE passes all nine reactive acceptance checks, including outcome-free preparation preview and subsequent training/results. Root launcher remains unchanged. See docs/REACTIVE_WORKFLOW.md for actual scope and limits.
+

@@ -75,7 +75,7 @@ function studentSoftenPreparation(){if(view.page!=='preprocessing')return;const 
  studentFold(content,'.prep-review .prep-preview-counts','Change summary · records, values and missing entries');
  const pipeline=content.querySelector('.prep-pipeline');if(pipeline){const prep=state.preprocessing?.preparation||{};const labels=[['Numeric gaps','Fill missing numbers'],['Categories','Prepare category labels'],['Scaling','Adjust measurement scales'],['Outliers','Unusual values']];pipeline.querySelectorAll('span').forEach((node,i)=>{const value=node.textContent.split('→').slice(1).join('→').trim();node.innerHTML=`<span class="student-prep-check">${icon('check')}</span><b>${labels[i]?.[1]||''}</b><small>${esc(value)}</small>`;});pipeline.setAttribute('aria-label','Current training preparation plan');}
 }
-function studentSoftenVisuals(){if(view.page!=='analytics')return;
+function studentSoftenVisuals(){if(view.page!=='analytics'&&!(view.page==='dataset_visuals'&&content.querySelector('.requirement-studio')))return;
  studentRename(content,'.panel-head h2',{'Visual summary · Describe what you need':'What would you like to discover?'});
  const intro=content.querySelector('.requirement-studio>.panel-head p');if(intro)intro.textContent='Start with a question or pick an example from your own columns.';
  const matchNote=content.querySelector('#visual-question')?.nextElementSibling;if(matchNote?.classList.contains('hint')){studentFold(content,'.requirement-studio>.panel-body>.hint','How does the question helper work?');}

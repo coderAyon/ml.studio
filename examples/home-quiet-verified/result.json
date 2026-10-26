@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Empty and loaded Home",
+    "No repeated panel/stat cards",
+    "Actual dataset counts and model status",
+    "Quality popup and experiment inspection",
+    "All four workspace links",
+    "Light/Dark/High contrast",
+    "Compact layout without horizontal overflow",
+    "Original data unchanged"
+  ]
+}
