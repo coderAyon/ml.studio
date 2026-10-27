@@ -238,3 +238,6 @@ html[data-motion="reduced"] .preferences-toggle :is(span,span::after),
 html[data-motion="reduced"] .tool-link,
 html[data-motion="reduced"] .tool-link>.icon,
 html[data-motion="reduced"] .quiet-studio :is(.button,.nav-item) { transition: none; }
+
+/* Keep the model action separate from the history/save panels above it. */
+.result-model-action { margin-top: 18px; padding-bottom: 4px; }
