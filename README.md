@@ -238,7 +238,7 @@ Prepare data now includes numeric/category imputation, Min–Max normalization a
 
 ## Latest startup and workflow update
 
-The project-root EXE now shows an animated native splash and reuses an existing application window. The logo orbit and loading sweep remain responsive during ML imports; the splash fades away after the workspace renders. Import CSV nodes require an explicit file/workspace choice, circles are 56px, and the library contains 38 working steps with independent file sources. See [startup and workflow expansion](docs/STARTUP_AND_WORKFLOW_EXPANSION.md) for tools, verification and remaining limits.
+The project-root EXE shows a native splash where Data, Prepare and Model tiles fly into place; it stays visible at least five seconds and fades after the workspace is ready. The app footer status bar is removed. Launch timing, animation frames and repeat-launch activation are verified. Import CSV nodes require an explicit file/workspace choice, circles are 56px, and the library contains 38 working steps with independent file sources. See [startup and workflow expansion](docs/STARTUP_AND_WORKFLOW_EXPANSION.md) for tools, verification and remaining limits.
 
 ## Unified workspace and preparation evidence
 

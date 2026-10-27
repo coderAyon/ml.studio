@@ -10,7 +10,6 @@ html[data-theme="pastel"]:root{
 html[data-theme="pastel"] .student-workspace .app-shell{background:var(--bg)}
 html[data-theme="pastel"] .student-workspace .sidebar{border-right:1px solid #bdc8d8;box-shadow:2px 0 10px #23314c05}
 html[data-theme="pastel"] .student-workspace .topbar{border-bottom:1px solid #bcc8d9;background:#fff}
-html[data-theme="pastel"] .student-workspace .statusbar{border-top:1px solid #c0cbd9;color:#43536b}
 html[data-theme="pastel"] .student-workspace .workspace-switch{background:#f0f3f8;border-color:#bec9d9;box-shadow:0 1px 2px #26364d06}
 html[data-theme="pastel"] .student-workspace .panel{border-radius:12px;border:1px solid #bcc7d7;box-shadow:var(--shadow)}
 html[data-theme="pastel"] .student-workspace .panel-head{background:#f6f8fb;border-bottom:1px solid #ced7e4;border-radius:11px 11px 0 0}

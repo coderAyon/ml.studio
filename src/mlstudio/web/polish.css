@@ -21,7 +21,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;letter-spacing:.01px;line-height:1.
 body .app-shell{background:radial-gradient(ellipse at 95% 0%,color-mix(in srgb,var(--purple-light) 50%,transparent),transparent 60%),var(--bg);color:var(--ink)}
 body .sidebar{background:var(--surface);border-color:var(--border)}
 body .topbar{background:var(--surface);border-color:var(--border);height:62px}
-body .statusbar{background:var(--surface);border-color:var(--border);color:var(--muted)}
 body h1,body h2,body h3,body h4,body b,body strong{color:var(--ink)}
 body h1{font-weight:720;letter-spacing:-.8px}
 body h2,body h3{font-weight:650}
@@ -169,7 +168,7 @@ body .sidebar #navigation{scrollbar-color:var(--border) transparent}
 .appearance-toggle svg{height:18px;width:18px}
 .appearance-settings{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .motion-setting{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}
-.appearance-transition .app-shell,.appearance-transition .sidebar,.appearance-transition .topbar,.appearance-transition .panel,.appearance-transition .stat-card,.appearance-transition .hero,.appearance-transition .statusbar{transition:background-color .22s,color .22s,border-color .22s}
+.appearance-transition .app-shell,.appearance-transition .sidebar,.appearance-transition .topbar,.appearance-transition .panel,.appearance-transition .stat-card,.appearance-transition .hero{transition:background-color .22s,color .22s,border-color .22s}
 body .button,.icon-button{position:relative;overflow:hidden;isolation:isolate}
 .press-wave{position:absolute;border-radius:50%;width:15px;height:15px;pointer-events:none;background:currentColor;opacity:.13;z-index:-1}
 html[data-motion="reduced"] *,html[data-motion="reduced"] *:before,html[data-motion="reduced"] *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}

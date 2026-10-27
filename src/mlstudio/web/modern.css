@@ -56,7 +56,7 @@ html:root body.quiet-studio {
 }
 html:root .quiet-studio :is(h1,h2,h3,h4) { color: var(--ink); }
 html:root .quiet-studio :is(p,.hint,.subtle) { color: var(--muted); }
-html:root .quiet-studio .app-shell { margin-left: var(--sidebar-width); background: var(--bg); }
+html:root .quiet-studio .app-shell { margin-left: var(--sidebar-width); background: var(--bg); padding-bottom: 0; }
 html:root .quiet-studio .sidebar {
   width: var(--sidebar-width);
   padding: 23px 12px 10px;
@@ -112,7 +112,7 @@ html:root .quiet-studio .icon-button { width: 31px; height: 31px; border-radius:
 html:root .quiet-studio .icon-button .icon { width: 16px; height: 16px; }
 html:root .quiet-studio #remove-dataset { min-height: 30px; padding: 6px 10px; font-size: 10px; background: transparent; color: var(--muted); border-color: var(--border); }
 html:root .quiet-studio #content { max-width: 1536px; padding: 29px 29px 44px; }
-html:root .quiet-studio .statusbar { left: var(--sidebar-width); height: 25px; padding: 0 21px; font-size: 9px; color: var(--muted); background: var(--surface); border-top: 1px solid var(--border); }
+html:root .quiet-studio .toast { bottom: 22px; }
 html:root .quiet-studio .progress-bar { left: var(--sidebar-width); top: 55px; }
 html:root .quiet-studio :is(.page-title,.workspace-header) { margin-bottom: 25px; }
 html:root .quiet-studio :is(.page-title h1,.workspace-header h1,.wf-heading h1) { font-size: 24px; font-weight: 650; line-height: 1.25; letter-spacing: -.8px; }

@@ -28,6 +28,8 @@ class LaunchSplash(QWidget):
         self.frames = 0
         self.reduced_motion = reduced_motion
         self.closing = None
+        self.ready_received = None
+        self.minimum_visible_seconds = 5.0
         self.messages = queue.Queue()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.tick)
@@ -39,7 +41,8 @@ class LaunchSplash(QWidget):
             if message == 'ready':
                 self.stage = 'Your workspace is ready'
                 self.phase = 2
-                self.closing = time.monotonic()
+                if self.ready_received is None:
+                    self.ready_received = time.monotonic()
             elif message == 'close':
                 QApplication.quit()
                 return
@@ -50,6 +53,9 @@ class LaunchSplash(QWidget):
                 self.stage = message[6:]
                 self.phase = 1
         elapsed = time.monotonic() - self.started
+        if (self.ready_received is not None and self.closing is None
+                and elapsed >= self.minimum_visible_seconds):
+            self.closing = time.monotonic()
         opacity = min(1., elapsed / .22)
         if self.closing is not None:
             opacity = max(0., 1. - (time.monotonic() - self.closing) / .25)
@@ -103,7 +109,7 @@ class LaunchSplash(QWidget):
         text((84, 36, 217, 38), 'ML Studio', 24, '#202338', QFont.Weight.DemiBold)
         text((36, 114, 268, 80), 'From data\nto discovery.', 30, '#202338', QFont.Weight.DemiBold)
         text((36, 207, 263, 36), 'Explore, prepare and build.\nOne connected workspace.', 12, '#687086')
-        text((36, 264, 268, 20), self.stage + ('' if self.closing else '…'), 11, '#515b72')
+        text((36, 264, 268, 20), self.stage + ('' if self.ready_received else '…'), 11, '#515b72')
 
         # A decorative miniature workflow, without pretend task completion.
         p.setPen(Qt.PenStyle.NoPen)
@@ -115,23 +121,53 @@ class LaunchSplash(QWidget):
         text((348, 46, 220, 20), 'A LITTLE STRUCTURE. MORE POSSIBILITY.', 8, '#71678c', QFont.Weight.DemiBold)
 
         positions = [(348, 113), (444, 159), (540, 113)]
+        arrival_offsets = [(-10, -52), (44, 64), (20, -60)]
+        arrival_duration = .88
+        arrival_gap = .46
+
+        def arrival(index):
+            if self.reduced_motion:
+                return 1.
+            progress = (t - (.22 + index * arrival_gap)) / arrival_duration
+            progress = min(1., max(0., progress))
+            # Cubic ease-out gives each tile a short, soft landing.
+            return 1. - (1. - progress) ** 3
+
+        node_progress = [arrival(index) for index in range(3)]
+        rendered_positions = [
+            (x + arrival_offsets[index][0] * (1. - node_progress[index]),
+             y + arrival_offsets[index][1] * (1. - node_progress[index]))
+            for index, (x, y) in enumerate(positions)
+        ]
         for index in range(2):
-            x, y = positions[index]
-            nx, ny = positions[index+1]
+            x, y = rendered_positions[index]
+            nx, ny = rendered_positions[index+1]
             path = QPainterPath(QPointF(x+66, y+34))
             path.cubicTo(QPointF(x+86, y+34), QPointF(nx-20, ny+34), QPointF(nx, ny+34))
             p.setBrush(Qt.BrushStyle.NoBrush)
             p.setPen(QPen(QColor('#cec5e8'), 1.5))
-            p.drawPath(path)
+            reveal = min(node_progress[index], node_progress[index + 1])
+            if reveal > 0:
+                segment = QPainterPath(path.pointAtPercent(0))
+                steps = max(2, int(36 * reveal))
+                for step in range(1, steps + 1):
+                    segment.lineTo(path.pointAtPercent(reveal * step / steps))
+                p.drawPath(segment)
             if not self.reduced_motion:
-                lead = (t*.38-index*.25) % 1
+                lead = (t - (.22 + index * arrival_gap)) / arrival_duration
+                lead = min(reveal, max(0., lead))
                 pen = QPen(QColor('#9670ed'), 3)
                 pen.setCapStyle(Qt.PenCapStyle.RoundCap)
                 p.setPen(pen)
-                p.drawLine(path.pointAtPercent(max(0., lead-.22)), path.pointAtPercent(lead))
+                if lead > 0:
+                    p.drawLine(path.pointAtPercent(max(0., lead-.10)), path.pointAtPercent(lead))
 
         for index, ((x, y), name) in enumerate(zip(positions, ['Data', 'Prepare', 'Model'])):
-            pulse = 0. if self.reduced_motion else (1+math.sin(t*2.3-index*1.1))/2
+            progress = node_progress[index]
+            x, y = rendered_positions[index]
+            p.save()
+            p.setOpacity(.28 + .72 * progress)
+            pulse = 0. if self.reduced_motion or progress < 1 else (1+math.sin((t-2.1)*2.3-index*1.1))/2
             p.setBrush(QColor('#ffffff'))
             border = QColor('#d9d0ed')
             border.setAlphaF(.55+.45*pulse)
@@ -159,6 +195,7 @@ class LaunchSplash(QWidget):
                     p.drawRect(QRectF(ix+dx-2, iy+dy-2, 4, 4))
             text((x+3, y+40, 60, 19), name, 10, '#55466e', QFont.Weight.DemiBold,
                  Qt.AlignmentFlag.AlignCenter)
+            p.restore()
 
         # Small abstract chart strokes give the composition a data texture.
         p.setPen(QPen(QColor('#d8d2e8'), 1))
@@ -171,21 +208,6 @@ class LaunchSplash(QWidget):
             p.setBrush(color)
             p.drawRoundedRect(QRectF(355+index*25, 281-height, 15, height), 2, 2)
 
-        # Indeterminate light sweep; only the real ready message fills it.
-        p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(QColor('#ece8f5'))
-        p.drawRoundedRect(QRectF(36, 299, 247, 3), 1.5, 1.5)
-        if self.closing:
-            p.setBrush(QColor('#8059dc'))
-            p.drawRoundedRect(QRectF(36, 299, 247, 3), 1.5, 1.5)
-        else:
-            x = 36 + ((math.sin(t*1.6)+1)/2)*181
-            sweep = QLinearGradient(x, 0, x+66, 0)
-            sweep.setColorAt(0, QColor('#c5b0f1'))
-            sweep.setColorAt(.5, QColor('#8059dc'))
-            sweep.setColorAt(1, QColor('#c5b0f1'))
-            p.setBrush(sweep)
-            p.drawRoundedRect(QRectF(x, 299, 66, 3), 1.5, 1.5)
         p.end()
 
 

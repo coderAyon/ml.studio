@@ -16,6 +16,7 @@ def run():
     env['MLSTUDIO_SPLASH_EVIDENCE'] = str(out)
     command = [str(root/'.venv/Scripts/pythonw.exe'), str(root/'src/mlstudio/launch_splash.py')]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+    started = time.monotonic()
     process = subprocess.Popen(command, stdin=subprocess.PIPE, env=env, text=True, creationflags=flags)
     try:
         # Deliberately leave the owning thread blocked: the animation must live.
@@ -31,7 +32,11 @@ def run():
         time.sleep(.15)
         process.stdin.write('ready\n')
         process.stdin.flush()
-        assert process.wait(timeout=5) == 0, 'Ready transition did not close the splash'
+        time.sleep(.45)
+        assert process.poll() is None, 'Splash closed before its minimum presentation time'
+        assert process.wait(timeout=4) == 0, 'Ready transition did not close the splash'
+        visible_seconds = time.monotonic() - started
+        assert visible_seconds >= 4.9, f'Splash was only visible for {visible_seconds:.2f}s'
     finally:
         if process.poll() is None:process.kill();process.wait()
         process.stdin.close()
@@ -46,6 +51,7 @@ def run():
         if orphan.poll() is None:orphan.kill();orphan.wait()
     result = {'passed': True, 'frames_during_blocked_owner': report['frames'],
               'rendered_frames_differ': changed, 'reduced_motion': report['reduced_motion'],
+              'minimum_visible_seconds': round(visible_seconds, 2),
               'ready_transition_closes_splash': True, 'owner_exit_closes_splash': True}
     (out/'result.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result))
