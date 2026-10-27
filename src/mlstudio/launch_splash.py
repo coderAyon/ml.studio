@@ -93,23 +93,21 @@ class LaunchSplash(QWidget):
         p.drawRoundedRect(QRectF(8, 8, 644, 334), 10, 10)
 
         # Wordmark and left-aligned type replace the old central orbit.
-        logo = QLinearGradient(36, 36, 72, 72)
+        logo = QLinearGradient(36, 70, 90, 126)
         logo.setColorAt(0, QColor('#9c7cff'))
         logo.setColorAt(1, QColor('#6741d2'))
         p.setBrush(logo)
         p.setPen(Qt.PenStyle.NoPen)
-        p.drawRoundedRect(QRectF(36, 36, 36, 38), 8, 8)
+        p.drawRoundedRect(QRectF(36, 70, 54, 56), 12, 12)
         font = QFont('Georgia')
-        font.setPixelSize(25)
+        font.setPixelSize(37)
         font.setBold(True)
         font.setItalic(True)
         p.setFont(font)
         p.setPen(QColor('#ffffff'))
-        p.drawText(QRectF(36, 35, 36, 38), Qt.AlignmentFlag.AlignCenter, 'ml')
-        text((84, 36, 217, 38), 'ML Studio', 24, '#202338', QFont.Weight.DemiBold)
-        text((36, 114, 268, 80), 'From data\nto discovery.', 30, '#202338', QFont.Weight.DemiBold)
-        text((36, 207, 263, 36), 'Explore, prepare and build.\nOne connected workspace.', 12, '#687086')
-        text((36, 264, 268, 20), self.stage + ('' if self.ready_received else '…'), 11, '#515b72')
+        p.drawText(QRectF(36, 70, 54, 56), Qt.AlignmentFlag.AlignCenter, 'ml')
+        text((105, 70, 205, 56), 'ML Studio', 34, '#202338', QFont.Weight.DemiBold)
+        text((36, 151, 275, 24), 'Your offline machine learning workspace.', 13, '#687086')
 
         # A decorative miniature workflow, without pretend task completion.
         p.setPen(Qt.PenStyle.NoPen)
@@ -118,8 +116,6 @@ class LaunchSplash(QWidget):
         panel.setColorAt(1, QColor('#eeeffa'))
         p.setBrush(panel)
         p.drawRoundedRect(QRectF(326, 26, 300, 292), 8, 8)
-        text((348, 46, 220, 20), 'A LITTLE STRUCTURE. MORE POSSIBILITY.', 8, '#71678c', QFont.Weight.DemiBold)
-
         positions = [(348, 113), (444, 159), (540, 113)]
         arrival_offsets = [(-10, -52), (44, 64), (20, -60)]
         arrival_duration = .88
