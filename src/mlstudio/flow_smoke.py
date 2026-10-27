@@ -46,6 +46,7 @@ def run(output=None):
         f=pd.DataFrame({'x':np.arange(80,dtype=float),'z':np.sin(np.arange(80)),'target':[0,1]*40});f.loc[3,'x']=np.nan
         source=out/'synthetic-flow.csv';f.to_csv(source,index=False)
         QFileDialog.getOpenFileName=lambda *a:(str(source),'')
+        js("flowSelect('1');true")  # Dropping a step keeps the canvas free; inspect on click.
         js("document.querySelector('.wf-settings [data-action=import]').click();true")
         wait_for(w,'state.dataset?.rows===80&&!state.busy');js("studioUI.navigate('workflow');true")
         wait_for(w,"state.flow.outputs['1']?.status==='ready'&&!state.busy")

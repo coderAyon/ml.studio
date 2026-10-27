@@ -21,6 +21,8 @@ def test_prepared_output_is_real_training_only_and_source_unchanged():
     f=frame();original=f.copy(deep=True);engine=FlowEngine()
     result=engine.run(graph(),f,'label','Decision Tree',None,'data-v0')
     r=result['nodes']['4']
+    assert result['nodes']['1']['missing_cells']==1
+    assert result['nodes']['1']['duplicate_rows']==int(f.duplicated().sum())
     assert r['status']=='ready' and r['kind']=='prepared'
     assert r['training_rows']==60 and r['test_rows']==20
     assert r['preparation']['imputation']=='mean' and r['preparation']['scaling']=='minmax'

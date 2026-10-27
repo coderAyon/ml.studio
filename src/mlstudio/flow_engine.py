@@ -122,6 +122,7 @@ class FlowEngine:
             return incoming,{'kind':'comparison','runs':[{'metrics':r.metrics,'metadata':r.metadata} for r in incoming]}
         else:raise ValueError('This connection does not supply the expected output.')
         summary={'kind':'data','rows':len(value.frame),'columns':len(value.frame.columns),'fields':list(value.frame.columns),
+            'missing_cells':int(value.frame.isna().sum().sum()),'duplicate_rows':int(value.frame.duplicated().sum()),
             'numeric':list(value.frame.select_dtypes(include='number').columns),'table':table(value.frame),'preparation':value.preparation,
             'note':'Original values are shown. Learned missing-value filling and scaling are deferred until the training split. Add Prepared output to inspect the transformed training values.'}
         if kind in {'Normalize','Impute missing','Prepare training'}:
