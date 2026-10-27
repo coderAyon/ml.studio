@@ -1,6 +1,7 @@
 {
   "passed": true,
-  "first_exe_launch_seconds": 5.43,
-  "seconds_after_splash": 4.7,
+  "first_exe_launch_seconds": 6.44,
+  "seconds_after_splash": 5.69,
+  "splash_closed_before_ide_reveal": true,
   "second_launch_activated_same_pid": true
 }

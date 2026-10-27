@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "frames_during_blocked_owner": 197,
+  "frames_during_blocked_owner": 191,
   "rendered_frames_differ": true,
   "reduced_motion": false,
   "minimum_visible_seconds": 5.67,

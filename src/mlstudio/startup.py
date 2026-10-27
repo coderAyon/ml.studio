@@ -20,6 +20,15 @@ def splash_message(app, message):
             pass
 
 
+def close_splash_if_running(app):
+    process = getattr(app, 'mlstudio_splash', None)
+    if process is None or process.poll() is not None:
+        return
+    splash_message(app, 'close')
+    # The child owns the fade. This is only a recovery path if it misses IPC.
+    QTimer.singleShot(350, lambda: process.terminate() if process.poll() is None else None)
+
+
 def bootstrap(root):
     if QApplication.instance() is None:QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
     app=QApplication.instance() or QApplication(sys.argv)
@@ -61,6 +70,10 @@ def bootstrap(root):
 
 def ready(window):
     app=QApplication.instance();window.setObjectName('MLStudioMain')
+    splash = getattr(app, 'mlstudio_splash', None)
+    if splash is not None and splash.poll() is None:
+        # Do not reveal the IDE behind its launch cover.
+        window.hide()
     splash_message(app, 'stage:Preparing your workspace')
     # Wait for the actual first UI render, including its local WebChannel data.
     timer = QTimer(window)
@@ -73,10 +86,29 @@ def ready(window):
         if ok:
             timer.stop()
             splash_message(app, 'ready')
-            record_ready(app)
+            # A stuck helper must never remain above the usable IDE window.
+            delay = max(0, int((5.6 - (time.perf_counter()-app.mlstudio_started)) * 1000))
+            QTimer.singleShot(delay, lambda: close_splash_if_running(app))
+            reveal = QTimer(window)
+            reveal.setInterval(40)
+            def show_after_splash_exits():
+                process = getattr(app, 'mlstudio_splash', None)
+                if process is not None and process.poll() is None:
+                    return
+                reveal.stop()
+                window.show()
+                window.raise_()
+                window.activateWindow()
+                record_ready(app)
+            reveal.timeout.connect(show_after_splash_exits)
+            app.mlstudio_reveal_timer = reveal
+            reveal.start()
+            show_after_splash_exits()
         elif time.perf_counter()-app.mlstudio_started > 60:
             timer.stop()
-            splash_message(app, 'close')
+            close_splash_if_running(app)
+            window.show()
+            window.raise_()
     timer.timeout.connect(check)
     timer.start()
 
@@ -86,4 +118,9 @@ def record_ready(app):
     if directory:
         import json
         path=Path(directory);path.mkdir(parents=True,exist_ok=True)
-        (path/'ready.json').write_text(json.dumps({'pid':os.getpid(),'seconds_after_splash':time.perf_counter()-app.mlstudio_started}))
+        splash = getattr(app, 'mlstudio_splash', None)
+        (path/'ready.json').write_text(json.dumps({
+            'pid': os.getpid(), 'splash_pid': splash.pid if splash else None,
+            'splash_closed_at_ready': splash is None or splash.poll() is not None,
+            'seconds_after_splash': time.perf_counter()-app.mlstudio_started
+        }))
