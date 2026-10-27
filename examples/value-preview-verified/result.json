@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "checks": [
+    "Right-side preparation preview",
+    "Exact row 3: original 100 and transformed value",
+    "Original outlier remains marked",
+    "Workflow Normalize shows before/after immediately",
+    "CSV remains unchanged"
+  ],
+  "cell": {
+    "row": 3,
+    "index": "2",
+    "column": "measurement",
+    "before": 100.0,
+    "after": 1.0,
+    "original_outlier": true,
+    "split": "Training"
+  }
+}

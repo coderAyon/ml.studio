@@ -97,7 +97,7 @@ class FlowEngine:
                 value.preparation=validate_preparation({**value.preparation,**overrides},f.columns)
             elif kind in {'Train model','Compare models','Prepared output'}:
                 selected_target=params.get('target') or target;selected_algorithm=params.get('algorithm') or algorithm
-                if kind=='Prepared output':return self.prepared(value,selected_target,selected_algorithm)
+                if kind=='Prepared output':return self.prepared(value,selected_target,selected_algorithm,params)
                 if not selected_target or selected_target not in f:raise ValueError('Choose an outcome column in this step’s settings.')
                 if kind=='Compare models':
                     candidates=params.get('algorithms') or (['Ridge','Decision Tree Regressor','Random Forest Regressor'] if selected_algorithm in REGRESSION else ['Logistic Regression','Decision Tree','Random Forest'])
@@ -121,11 +121,18 @@ class FlowEngine:
             if isinstance(incoming,TrainingResult):return incoming,{'kind':'model','model':{'metrics':incoming.metrics,'metadata':incoming.metadata}}
             return incoming,{'kind':'comparison','runs':[{'metrics':r.metrics,'metadata':r.metadata} for r in incoming]}
         else:raise ValueError('This connection does not supply the expected output.')
-        return value,{'kind':'data','rows':len(value.frame),'columns':len(value.frame.columns),'fields':list(value.frame.columns),
+        summary={'kind':'data','rows':len(value.frame),'columns':len(value.frame.columns),'fields':list(value.frame.columns),
             'numeric':list(value.frame.select_dtypes(include='number').columns),'table':table(value.frame),'preparation':value.preparation,
             'note':'Original values are shown. Learned missing-value filling and scaling are deferred until the training split. Add Prepared output to inspect the transformed training values.'}
+        if kind in {'Normalize','Impute missing','Prepare training'}:
+            try:
+                _,preview=self.prepared(value,target,algorithm,params)
+                summary['comparison']=preview['comparison']
+            except ValueError as exc:
+                summary['preview_error']=str(exc)
+        return value,summary
 
-    def prepared(self,packet,target,algorithm):
+    def prepared(self,packet,target,algorithm,params=None):
         from sklearn.model_selection import train_test_split
         from .training import build_pipeline
         f=packet.frame;p=validate_preparation(packet.preparation,f.columns,target or None)
@@ -148,6 +155,33 @@ class FlowEngine:
         pipeline.fit(x.iloc[train_positions],y.iloc[train_positions] if y is not None else None)
         names=pipeline.get_feature_names_out().tolist();transformed=pipeline.transform(x.iloc[train_positions[:30]])
         prepared=pd.DataFrame(transformed,columns=names)
+        # Preserve positional identity, including holdout rows and duplicate index labels.
+        # This is a display-only transform; downstream evaluation still fits its own plan.
+        from .preprocessing import iqr_evidence,_json_value
+        params=params or {};selected=params.get('preview_row')
+        if selected is not None and (type(selected) is not int or not 1<=selected<=len(f)):
+            raise ValueError('Choose an active row number inside this dataset.')
+        chosen=params.get('preview_column')
+        if chosen and chosen not in numeric:raise ValueError('Choose a numeric input column for value comparison.')
+        flags={c:iqr_evidence(f,c)[0] for c in numeric if not pd.api.types.is_bool_dtype(f[c])}
+        flagged=np.zeros(len(f),dtype=bool)
+        for mask in flags.values():flagged|=mask
+        positions=[selected-1] if selected else list(np.flatnonzero(flagged)[:30])
+        positions+=([] if selected else [i for i in range(len(f)) if i not in positions][:30-len(positions)])
+        comparisons=[]
+        if numeric:
+            numeric_values=pipeline.named_steps['preprocess'].named_transformers_['numeric'].transform(x.iloc[positions][numeric])
+            train_set=set(train_positions.tolist())
+            display_columns=[chosen] if chosen else numeric[:20]
+            for j,pos in enumerate(positions):
+                for c in display_columns:
+                    comparisons.append({'row':int(pos)+1,'index':str(f.index[pos]),'column':c,
+                        'before':_json_value(f[c].iloc[pos]),'after':_json_value(numeric_values[j,numeric.index(c)]),
+                        'original_outlier':bool(flags[c][pos]) if c in flags else False,
+                        'split':'Training' if pos in train_set else 'Holdout'})
+        comparison={'cells':comparisons,'total_rows':len(f),'numeric_columns':numeric,'scaling':p['scaling'],
+            'selected_row':selected,'selected_column':chosen or '',
+            'note':'Same active row before → after numeric preparation. Original IQR outliers appear first and stay marked for tracking. Scaling changes units; it does not remove unusual observations. Statistics fit on training rows only; holdout values may fall outside 0–1. Values shown are before encoding/feature selection/PCA. Up to 30 rows × 20 numeric columns; choose a row and column to inspect any value.'}
         return prepared,{'kind':'prepared','table':table(prepared),'training_rows':len(train_positions),'test_rows':len(test_positions),
-            'output_columns':len(names),'preparation':p,'note':('No outcome selected; all chosen columns are treated as inputs. ' if not target else 'The selected outcome is excluded from inputs. ')+
+            'comparison':comparison,'output_columns':len(names),'preparation':p,'note':('No outcome selected; all chosen columns are treated as inputs. ' if not target else 'The selected outcome is excluded from inputs. ')+
             'Preview of prepared TRAINING rows only (up to 30 rows / 30 inputs shown). Statistics were fitted without holdout rows. No predictor is trained by this preview; this terminal view never sends fitted full-data statistics into evaluation.'}

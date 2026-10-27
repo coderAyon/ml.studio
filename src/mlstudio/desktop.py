@@ -82,6 +82,7 @@ class StudioBridge(QObject):
         self.visual_request_key = None
         self.preprocess_key = None
         self.preprocess_detail = self.preprocess_preview = None
+        self.training_preview = None
         self.dataset_visual_result = self.dataset_visual_figure = self.dataset_visual_key = None
         controller.error_handler = lambda message:self.announce(message,"error")
         controller.statusBar().messageChanged.connect(self.on_status)
@@ -155,6 +156,7 @@ class StudioBridge(QObject):
             self.dataset_visual_key = request_key
         if self.preprocess_key != request_key:
             self.preprocess_detail = self.preprocess_preview = None
+            self.training_preview = None
             self.preprocess_key = request_key
         if self.visual_request_key != request_key:
             self.visual_review = None
@@ -195,7 +197,7 @@ class StudioBridge(QObject):
             "lab": self.lab_result,
             "row_detail": self.row_detail if dataset else None,
             "visual_requests": {"review":self.visual_review,"results":self.visual_results,"batch":self.visual_batch},
-            "preprocessing": {"detail":self.preprocess_detail,"preview":self.preprocess_preview,
+            "preprocessing": {"detail":self.preprocess_detail,"preview":self.preprocess_preview,"training_preview":self.training_preview,
                               "preparation":self.training_preparation()},
             "dataset_visuals": self.dataset_visual_result,
             "predictions":self.predictions.state(),
@@ -347,12 +349,14 @@ class StudioBridge(QObject):
                     self.table_options = {}
                 methods[action]()
             elif action == "configure":
+                self.training_preview=None
                 self.comparison_start = None
                 if data.get("target") in [controller.target.itemText(i) for i in range(controller.target.count())]:
                     controller.target.setCurrentText(data["target"])
                 if data.get("algorithm") in [controller.algorithm.itemText(i) for i in range(controller.algorithm.count())]:
                     controller.algorithm.setCurrentText(data["algorithm"])
             elif action == "preprocess_inspect":
+                self.training_preview=None
                 from .preprocessing import inspect_finding
                 frame=controller.require_data();self.snapshot()
                 issue=next((i for i in controller.issues if i.id==str(data.get('id'))),None)
@@ -362,6 +366,7 @@ class StudioBridge(QObject):
                     self.preprocess_detail['caution'] += " This is the selected outcome column. Changing it changes the labels you are trying to predict; review the source and domain meaning first."
                 self.preprocess_preview=None
             elif action == "preprocess_preview":
+                self.training_preview=None
                 from .preprocessing import preview_change
                 frame=controller.require_data();self.snapshot()
                 self.preprocess_preview=preview_change(frame,data.get('operation'),data.get('column',''),str(data.get('value','')))
@@ -382,11 +387,21 @@ class StudioBridge(QObject):
                 self.preprocess_detail=self.preprocess_preview=None
                 controller.analyze_current()
                 self.announce("Cleaning applied as a new dataset version. Undo is available; your source CSV is preserved.")
+            elif action == "training_preview":
+                from .flow_engine import FlowEngine,Packet
+                from .training_prep import validate_preparation
+                frame=controller.require_data();self.snapshot()
+                if len(frame)>20000 or len(frame.columns)>300:
+                    raise ValueError('Preparation preview supports up to 20,000 rows and 300 columns. Use a smaller extract.')
+                plan=validate_preparation(data.get('preparation',{}),frame.columns,controller.target.currentText())
+                _,result=FlowEngine().prepared(Packet(frame,plan),controller.target.currentText(),controller.algorithm.currentText(),data)
+                self.training_preview=result['comparison']
             elif action == "training_preparation":
                 from .training_prep import validate_preparation
                 frame=controller.require_data()
                 controller.preparation=validate_preparation(data,frame.columns,controller.target.currentText())
                 controller.result=None;self.comparison_start=None
+                self.training_preview=None
                 self.announce("Training preparation saved. It will be fitted only on training rows; your dataset is unchanged.")
             elif action == "visuals":
                 frame = controller.require_data()
