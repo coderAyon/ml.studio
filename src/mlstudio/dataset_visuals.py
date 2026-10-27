@@ -107,12 +107,24 @@ def build_chart(frame,config):
             validmask=frame[columns].replace([np.inf,-np.inf],np.nan).notna().all(axis=1).to_numpy()
             all_positions=np.flatnonzero(validmask)
             chosen=pd.Series(all_positions).sample(n=5000,random_state=42).to_numpy() if len(all_positions)>5000 else all_positions
+            if show and len(all_positions)>5000:
+                # Reserve room for the most extreme flagged observations before sampling.
+                extremes=[i for i in all_positions if mask[i]]
+                centers={c:float(frame[c].median()) for c in columns};spreads={c:max(float(frame[c].quantile(.75)-frame[c].quantile(.25)),1e-12) for c in columns}
+                extremes=sorted(extremes,key=lambda i:max(abs(float(frame[c].iloc[i])-centers[c])/spreads[c] for c in columns),reverse=True)[:50]
+                reserved=set(extremes)
+                chosen=np.asarray(extremes+[int(i) for i in chosen if i not in reserved][:5000-len(extremes)],dtype=int)
             points=frame.iloc[chosen][columns]
             axis.clear();normal=~mask[chosen] if show else np.ones(len(chosen),dtype=bool)
             if normal.any():axis.scatter(points.iloc[normal,0],points.iloc[normal,1],s=point_size,alpha=opacity,color=color,label='Measurements' if show else None)
             flagged=mask[chosen] if show else np.zeros(len(chosen),dtype=bool)
             if flagged.any():axis.scatter(points.iloc[flagged,0],points.iloc[flagged,1],s=point_size*1.4,alpha=min(1,opacity+.2),color='#e06a75',marker='x',label='Flagged by '+rule.upper())
             if flagged.any():axis.legend()
+            if flagged.any():
+                candidates=np.flatnonzero(flagged)
+                ranked=sorted(candidates,key=lambda i:abs(float(points.iloc[i,1])-float(points.iloc[:,1].median()))+abs(float(points.iloc[i,0])-float(points.iloc[:,0].median())),reverse=True)[:3]
+                for i in ranked:
+                    axis.annotate(f'Row {int(chosen[i])+1}: {points.iloc[i,0]:g}, {points.iloc[i,1]:g}',(points.iloc[i,0],points.iloc[i,1]),xytext=(7,8),textcoords='offset points',fontsize=8,color='#a93a25',bbox={'facecolor':'#fff2d9','edgecolor':'#d58a30','alpha':.9,'pad':2})
             axis.set_xlabel(titles['xlabel'] or columns[0]);axis.set_ylabel(titles['ylabel'] or columns[1])
             notes.append(f'{len(chosen):,} complete finite pairs plotted; a deterministic sample is used above 5,000. Outliers are flagged if either axis exceeds its univariate rule, not a multivariate anomaly model.')
         elif kind=='histogram':
@@ -132,6 +144,13 @@ def build_chart(frame,config):
                          showfliers=show,boxprops={'facecolor':color,'alpha':opacity},
                          flierprops={'marker':'o','markerfacecolor':'#df6c7c','markeredgecolor':'#df6c7c','markersize':4,'alpha':.65})
             axis.set_xlabel(titles['xlabel'] or 'Measurement');axis.set_ylabel(titles['ylabel'] or 'Value');axis.tick_params(axis='x',labelrotation=25)
+            if show:
+                for j,(c,series) in enumerate(valid):
+                    _,details=iqr_evidence(frame,c)
+                    unusual=series[(series<details['lower'])|(series>details['upper'])]
+                    for idx in np.argsort(np.abs(unusual.to_numpy()-series.median()))[-2:]:
+                        value=unusual.iloc[idx]
+                        axis.annotate(f'{value:g}',(j+1,value),xytext=(9,2),textcoords='offset points',fontsize=9,color='#a93a25',bbox={'facecolor':'#fff2d9','edgecolor':'#d58a30','alpha':.9,'pad':2})
             notes.append('Boxplot boxes and fliers always use the conventional 1.5 × IQR rule. The separately selected outlier rule affects the flagged-row table, not boxplot geometry.')
         elif kind=='bar':
             for patch in axis.patches:patch.set_facecolor(color);patch.set_alpha(opacity)

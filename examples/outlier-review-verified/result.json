@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": [
+    "Iris row 59 value 200 visibly marked in table",
+    "Full-data summary includes 200 and numeric limits",
+    "Flagged-only filter shows affected active rows",
+    "Cell click shows row/value and IQR evidence",
+    "One-click boxplot labels 200",
+    "Prepare data opens the corresponding outlier finding",
+    "Light and Dark views keep the outlier label",
+    "Dataset unchanged"
+  ],
+  "outlier_rows": 5,
+  "outlier_cells": 5
+}

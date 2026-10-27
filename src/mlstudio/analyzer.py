@@ -1,6 +1,7 @@
 """Deterministic evidence-based quality findings; never modifies data."""
 from dataclasses import asdict, dataclass, field
 import pandas as pd
+import numpy as np
 
 
 @dataclass
@@ -94,6 +95,14 @@ def profile(frame: pd.DataFrame) -> dict:
             for name, value in {"mean": finite.mean(), "median": finite.median(), "std": finite.std(), "min": finite.min(), "max": finite.max(), "q1": finite.quantile(.25), "q3": finite.quantile(.75)}.items():
                 import math
                 item[name] = float(value) if pd.notna(value) and math.isfinite(float(value)) else None
+            from .preprocessing import iqr_evidence,_json_value
+            try:mask,bounds=iqr_evidence(frame,c)
+            except ValueError as exc:
+                mask=np.zeros(len(frame),dtype=bool);bounds={'outlier_count':None,'error':str(exc)}
+            item['outliers']=bounds
+            positions=np.flatnonzero(mask);median=finite.median()
+            ranked=sorted(positions,key=lambda i:abs(float(finite.iloc[i])-float(median)),reverse=True)[:3]
+            item['outlier_examples']=[{'row':int(i)+1,'value':_json_value(s.iloc[i])} for i in ranked]
         item["top_values"] = [{"value": str(k), "count": int(v), "percent": float(v/max(1,len(s))*100)} for k,v in s.value_counts().head(8).items()]
         fields.append(item)
     missing_rows=int(frame.isna().any(axis=1).sum())

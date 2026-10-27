@@ -108,6 +108,14 @@ class StudioBridge(QObject):
             self.comparison_start = None
             frame = controller.dataset.current
             summary = profile(frame)
+            from .preprocessing import iqr_evidence
+            import numpy as np
+            self._outlier_masks={}
+            for field in summary['fields']:
+                if field.get('outliers',{}).get('outlier_count') is not None:
+                    self._outlier_masks[field['name']]=iqr_evidence(frame,field['name'])[0]
+            combined=np.zeros(len(frame),dtype=bool)
+            for mask in self._outlier_masks.values():combined|=mask
             numeric = frame.select_dtypes(include="number")
             distribution = None
             populated = [c for c in numeric if numeric[c].notna().any()]
@@ -118,6 +126,7 @@ class StudioBridge(QObject):
                 distribution = {"column": column, "values": counts.tolist()}
             self._cache = {
                 **summary, "name": Path(controller.source).name, "source": str(controller.source),
+                'outlier_rows':int(combined.sum()),'outlier_cells':sum(int(m.sum()) for m in self._outlier_masks.values()),
                 "version": controller.dataset.index,
                 "preview": json.loads(frame.head(100).to_json(orient="split", date_format="iso")),
                 "missing_cells": int(frame.isna().sum().sum()),
@@ -131,12 +140,21 @@ class StudioBridge(QObject):
             self._cache_key = key
             if self._chart_key != key:self.chart = ""
         result = dict(self._cache)
+        positions=list(range(min(100,len(controller.dataset.current))))
         if self.table_options:
-            frame = controller.dataset.current
+            frame = controller.dataset.current.copy()
+            position_key=object();frame[position_key]=range(len(frame))
+            if self.table_options.get('outliers_only'):
+                import numpy as np
+                column=self.table_options.get('outlier_column')
+                masks=self._outlier_masks
+                mask=masks[column] if column in masks else np.logical_or.reduce(list(masks.values())) if masks else np.zeros(len(frame),dtype=bool)
+                frame=frame.iloc[np.flatnonzero(mask)]
             search = str(self.table_options.get("search", ""))
             if search:
                 mask = pd.Series(False, index=frame.index)
                 for column in frame:
+                    if column is position_key:continue
                     mask |= frame[column].astype("string").str.contains(search, case=False, regex=False, na=False)
                 frame = frame.loc[mask]
             column = self.table_options.get("sort")
@@ -144,8 +162,14 @@ class StudioBridge(QObject):
                 frame = frame.sort_values(column, ascending=not self.table_options.get("descending", False), kind="stable", key=lambda s: s.astype(str) if s.dtype == "object" else s)
             total = len(frame)
             page = min(max(0, int(self.table_options.get("page", 0))), max(0,(total-1)//100))
-            result["preview"] = json.loads(frame.iloc[page*100:(page+1)*100].to_json(orient="split", date_format="iso"))
+            page_frame=frame.iloc[page*100:(page+1)*100].copy()
+            positions=page_frame.pop(position_key).tolist()
+            result["preview"] = json.loads(page_frame.to_json(orient="split", date_format="iso"))
             result["table_page"], result["filtered_rows"] = page, total
+        result['preview']['positions']=[int(i)+1 for i in positions]
+        result['outlier_filter']=bool(self.table_options.get('outliers_only'))
+        result['outlier_column']=self.table_options.get('outlier_column','')
+        result['outlier_marks']=[{'row':int(pos)+1,'column':c} for c,mask in self._outlier_masks.items() for pos in positions if mask[pos]]
         return result
 
     def snapshot(self):
@@ -362,6 +386,14 @@ class StudioBridge(QObject):
                 issue=next((i for i in controller.issues if i.id==str(data.get('id'))),None)
                 if issue is None:raise ValueError("Select a current finding to inspect.")
                 self.preprocess_detail=inspect_finding(frame,asdict(issue))
+                position=data.get('row')
+                if position is not None:
+                    from .preprocessing import _finding_mask,_preview
+                    if type(position) is not int or not 1<=position<=len(frame):raise ValueError('Choose a valid active row.')
+                    mask,_,_,_=_finding_mask(frame,asdict(issue))
+                    if not mask[position-1]:raise ValueError('This row does not match the selected finding. Refresh the table.')
+                    self.preprocess_detail['preview']=_preview(frame,[position-1],issue.columns)
+                    self.preprocess_detail['preview_note']=f'Selected active row {position}. The count above still covers all matching rows.'
                 if controller.target.currentText() in issue.columns:
                     self.preprocess_detail['caution'] += " This is the selected outcome column. Changing it changes the labels you are trying to predict; review the source and domain meaning first."
                 self.preprocess_preview=None
@@ -420,7 +452,7 @@ class StudioBridge(QObject):
                                "missing":bool(pd.isna(row[col])),
                                "infinite":bool(pd.api.types.is_numeric_dtype(frame[col]) and not pd.isna(row[col]) and row[col] in [float('inf'),float('-inf')])} for col in frame]}
             elif action == "table_query":
-                self.table_options = {k:v for k,v in data.items() if k in {"search", "sort", "descending", "page"}}
+                self.table_options = {k:v for k,v in data.items() if k in {"search", "sort", "descending", "page","outliers_only","outlier_column"}}
             elif action == "preferences":
                 if "theme" in data and data["theme"] not in {"pastel","contrast","dark"}:
                     raise ValueError("Choose Light, Dark or High contrast light.")
