@@ -86,7 +86,7 @@ function studentMaintainDisclosures(){content.querySelectorAll('details').forEac
 function studentApply(){if(!state)return;document.body.classList.add('student-workspace');
  const names={home:'Home',data:'Workspace',preprocessing:'Prepare data',analytics:'Charts & questions',models:'Train & compare',results:'My results',advanced:'More tools'};
  document.querySelectorAll('#navigation [data-page]').forEach(button=>{const span=button.querySelector('span');if(span&&names[button.dataset.page])span.textContent=names[button.dataset.page];});
- const caption=document.querySelector('.minimal-nav-caption');if(caption)caption.textContent='LEARN WITH YOUR DATA';const navnote=document.querySelector('.minimal-nav-note');if(navnote)navnote.textContent='Everything you need, one step at a time.';
+ const caption=document.querySelector('.minimal-nav-caption');if(caption)caption.textContent='LEARN WITH YOUR DATA';
  const workspace=document.querySelector('.workspace-switcher strong,.workspace-switcher b');if(workspace)workspace.textContent='My study space';
  const guide=studentPages[view.page],heading=content.querySelector(':scope>.page-title');if(guide&&heading){const h=heading.querySelector('h1'),p=heading.querySelector('p');if(h)h.textContent=guide[0];if(p)p.textContent=guide[1];}
  const homeHeading=content.querySelector('.minimal-home-heading h1');if(homeHeading)homeHeading.textContent=state.dataset?'Let’s explore your data.':'A good question starts here.';
