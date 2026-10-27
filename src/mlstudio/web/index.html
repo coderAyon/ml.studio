@@ -29,13 +29,12 @@
 <body>
   <aside class="sidebar">
     <div class="brand"><span class="brand-mark">m<span>l</span></span><div>ML Studio<small>THE LOCAL WORKSPACE</small></div></div>
-    <div class="workspace-switch"><span class="workspace-avatar">M</span><div>My workspace<small>Personal · Offline</small></div><span class="local-badge">LOCAL</span></div>
     <div class="nav-label">WORKSPACE</div>
     <nav id="navigation" aria-label="Main navigation"></nav>
     <div class="sidebar-bottom"><div class="privacy-card"><span class="online-dot"></span><b>Local by design</b><p>Your data stays on this device.<br>No cloud. No API keys.</p></div><button class="nav-item" data-page="settings"><span data-icon="settings"></span>Settings & help</button><div class="version">ML STUDIO <span id="app-version">0.2.0</span><span class="local-badge">CPU READY</span></div></div>
   </aside>
   <div class="app-shell">
-    <header class="topbar"><div class="breadcrumb"><span data-icon="grid"></span><span>Workspace</span><span class="breadcrumb-separator">/</span><b id="breadcrumb-current">Overview</b></div><div class="topbar-actions"><div class="offline-label"><span class="online-dot"></span>Offline engine</div><button class="icon-button" title="Settings and help" data-page="settings" data-icon="help"></button><span class="avatar">ME</span></div></header>
+    <header class="topbar"><div class="breadcrumb"><span data-icon="grid"></span><span class="breadcrumb-parent">Workspace</span><span class="breadcrumb-separator">/</span><b id="breadcrumb-current">Workspace</b></div><div class="topbar-actions"><div class="offline-label"><span class="online-dot"></span>Offline engine</div></div></header>
     <main id="content" tabindex="-1"><div class="boot-state"><span class="spinner"></span><h2>Preparing your workspace</h2><p>Connecting to your local ML engine…</p></div></main>
     <footer class="statusbar"><span><i class="online-dot"></i><span id="status-text">Starting local engine…</span></span><span id="dataset-status">No dataset loaded</span></footer>
   </div>

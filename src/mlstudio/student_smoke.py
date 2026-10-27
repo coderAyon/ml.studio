@@ -26,7 +26,7 @@ def run():
         return json.loads(js("JSON.stringify(Array.from(document.querySelectorAll('#content [id],#content [data-action],#content [data-config],#content [data-ref],#content [data-request-feature],#content [data-prep-operation],#content [data-prep-issue],#content [data-visual-export],#content [data-health-export],#content [data-tab],#content [data-visual-example]')).map(el=>Array.from(el.attributes).filter(a=>['id','data-action','data-config','data-ref','data-request-feature','data-prep-operation','data-prep-column','data-prep-issue','data-visual-export','data-visual-id','data-health-export','data-tab','data-visual-example'].includes(a.name)).map(a=>a.name+'='+a.value).sort().join('|')).sort())"))
     checks=[]
     assert js("document.body.classList.contains('student-workspace')")
-    assert js("document.getElementById('student-help')!==null")
+    assert js("!document.querySelector('.topbar-actions #student-help')")
     assert js("document.querySelectorAll('#navigation [data-page]').length===7")
     frame=pd.DataFrame({'measurement':np.r_[np.linspace(2,5,119),100.],
                         'category':['A','B']*60,'score':np.linspace(10,100,120),'outcome':[0,1]*60})
@@ -47,7 +47,7 @@ def run():
         assert js("document.querySelector('#content').textContent.length>50")
     checks.append('All 18 pages retain every existing action/input identity after student presentation')
     # Native use of the learning guide, glossary search and keyboard close.
-    js("studioUI.navigate('models');document.getElementById('student-help').click();true")
+    js("studioUI.navigate('settings');document.querySelector('#content #student-help').click();true")
     assert js("document.querySelector('#student-help-panel').getAttribute('role')==='dialog'")
     assert js("document.activeElement.hasAttribute('data-student-close')")
     js("document.getElementById('student-term-search').value='outlier';document.getElementById('student-term-search').dispatchEvent(new Event('input',{bubbles:true}));true")
@@ -60,8 +60,10 @@ def run():
     js("document.querySelector('#student-help-panel').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));true")
     assert js("!document.querySelector('#student-help-overlay')")
     assert js("document.activeElement.id==='student-help'")
-    checks.append('Context help and searchable glossary open, filter, close and restore keyboard focus')
+    assert js("!document.querySelector('.topbar-actions #student-help')")
+    checks.append('Settings learning guide and searchable glossary open, filter, close and restore keyboard focus')
     # The primary training and question controls still execute actual data operations.
+    js("studioUI.navigate('models');true")
     js("document.getElementById('minimal-target').value='outcome';document.getElementById('minimal-target').dispatchEvent(new Event('change',{bubbles:true}));true")
     wait_for(w,"window.appState.target==='outcome'")
     js("document.querySelector('[data-action=simple_train]').click();true")

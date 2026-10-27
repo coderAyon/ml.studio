@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Removed profile/help controls and workspace card across eight routes",
+    "No recent experiments in empty or loaded Workspace",
+    "Single root Workspace breadcrumb",
+    "Settings guide opens and restores keyboard focus",
+    "Dataset table and removal controls remain usable",
+    "Theme toggle works without removed help icon",
+    "Experiment history remains in My results",
+    "Dataset values unchanged"
+  ]
+}

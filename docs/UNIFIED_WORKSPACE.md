@@ -2,9 +2,11 @@
 
 ## Interface
 
-Home and My dataset now share one **Workspace** navigation entry. It opens an import/project entry point before data is loaded, and the actual dataset table afterward. The current file, row/column counts, quality facts, preparation action and recent work appear in the same workspace. Existing links to Home route here. Data, Columns and Changes tabs retain the original explorer, column profiles and transformation history.
+Home and My dataset now share one **Workspace** navigation entry. It opens an import/project entry point before data is loaded, and the actual dataset table afterward. The current file, row/column counts, quality facts and preparation action appear in the workspace. Experiment history and saved work stay in **My results**, with no recent-experiment section on Workspace. Existing links to Home route here. Data, Columns and Changes tabs retain the original explorer, column profiles and transformation history.
 
-Column visibility, custom widths, wrapping, sorting, search, row selection, pagination and full preview remain available. Less frequent table controls are grouped under **Table options**. Outlier totals and flagged-cell labels stay visible; detailed column examples/limits expand on demand. Quick help remains in the top bar instead of repeating a large guide strip on every page.
+Column visibility, custom widths, wrapping, sorting, search, row selection, pagination and full preview remain available. Less frequent table controls are grouped under **Table options**. Outlier totals and flagged-cell labels stay visible; detailed column examples/limits expand on demand. The top bar contains dataset removal, offline status and the theme switch. Profile/avatar and duplicate help controls are removed, as is the sidebar's decorative My workspace/LOCAL box. The learning guide and searchable glossary are available from **Settings & help**. The root breadcrumb displays Workspace once.
+
+Shell cleanup was checked across eight routes with empty/loaded datasets, Light/Dark switching, retained table controls, Settings guide keyboard focus and result-history access. Screenshots and results: `examples/shell-cleanup-verified/`. No dataset values or stored experiments are removed by this presentation change.
 
 Prepare data uses compact finding rows and a useful data-check table instead of the large empty placeholder. Before/after cleaning tables sit side by side when space permits. Counts remain visible; detailed methods, numerical bounds and other settings remain available. Shared panel/header/empty-state styles also simplify the other tools in Light and Dark themes.
 
