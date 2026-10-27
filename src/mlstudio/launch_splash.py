@@ -93,21 +93,23 @@ class LaunchSplash(QWidget):
         p.drawRoundedRect(QRectF(8, 8, 644, 334), 10, 10)
 
         # Wordmark and left-aligned type replace the old central orbit.
-        logo = QLinearGradient(36, 70, 90, 126)
+        logo = QLinearGradient(148, 99, 202, 155)
         logo.setColorAt(0, QColor('#9c7cff'))
         logo.setColorAt(1, QColor('#6741d2'))
         p.setBrush(logo)
         p.setPen(Qt.PenStyle.NoPen)
-        p.drawRoundedRect(QRectF(36, 70, 54, 56), 12, 12)
+        p.drawRoundedRect(QRectF(148, 99, 54, 56), 12, 12)
         font = QFont('Georgia')
         font.setPixelSize(37)
         font.setBold(True)
         font.setItalic(True)
         p.setFont(font)
         p.setPen(QColor('#ffffff'))
-        p.drawText(QRectF(36, 70, 54, 56), Qt.AlignmentFlag.AlignCenter, 'ml')
-        text((105, 70, 205, 56), 'ML Studio', 34, '#202338', QFont.Weight.DemiBold)
-        text((36, 151, 275, 24), 'Your offline machine learning workspace.', 13, '#687086')
+        p.drawText(QRectF(148, 99, 54, 56), Qt.AlignmentFlag.AlignCenter, 'ml')
+        text((36, 169, 278, 42), 'ML Studio', 32, '#202338', QFont.Weight.DemiBold,
+             Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
+        text((36, 221, 278, 22), 'Your offline ML workspace', 13, '#687086',
+             align=Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
 
         # A decorative miniature workflow, without pretend task completion.
         p.setPen(Qt.PenStyle.NoPen)
