@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "frames_during_blocked_owner": 61,
+  "frames_during_blocked_owner": 66,
   "rendered_frames_differ": true,
   "reduced_motion": false,
   "ready_transition_closes_splash": true,

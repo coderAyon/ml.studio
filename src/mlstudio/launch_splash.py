@@ -9,7 +9,7 @@ import threading
 import time
 
 from PySide6.QtCore import QPointF, QRectF, Qt, QTimer
-from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPen, QRadialGradient
+from PySide6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QApplication, QWidget
 
 
@@ -19,11 +19,11 @@ class LaunchSplash(QWidget):
         self.setWindowTitle('ML Studio · Starting')
         self.setWindowFlags(Qt.WindowType.SplashScreen | Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setFixedSize(560, 350)
+        self.setFixedSize(660, 350)
         screen = QApplication.primaryScreen().availableGeometry()
         self.move(screen.center() - self.rect().center())
         self.started = time.monotonic()
-        self.stage = 'Starting your offline engine'
+        self.stage = 'Opening your workspace'
         self.phase = 0
         self.frames = 0
         self.reduced_motion = reduced_motion
@@ -64,71 +64,128 @@ class LaunchSplash(QWidget):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
         t = 0. if self.reduced_motion else time.monotonic() - self.started
-        # Soft outer shadow and a single, carefully bounded surface.
-        for inset in range(8):
-            p.setPen(Qt.PenStyle.NoPen)
-            p.setBrush(QColor(14, 12, 40, 3 + inset))
-            p.drawRoundedRect(QRectF(inset, inset + 3, 560 - 2*inset, 344 - 2*inset), 26, 26)
-        surface = QRectF(8, 8, 544, 330)
-        bg = QLinearGradient(8, 8, 552, 338)
-        bg.setColorAt(0, QColor('#24233e'))
-        bg.setColorAt(1, QColor('#121827'))
-        p.setBrush(bg)
-        p.setPen(QPen(QColor('#45415e'), 1))
-        p.drawRoundedRect(surface, 22, 22)
-        glow = QRadialGradient(QPointF(280, 100), 150)
-        glow.setColorAt(0, QColor(130, 96, 255, 48))
-        glow.setColorAt(1, QColor(130, 96, 255, 0))
-        p.setBrush(glow)
-        p.setPen(Qt.PenStyle.NoPen)
-        p.drawEllipse(QPointF(280, 100), 145, 90)
 
-        # Orbiting signals hint at the app's visual workflow.
-        center = QPointF(280, 97)
-        p.setBrush(Qt.BrushStyle.NoBrush)
-        p.setPen(QPen(QColor('#423d60'), 1))
-        p.drawEllipse(center, 72, 50)
-        for i in range(3):
-            angle = t * .7 + i * math.tau / 3
-            point = QPointF(280 + 72*math.cos(angle), 97 + 50*math.sin(angle))
-            p.setPen(Qt.PenStyle.NoPen)
-            p.setBrush(QColor('#b9a5ff'))
-            p.drawEllipse(point, 3.2, 3.2)
-        logo = QLinearGradient(250, 65, 310, 125)
-        logo.setColorAt(0, QColor('#a78bff'))
-        logo.setColorAt(1, QColor('#6940e2'))
+        def text(rect, value, size, color, weight=QFont.Weight.Normal,
+                 align=Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter):
+            font = QFont('Segoe UI')
+            font.setPixelSize(size)
+            font.setWeight(weight)
+            p.setFont(font)
+            p.setPen(QColor(color))
+            p.drawText(QRectF(*rect), align, value)
+
+        # A landscape launch card with a quiet, nearly square silhouette.
+        p.setPen(Qt.PenStyle.NoPen)
+        for inset in range(8):
+            p.setBrush(QColor(35, 26, 65, 2 + inset))
+            p.drawRoundedRect(QRectF(inset, inset + 3, 660-2*inset, 344-2*inset), 13, 13)
+        background = QLinearGradient(8, 8, 652, 342)
+        background.setColorAt(0, QColor('#ffffff'))
+        background.setColorAt(1, QColor('#fbfaff'))
+        p.setBrush(background)
+        p.setPen(QPen(QColor('#dedde9'), 1))
+        p.drawRoundedRect(QRectF(8, 8, 644, 334), 10, 10)
+
+        # Wordmark and left-aligned type replace the old central orbit.
+        logo = QLinearGradient(36, 36, 72, 72)
+        logo.setColorAt(0, QColor('#9c7cff'))
+        logo.setColorAt(1, QColor('#6741d2'))
         p.setBrush(logo)
-        p.drawRoundedRect(QRectF(250, 67, 60, 60), 17, 17)
-        font = QFont('Georgia', 29, QFont.Weight.Bold)
+        p.setPen(Qt.PenStyle.NoPen)
+        p.drawRoundedRect(QRectF(36, 36, 36, 38), 8, 8)
+        font = QFont('Georgia')
+        font.setPixelSize(25)
+        font.setBold(True)
         font.setItalic(True)
         p.setFont(font)
         p.setPen(QColor('#ffffff'))
-        p.drawText(QRectF(250, 64, 60, 64), Qt.AlignmentFlag.AlignCenter, 'ml')
+        p.drawText(QRectF(36, 35, 36, 38), Qt.AlignmentFlag.AlignCenter, 'ml')
+        text((84, 36, 217, 38), 'ML Studio', 24, '#202338', QFont.Weight.DemiBold)
+        text((36, 114, 268, 80), 'From data\nto discovery.', 30, '#202338', QFont.Weight.DemiBold)
+        text((36, 207, 263, 36), 'Explore, prepare and build.\nOne connected workspace.', 12, '#687086')
+        text((36, 264, 268, 20), self.stage + ('' if self.closing else '…'), 11, '#515b72')
 
-        def label(rect, text, size, color, weight=QFont.Weight.Normal):
-            p.setFont(QFont('Segoe UI', size, weight))
-            p.setPen(QColor(color))
-            p.drawText(QRectF(*rect), Qt.AlignmentFlag.AlignCenter, text)
-
-        label((30, 157, 500, 40), 'ML Studio', 25, '#f5f2ff', QFont.Weight.DemiBold)
-        label((30, 202, 500, 25), 'A little curiosity. Endless possibilities.', 10, '#b9bdd3')
-        label((30, 246, 500, 24), self.stage + ('' if self.closing else '…'), 10, '#dfd9f5')
-
+        # A decorative miniature workflow, without pretend task completion.
         p.setPen(Qt.PenStyle.NoPen)
-        p.setBrush(QColor('#37354f'))
-        p.drawRoundedRect(QRectF(136, 283, 288, 3), 1.5, 1.5)
+        panel = QLinearGradient(326, 26, 626, 318)
+        panel.setColorAt(0, QColor('#f3efff'))
+        panel.setColorAt(1, QColor('#eeeffa'))
+        p.setBrush(panel)
+        p.drawRoundedRect(QRectF(326, 26, 300, 292), 8, 8)
+        text((348, 46, 220, 20), 'A LITTLE STRUCTURE. MORE POSSIBILITY.', 8, '#71678c', QFont.Weight.DemiBold)
+
+        positions = [(348, 113), (444, 159), (540, 113)]
+        for index in range(2):
+            x, y = positions[index]
+            nx, ny = positions[index+1]
+            path = QPainterPath(QPointF(x+66, y+34))
+            path.cubicTo(QPointF(x+86, y+34), QPointF(nx-20, ny+34), QPointF(nx, ny+34))
+            p.setBrush(Qt.BrushStyle.NoBrush)
+            p.setPen(QPen(QColor('#cec5e8'), 1.5))
+            p.drawPath(path)
+            if not self.reduced_motion:
+                lead = (t*.38-index*.25) % 1
+                pen = QPen(QColor('#9670ed'), 3)
+                pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+                p.setPen(pen)
+                p.drawLine(path.pointAtPercent(max(0., lead-.22)), path.pointAtPercent(lead))
+
+        for index, ((x, y), name) in enumerate(zip(positions, ['Data', 'Prepare', 'Model'])):
+            pulse = 0. if self.reduced_motion else (1+math.sin(t*2.3-index*1.1))/2
+            p.setBrush(QColor('#ffffff'))
+            border = QColor('#d9d0ed')
+            border.setAlphaF(.55+.45*pulse)
+            p.setPen(QPen(border, 1))
+            p.drawRoundedRect(QRectF(x, y, 66, 68), 9, 9)
+            p.setPen(QPen(QColor('#8054d5'), 1.3))
+            p.setBrush(Qt.BrushStyle.NoBrush)
+            ix, iy = x+24, y+13
+            if index == 0:
+                p.drawRoundedRect(QRectF(ix, iy, 19, 17), 2, 2)
+                p.drawLine(QPointF(ix, iy+6), QPointF(ix+19, iy+6))
+                p.drawLine(QPointF(ix+7, iy), QPointF(ix+7, iy+17))
+                p.drawLine(QPointF(ix, iy+12), QPointF(ix+19, iy+12))
+            elif index == 1:
+                for row, offset in enumerate([5, 14, 8]):
+                    cy = iy+2+row*6
+                    p.drawLine(QPointF(ix, cy), QPointF(ix+19, cy))
+                    p.setBrush(QColor('#ffffff'))
+                    p.drawRoundedRect(QRectF(ix+offset-2, cy-2, 4, 4), 1, 1)
+            else:
+                for a, b in [((0, 9), (9, 1)), ((0, 9), (9, 17)), ((9, 1), (19, 9)), ((9, 17), (19, 9))]:
+                    p.drawLine(QPointF(ix+a[0], iy+a[1]), QPointF(ix+b[0], iy+b[1]))
+                p.setBrush(QColor('#ffffff'))
+                for dx, dy in [(0, 9), (9, 1), (9, 17), (19, 9)]:
+                    p.drawRect(QRectF(ix+dx-2, iy+dy-2, 4, 4))
+            text((x+3, y+40, 60, 19), name, 10, '#55466e', QFont.Weight.DemiBold,
+                 Qt.AlignmentFlag.AlignCenter)
+
+        # Small abstract chart strokes give the composition a data texture.
+        p.setPen(QPen(QColor('#d8d2e8'), 1))
+        p.drawLine(QPointF(350, 282), QPointF(602, 282))
+        p.setPen(Qt.PenStyle.NoPen)
+        for index, height in enumerate([9, 15, 23, 30, 22, 14, 19, 27, 17, 11]):
+            alpha = .35 if self.reduced_motion else .3+.23*(1+math.sin(t*1.7-index*.4))/2
+            color = QColor('#8d70cf')
+            color.setAlphaF(alpha)
+            p.setBrush(color)
+            p.drawRoundedRect(QRectF(355+index*25, 281-height, 15, height), 2, 2)
+
+        # Indeterminate light sweep; only the real ready message fills it.
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(QColor('#ece8f5'))
+        p.drawRoundedRect(QRectF(36, 299, 247, 3), 1.5, 1.5)
         if self.closing:
-            p.setBrush(QColor('#9c83ff'))
-            p.drawRoundedRect(QRectF(136, 283, 288, 3), 1.5, 1.5)
+            p.setBrush(QColor('#8059dc'))
+            p.drawRoundedRect(QRectF(36, 299, 247, 3), 1.5, 1.5)
         else:
-            x = 136 + ((math.sin(t * 1.6) + 1) / 2) * 216
-            gradient = QLinearGradient(x, 0, x + 72, 0)
-            gradient.setColorAt(0, QColor('#8660ee'))
-            gradient.setColorAt(.5, QColor('#d5c6ff'))
-            gradient.setColorAt(1, QColor('#8660ee'))
-            p.setBrush(gradient)
-            p.drawRoundedRect(QRectF(x, 283, 72, 3), 1.5, 1.5)
-        label((30, 300, 500, 21), 'LOCAL WORKSPACE   ·   ENTIRELY OFFLINE', 8, '#9ba3bd')
+            x = 36 + ((math.sin(t*1.6)+1)/2)*181
+            sweep = QLinearGradient(x, 0, x+66, 0)
+            sweep.setColorAt(0, QColor('#c5b0f1'))
+            sweep.setColorAt(.5, QColor('#8059dc'))
+            sweep.setColorAt(1, QColor('#c5b0f1'))
+            p.setBrush(sweep)
+            p.drawRoundedRect(QRectF(x, 299, 66, 3), 1.5, 1.5)
         p.end()
 
 

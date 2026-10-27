@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "first_exe_launch_seconds": 5.44,
-  "seconds_after_splash": 4.7,
+  "first_exe_launch_seconds": 5.33,
+  "seconds_after_splash": 4.54,
   "second_launch_activated_same_pid": true
 }
