@@ -3,7 +3,7 @@
   "frames_during_blocked_owner": 72,
   "rendered_frames_differ": true,
   "reduced_motion": false,
-  "minimum_visible_seconds": 5.66,
+  "minimum_visible_seconds": 5.64,
   "ready_transition_closes_splash": true,
   "owner_exit_closes_splash": true
 }
