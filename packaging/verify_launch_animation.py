@@ -20,7 +20,8 @@ def run():
     process = subprocess.Popen(command, stdin=subprocess.PIPE, env=env, text=True, creationflags=flags)
     try:
         # Deliberately leave the owning thread blocked: the animation must live.
-        time.sleep(2)
+        # Keep the UI thread blocked through the staged node and chart motion.
+        time.sleep(4.0)
         assert process.poll() is None, 'Splash exited before the IDE was ready'
         report = json.loads((out/'animation.json').read_text())
         assert report['frames'] > 12, report

@@ -93,32 +93,33 @@ class LaunchSplash(QWidget):
         p.drawRoundedRect(QRectF(8, 8, 644, 334), 10, 10)
 
         # Wordmark and left-aligned type replace the old central orbit.
-        logo = QLinearGradient(97, 94, 161, 160)
+        logo = QLinearGradient(75, 94, 139, 160)
         logo.setColorAt(0, QColor('#9c7cff'))
         logo.setColorAt(1, QColor('#6741d2'))
         p.setBrush(logo)
         p.setPen(Qt.PenStyle.NoPen)
-        p.drawRoundedRect(QRectF(97, 94, 64, 66), 14, 14)
+        p.drawRoundedRect(QRectF(75, 94, 64, 66), 14, 14)
         font = QFont('Georgia')
         font.setPixelSize(43)
         font.setBold(True)
         font.setItalic(True)
         p.setFont(font)
         p.setPen(QColor('#ffffff'))
-        p.drawText(QRectF(97, 94, 64, 66), Qt.AlignmentFlag.AlignCenter, 'ml')
-        text((8, 169, 242, 42), 'ML Studio', 34, '#202338', QFont.Weight.DemiBold,
+        p.drawText(QRectF(75, 94, 64, 66), Qt.AlignmentFlag.AlignCenter, 'ml')
+        text((8, 169, 197, 42), 'ML Studio', 34, '#202338', QFont.Weight.DemiBold,
              Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
-        text((8, 221, 242, 22), 'Your offline ML workspace', 13, '#687086',
+        text((8, 221, 197, 22), 'Your offline ML workspace', 13, '#687086',
              align=Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
 
         # A decorative miniature workflow, without pretend task completion.
         p.setPen(Qt.PenStyle.NoPen)
-        panel = QLinearGradient(250, 26, 626, 318)
+        panel = QLinearGradient(205, 26, 626, 318)
         panel.setColorAt(0, QColor('#f3efff'))
         panel.setColorAt(1, QColor('#eeeffa'))
         p.setBrush(panel)
-        p.drawRoundedRect(QRectF(250, 26, 376, 292), 8, 8)
-        positions = [(280, 113), (400, 159), (520, 113)]
+        p.drawRoundedRect(QRectF(205, 26, 421, 292), 8, 8)
+        text((223, 47, 385, 20), 'From data to insight', 11, '#71678c', QFont.Weight.DemiBold)
+        positions = [(230, 113), (380, 159), (530, 113)]
         arrival_offsets = [(-10, -52), (44, 64), (20, -60)]
         arrival_duration = .88
         arrival_gap = .46
@@ -197,14 +198,19 @@ class LaunchSplash(QWidget):
 
         # Small abstract chart strokes give the composition a data texture.
         p.setPen(QPen(QColor('#d8d2e8'), 1))
-        p.drawLine(QPointF(300, 282), QPointF(576, 282))
+        p.drawLine(QPointF(223, 282), QPointF(608, 282))
         p.setPen(Qt.PenStyle.NoPen)
-        for index, height in enumerate([9, 15, 23, 30, 22, 14, 19, 27, 17, 11]):
-            alpha = .35 if self.reduced_motion else .3+.23*(1+math.sin(t*1.7-index*.4))/2
+        for index, final_height in enumerate([9, 15, 23, 30, 22, 14, 19, 27, 17, 11]):
+            if self.reduced_motion:
+                rise = 1.
+            else:
+                progress = min(1., max(0., (t - (1.45 + index * .1)) / .72))
+                rise = 1. - (1. - progress) ** 3
+            height = max(1., final_height * rise)
             color = QColor('#8d70cf')
-            color.setAlphaF(alpha)
+            color.setAlphaF(.42 + .42 * rise)
             p.setBrush(color)
-            p.drawRoundedRect(QRectF(318+index*24, 281-height, 15, height), 2, 2)
+            p.drawRoundedRect(QRectF(273+index*30, 281-height, 15, height), 2, 2)
 
         p.end()
 
@@ -230,7 +236,7 @@ def main():
                 'pid': os.getpid(), 'frames': splash.frames,
                 'reduced_motion': reduced, 'elapsed_seconds': round(time.monotonic()-splash.started, 2)
             }))
-        QTimer.singleShot(1200, capture)
+        QTimer.singleShot(3200, capture)
 
     def read_commands():
         try:
