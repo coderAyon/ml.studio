@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Settings only contains working preferences",
+    "Theme, autosave, reduce-motion and evaluation-budget controls update real state",
+    "Six distinct advanced tools, no Workflow/quality duplicates",
+    "Full quality report accessible in Prepare data",
+    "56px workflow circles retained",
+    "Light, Dark and High contrast screenshots",
+    "No page overflow at 1080x720 across seven main pages",
+    "Dataset values unchanged"
+  ]
+}
