@@ -564,7 +564,9 @@ class MainWindow(QMainWindow):
         if not path:
             path, _ = QFileDialog.getSaveFileName(self, "Save project", "project.mlstudio.json", "ML Studio (*.json)")
         if path:
-            if Path(path).resolve() in {Path(self.source).resolve(), self.store.path.resolve()}:
+            node_sources=[n.get('params',{}).get('path') for n in self.canvas.graph.nodes.values() if n.get('type')=='Dataset' and n.get('params',{}).get('source')=='file']
+            protected={Path(self.source).resolve(),self.store.path.resolve(),*(Path(p).resolve() for p in node_sources if isinstance(p,str) and p)}
+            if Path(path).resolve() in protected:
                 raise ValueError("Choose a new project path to preserve the source CSV.")
             graph = self.canvas.snapshot()
             payload = {"version": 1, "source": str(Path(self.source).resolve()), "fingerprint": hashlib.sha256(Path(self.source).read_bytes()).hexdigest() if Path(self.source).is_file() else None, "import": self.import_options, "operations": self.dataset.log[:self.dataset.index], "workflow": {"nodes": graph.nodes, "edges": graph.edges}, "target": self.target.currentText(), "algorithm": self.algorithm.currentText()}
@@ -633,6 +635,7 @@ class MainWindow(QMainWindow):
 
     def protect_output(self, path):
         protected=[self.source, getattr(self,"active_project_path",None), self.store.path]
+        protected.extend(n.get('params',{}).get('path') for n in self.canvas.graph.nodes.values() if n.get('type')=='Dataset' and n.get('params',{}).get('source')=='file')
         if Path(path).resolve() in [Path(p).resolve() for p in protected if p]:
             raise ValueError("Choose a separate output file to preserve your dataset, saved project and history.")
 
@@ -704,8 +707,8 @@ def main():
     directory = user_directory()
     logging.basicConfig(filename=directory / "mlstudio.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     from .desktop import ModernWindow
-    QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
-    app = QApplication(sys.argv)
+    if QApplication.instance() is None:QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts)
+    app = QApplication.instance() or QApplication(sys.argv)
     app.setStyle("Fusion")
     app.setStyleSheet(THEME)
     if '--flow-smoke' in sys.argv:
@@ -792,4 +795,6 @@ def main():
     if geometry:
         window.restoreGeometry(geometry)
     window.show()
+    from .startup import ready
+    ready(window)
     sys.exit(app.exec())

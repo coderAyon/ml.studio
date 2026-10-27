@@ -1,5 +1,6 @@
 # Compact, user-built workflows
 
+**Latest update:** [Startup and workflow expansion](STARTUP_AND_WORKFLOW_EXPANSION.md) adds explicit independent CSV sources, 56px circles and 38 steps. Earlier size/catalog/source descriptions below document the previous implementation.
 Workflow circles are 72 CSS pixels (previously 104), with names below the icon. Port geometry, arrow endpoints and drop centering use the new size. Existing saved graphs keep their nodes and positions. **New workflow** clears the canvas explicitly; Undo restores the previous graph. Importing a dataset does not add steps. The four-node starter action is removed from the current canvas.
 
 Drag any of the 16 steps from the library. Dropping a step leaves the output inspector closed so the canvas stays free; click a node to inspect its settings and results. Click-to-add remains available as an alternative to dragging.

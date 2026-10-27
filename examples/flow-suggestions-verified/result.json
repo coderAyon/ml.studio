@@ -2,7 +2,7 @@
   "passed": true,
   "checks": [
     "Blank workflow after import",
-    "72px circles and no automatic inspector",
+    "56px circles and no automatic inspector",
     "Native arrow drag opens suggestions without graph mutation",
     "Missing-cell evidence ranks filling first",
     "Native selection adds exactly one connected node",

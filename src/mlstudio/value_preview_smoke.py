@@ -33,7 +33,7 @@ def run():
         js("document.querySelector('.prep-review').scrollIntoView({block:'start'});true")
         QTest.qWait(800)
         w.grab().save(str(out/'preparation-before-after.png'))
-        graph={'nodes':{'1':{'type':'Dataset','position':[50,100]},'2':{'type':'Normalize','position':[300,100],
+        graph={'nodes':{'1':{'type':'Dataset','position':[50,100],'params':{'source':'workspace'}},'2':{'type':'Normalize','position':[300,100],
             'params':{'scaling':'minmax','preview_row':3,'preview_column':'measurement'}}},'edges':[['1','2']]}
         js("studioUI.navigate('workflow');cmd('flow_commit',{graph:"+json.dumps(graph)+",auto:true});true")
         wait_for(w,"state.flow.outputs['2']?.comparison?.selected_row===3&&!state.busy",timeout=60)

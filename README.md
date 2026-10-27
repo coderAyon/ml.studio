@@ -235,3 +235,11 @@ The Orange/Weka audit repairs add reusable trained-model bundles, shared prepara
 
 Prepare data now includes numeric/category imputation, Min–Max normalization and other scale choices, missing flags, discretization, constant input removal, F-test selection and PCA, fitted inside training rows. The model registry contains 22 supervised methods. See [feature coverage](docs/FEATURE_COVERAGE.md) for controls, limits and remaining Orange/Weka gaps; complete parity is not claimed.
 
+
+## Latest startup and workflow update
+
+The project-root EXE now shows an animated native splash and reuses an existing application window. The logo orbit and loading sweep remain responsive during ML imports; the splash fades away after the workspace renders. Import CSV nodes require an explicit file/workspace choice, circles are 56px, and the library contains 38 working steps with independent file sources. See [startup and workflow expansion](docs/STARTUP_AND_WORKFLOW_EXPANSION.md) for tools, verification and remaining limits.
+
+## Unified workspace and preparation evidence
+
+Home and My dataset are merged into Workspace. Compact data checks, background preparation comparisons and a baseline-aware result brief retain the detailed tools behind focused controls. See [unified workspace](docs/UNIFIED_WORKSPACE.md) for behavior, screenshots and the latest 236-test verification.

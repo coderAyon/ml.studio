@@ -17,11 +17,17 @@ class FlowCoordinator(QObject):
     def __init__(self,bridge):
         super().__init__(bridge);self.bridge=bridge;self.engine=FlowEngine();self.public={'nodes':{},'ready':0,'errors':0,'computed':0,'cached':0}
         self.last_signature=None;self.auto=True;self.progress.connect(self.on_progress)
+        self.source_cache={}
 
     def signature(self):
         c=self.bridge.controller;g=c.canvas.snapshot()
         nodes={k:{'type':n['type'],'params':n.get('params',{})} for k,n in g.nodes.items()}
         data=[id(c.dataset),c.dataset.index if c.dataset else None,nodes,g.edges,c.target.currentText(),c.algorithm.currentText(),self.bridge.training_preparation()]
+        for node in g.nodes.values():
+            p=node.get('params',{})
+            if node['type']=='Dataset' and p.get('source')=='file':
+                try:stat=Path(p.get('path','')).stat();data.append([p.get('path'),stat.st_size,stat.st_mtime_ns])
+                except (OSError,TypeError,ValueError):data.append([p.get('path'),'unavailable'])
         return hashlib.sha256(json.dumps(data,sort_keys=True).encode()).hexdigest()
 
     def state(self):
@@ -38,6 +44,26 @@ class FlowCoordinator(QObject):
 
     def command(self,action,data):
         c=self.bridge.controller
+        if action in {'flow_import','flow_use_workspace'}:
+            key=str(data.get('id'));node=c.canvas.graph.nodes.get(key)
+            if not node or node['type']!='Dataset':raise ValueError('Select an Import CSV node first.')
+            if action=='flow_use_workspace':
+                c.require_data();node['params']={'source':'workspace'};self.run();return
+            path,_=QFileDialog.getOpenFileName(self.bridge.parent(),'Choose CSV for this node','','CSV and text (*.csv *.tsv *.txt)')
+            if not path:return
+            from .data import load_csv,DatasetVersions
+            from .analyzer import analyze
+            def read():
+                frame=load_csv(path)
+                if len(frame)>20000 or len(frame.columns)>300:raise ValueError('A workflow CSV supports up to 20,000 rows and 300 columns.')
+                return frame
+            def loaded(frame):
+                node['params']={'source':'file','path':str(Path(path).resolve())}
+                stat=Path(path).stat();self.source_cache[str(Path(path).resolve())]=(stat.st_size,stat.st_mtime_ns,frame)
+                if c.dataset is None:
+                    c.source=path;c.import_options={};c.dataset=DatasetVersions(frame);c.issues=analyze(frame);c.preparation=None;c.refresh_data()
+                self.last_signature=None
+            self.bridge.research._background(read,'CSV selected for this node. Connected steps will update.',loaded);return
         if action=='flow_commit':
             graph=validate_flow(data.get('graph'));c.canvas.restore(graph)
             self.auto=bool(data.get('auto',self.auto))
@@ -75,7 +101,22 @@ class FlowCoordinator(QObject):
         target,algorithm=c.target.currentText(),c.algorithm.currentText();prep=self.bridge.training_preparation()
         dataset_key=(id(c.dataset),c.dataset.index if c.dataset else None)
         def work():
-            try:return self.engine.run(payload,frame,target,algorithm,prep,dataset_key,self.progress.emit,evaluation_error)
+            try:
+                from .data import load_csv
+                sources={};versions={};active_paths=set()
+                for key,node in graph.nodes.items():
+                    p=node.get('params',{})
+                    if node['type']=='Dataset' and p.get('source')=='file':
+                        path=p.get('path','');active_paths.add(path)
+                        try:
+                            stat=Path(path).stat();version=(stat.st_size,stat.st_mtime_ns);cached=self.source_cache.get(path)
+                            data=cached[2] if cached and cached[:2]==version and not force else load_csv(path)
+                            if len(data)>20000 or len(data.columns)>300:raise ValueError('Workflow CSV exceeds 20,000 rows / 300 columns.')
+                            self.source_cache[path]=(*version,data);sources[key]=data;versions[key]=[path,*version,id(data)]
+                        except Exception as exc:sources[key]='CSV unavailable: '+str(exc);versions[key]=[path,'unavailable']
+                self.source_cache={p:v for p,v in self.source_cache.items() if p in active_paths}
+                if force:self.engine.cache.clear()
+                return self.engine.run(payload,frame,target,algorithm,prep,{'workspace':dataset_key,'files':versions},self.progress.emit,evaluation_error,sources,True)
             except Exception as exc:
                 self.engine.values={};self.engine.fitted=[]
                 return {'nodes':{key:{'status':'error','message':str(exc)} for key in graph.nodes},'ready':0,'errors':len(graph.nodes),'computed':0,'cached':0}

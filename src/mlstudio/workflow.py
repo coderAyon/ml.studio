@@ -10,6 +10,10 @@ PORTS.update({'Prepare training':('data','data'),'Compare models':('data','resul
 PORTS.update({kind:('data','data') for kind in ['Data table','Select columns','Impute missing','Normalize']})
 PORTS.update({kind:('data','view') for kind in ['Prepared output','Histogram','Scatter plot','Box plot','Bar chart','Correlation']})
 PORTS['Results']=('result','result')
+PORTS.update({kind:('data','data') for kind in ['Filter rows','Sample rows','Drop missing rows','Rename column','Convert numeric','Trim whitespace','PCA','Select features','Discretize']})
+PORTS.update({kind:('data','view') for kind in ['Statistics','Outlier review']})
+PORTS.update({kind:('data','data') for kind in ['K-Means','DBSCAN','Hierarchical']})
+PORTS.update({kind:('data','result') for kind in ['Decision Tree','Random Forest','SVM','KNN','Naive Bayes','Linear Regression','Ridge','Random Forest Regressor']})
 
 
 @dataclass

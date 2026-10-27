@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ML Studio · Result brief</title><style>body{font:15px system-ui;color:#26334a;max-width:900px;margin:48px auto;padding:0 24px}h1{font-size:28px}table{border-collapse:collapse;width:100%}td,th{padding:12px;text-align:left;border-bottom:1px solid #d7dfeb}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f5fa;padding:18px}li{margin:8px 0}</style></head><body><h1>ML Studio · Result brief</h1><p>Evidence from the fitted model run. Current workspace contents are not substituted for its training dataset.</p><table><tr><th>Method</th><td>Decision Tree</td></tr><tr><th>Outcome</th><td>outcome</td></tr><tr><th>Protocol</th><td>Stratified holdout</td></tr><tr><th>Training records</th><td>90</td></tr><tr><th>Held-out records</th><td>30</td></tr><tr><th>Input columns</th><td>3</td></tr><tr><th>Accuracy</th><td>0.8</td></tr><tr><th>Baseline</th><td>0.5</td></tr><tr><th>Improvement over baseline</th><td>0.30000000000000004</td></tr></table><p>A positive improvement beats the simple baseline on this same holdout. Repeated choices after viewing it need new independent final-test data.</p><h2>Checks to explain</h2><ul><li>Exploratory holdout estimate. Repeated model selection on this holdout biases final performance; reserve independent data for final evaluation.</li></ul><h2>Metrics</h2><pre>{
+  &quot;Accuracy&quot;: 0.8,
+  &quot;Precision (weighted)&quot;: 0.8229665071770335,
+  &quot;Recall (weighted)&quot;: 0.8,
+  &quot;F1 (weighted)&quot;: 0.7963800904977376,
+  &quot;Confusion matrix&quot;: [
+    [
+      10,
+      5
+    ],
+    [
+      1,
+      14
+    ]
+  ],
+  &quot;Class labels&quot;: [
+    &quot;0&quot;,
+    &quot;1&quot;
+  ],
+  &quot;Per-class report&quot;: {
+    &quot;0&quot;: {
+      &quot;precision&quot;: 0.9090909090909091,
+      &quot;recall&quot;: 0.6666666666666666,
+      &quot;f1-score&quot;: 0.7692307692307693,
+      &quot;support&quot;: 15.0
+    },
+    &quot;1&quot;: {
+      &quot;precision&quot;: 0.7368421052631579,
+      &quot;recall&quot;: 0.9333333333333333,
+      &quot;f1-score&quot;: 0.8235294117647058,
+      &quot;support&quot;: 15.0
+    },
+    &quot;accuracy&quot;: 0.8,
+    &quot;macro avg&quot;: {
+      &quot;precision&quot;: 0.8229665071770335,
+      &quot;recall&quot;: 0.8,
+      &quot;f1-score&quot;: 0.7963800904977376,
+      &quot;support&quot;: 30.0
+    },
+    &quot;weighted avg&quot;: {
+      &quot;precision&quot;: 0.8229665071770335,
+      &quot;recall&quot;: 0.8,
+      &quot;f1-score&quot;: 0.7963800904977376,
+      &quot;support&quot;: 30.0
+    }
+  },
+  &quot;ROC-AUC&quot;: 0.8,
+  &quot;Balanced accuracy&quot;: 0.8,
+  &quot;Macro F1&quot;: 0.7963800904977376
+}</pre><h2>Training preparation</h2><pre>{
+  &quot;imputation&quot;: &quot;median&quot;,
+  &quot;scaling&quot;: &quot;robust&quot;,
+  &quot;outliers&quot;: &quot;keep&quot;,
+  &quot;excluded&quot;: [],
+  &quot;constant_value&quot;: 0,
+  &quot;categorical_imputation&quot;: &quot;most_frequent&quot;,
+  &quot;categorical_constant&quot;: &quot;Missing&quot;,
+  &quot;knn_neighbors&quot;: 5,
+  &quot;missing_indicators&quot;: false,
+  &quot;discretization&quot;: &quot;none&quot;,
+  &quot;bins&quot;: 5,
+  &quot;remove_constant&quot;: false,
+  &quot;feature_selection&quot;: &quot;none&quot;,
+  &quot;selection_k&quot;: 10,
+  &quot;pca_components&quot;: 2
+}</pre><p>Training dataset fingerprint: 9a3d054e737f693e9123d1d8e024d58765fa32525862130ca308408589a3b878</p></body></html>

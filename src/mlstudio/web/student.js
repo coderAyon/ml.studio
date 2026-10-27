@@ -84,7 +84,7 @@ function studentSoftenVisuals(){if(view.page!=='analytics'&&!(view.page==='datas
 }
 function studentMaintainDisclosures(){content.querySelectorAll('details').forEach((details,i)=>{const summary=details.querySelector(':scope>summary');if(!summary)return;const key=view.page+'|'+(details.id||summary.textContent.trim())+'|'+i;if(student.disclosures.has(key))details.open=student.disclosures.get(key);details.addEventListener('toggle',()=>{if(details.isConnected)student.disclosures.set(key,details.open);});});}
 function studentApply(){if(!state)return;document.body.classList.add('student-workspace');
- const names={home:'Home',data:'My dataset',preprocessing:'Prepare data',analytics:'Charts & questions',models:'Train & compare',results:'My results',advanced:'More tools'};
+ const names={home:'Home',data:'Workspace',preprocessing:'Prepare data',analytics:'Charts & questions',models:'Train & compare',results:'My results',advanced:'More tools'};
  document.querySelectorAll('#navigation [data-page]').forEach(button=>{const span=button.querySelector('span');if(span&&names[button.dataset.page])span.textContent=names[button.dataset.page];});
  const caption=document.querySelector('.minimal-nav-caption');if(caption)caption.textContent='LEARN WITH YOUR DATA';const navnote=document.querySelector('.minimal-nav-note');if(navnote)navnote.textContent='Everything you need, one step at a time.';
  const workspace=document.querySelector('.workspace-switcher strong,.workspace-switcher b');if(workspace)workspace.textContent='My study space';

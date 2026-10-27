@@ -83,6 +83,8 @@ class StudioBridge(QObject):
         self.preprocess_key = None
         self.preprocess_detail = self.preprocess_preview = None
         self.training_preview = None
+        self.training_comparison = None
+        self.preparation_context = None
         self.dataset_visual_result = self.dataset_visual_figure = self.dataset_visual_key = None
         controller.error_handler = lambda message:self.announce(message,"error")
         controller.statusBar().messageChanged.connect(self.on_status)
@@ -176,12 +178,17 @@ class StudioBridge(QObject):
     def snapshot(self):
         controller = self.controller
         request_key = (id(controller.dataset), controller.dataset.index if controller.dataset else None)
+        context=(request_key,controller.target.currentText(),controller.algorithm.currentText())
+        if self.preparation_context!=context:
+            self.training_preview=self.training_comparison=None
+            self.preparation_context=context
         if self.dataset_visual_key != request_key:
             self.dataset_visual_result = self.dataset_visual_figure = None
             self.dataset_visual_key = request_key
         if self.preprocess_key != request_key:
             self.preprocess_detail = self.preprocess_preview = None
             self.training_preview = None
+            self.training_comparison = None
             self.preprocess_key = request_key
         if self.visual_request_key != request_key:
             self.visual_review = None
@@ -207,6 +214,7 @@ class StudioBridge(QObject):
             "dataset": dataset, "issues": [asdict(issue) for issue in controller.issues],
             "experiments": records[:100], "experiment_count": len(records),
             "model": {"metrics": controller.result.metrics, "metadata": controller.result.metadata} if controller.result else None,
+            "result_brief":self.result_brief(),
             "target": controller.target.currentText(), "algorithm": controller.algorithm.currentText(),
             "algorithms": [controller.algorithm.itemText(i) for i in range(controller.algorithm.count())],
             "regression_algorithms":sorted(REGRESSION),
@@ -222,7 +230,7 @@ class StudioBridge(QObject):
             "lab": self.lab_result,
             "row_detail": self.row_detail if dataset else None,
             "visual_requests": {"review":self.visual_review,"results":self.visual_results,"batch":self.visual_batch},
-            "preprocessing": {"detail":self.preprocess_detail,"preview":self.preprocess_preview,"training_preview":self.training_preview,
+            "preprocessing": {"detail":self.preprocess_detail,"preview":self.preprocess_preview,"training_preview":self.training_preview,"comparison":self.training_comparison,
                               "preparation":self.training_preparation()},
             "dataset_visuals": self.dataset_visual_result,
             "predictions":self.predictions.state(),
@@ -240,6 +248,13 @@ class StudioBridge(QObject):
 
     def announce(self, message, kind="success"):
         self.notice.emit(json.dumps({"kind": kind, "message": message}))
+
+    def result_brief(self):
+        if self.controller.result is None:return None
+        from .result_brief import result_brief
+        brief=result_brief(self.controller.result)
+        brief.pop('metrics',None)  # Detailed metrics already exist in state.model; avoid duplicating large matrices.
+        return brief
 
     def training_preparation(self):
         from .training_prep import validate_preparation
@@ -420,21 +435,39 @@ class StudioBridge(QObject):
                 self.preprocess_detail=self.preprocess_preview=None
                 controller.analyze_current()
                 self.announce("Cleaning applied as a new dataset version. Undo is available; your source CSV is preserved.")
-            elif action == "training_preview":
+            elif action == 'result_brief_export':
+                from .result_brief import brief_html
+                content=brief_html(controller.result)
+                path,_=QFileDialog.getSaveFileName(self.parent(),'Save result brief','result-brief.html','HTML (*.html)')
+                if path:controller.protect_output(path);Path(path).write_text(content,encoding='utf-8');self.announce('Result brief exported from the fitted run’s actual evidence.')
+            elif action in {"training_preview","training_compare_preview"}:
                 from .flow_engine import FlowEngine,Packet
                 from .training_prep import validate_preparation
                 frame=controller.require_data();self.snapshot()
                 if len(frame)>20000 or len(frame.columns)>300:
                     raise ValueError('Preparation preview supports up to 20,000 rows and 300 columns. Use a smaller extract.')
                 plan=validate_preparation(data.get('preparation',{}),frame.columns,controller.target.currentText())
-                _,result=FlowEngine().prepared(Packet(frame,plan),controller.target.currentText(),controller.algorithm.currentText(),data)
-                self.training_preview=result['comparison']
+                target,algorithm=controller.target.currentText(),controller.algorithm.currentText()
+                self.training_preview=None
+                if action=='training_preview':
+                    def work():return FlowEngine().prepared(Packet(frame,plan),target,algorithm,data)[1]['comparison']
+                    def done(value):self.training_preview=value
+                    self.research._background(work,'Preparation preview ready. Your dataset is unchanged.',done)
+                else:
+                    candidate=validate_preparation(data.get('candidate',{}),frame.columns,target);self.training_comparison=None
+                    def work():
+                        engine=FlowEngine()
+                        return {'baseline_plan':plan,'candidate_plan':candidate,'baseline':engine.prepared(Packet(frame,plan),target,algorithm)[1]['comparison'],
+                            'candidate':engine.prepared(Packet(frame,candidate),target,algorithm)[1]['comparison']}
+                    def done(value):self.training_comparison=value
+                    self.research._background(work,'Preparation alternatives compared on the same split. No data or saved plan changed.',done)
             elif action == "training_preparation":
                 from .training_prep import validate_preparation
                 frame=controller.require_data()
                 controller.preparation=validate_preparation(data,frame.columns,controller.target.currentText())
                 controller.result=None;self.comparison_start=None
                 self.training_preview=None
+                self.training_comparison=None
                 self.announce("Training preparation saved. It will be fitted only on training rows; your dataset is unchanged.")
             elif action == "visuals":
                 frame = controller.require_data()

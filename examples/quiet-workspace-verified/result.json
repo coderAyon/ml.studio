@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": [
+    "Home and My dataset merged under Workspace",
+    "Original table controls and column sizing retained",
+    "Compact findings and right-side panel",
+    "Numeric before/after effects cover the active data",
+    "Alternative plans compared on identical splits without saving or changing data",
+    "Candidate plan saves only on explicit choice",
+    "Actual model trains with selected preparation",
+    "Concise result and baseline comparison",
+    "Result brief exports actual run evidence",
+    "Light and Dark visual acceptance"
+  ]
+}

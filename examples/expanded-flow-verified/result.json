@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "checks": [
+    "Import node is empty despite loaded workspace",
+    "Choose CSV is visible without opening settings",
+    "38 real catalog entries",
+    "56px nodes",
+    "Per-node file import keeps existing workspace unchanged",
+    "Two independent data sources retain different row counts",
+    "Column statistics show real values",
+    "Clustering yields cluster labels",
+    "Library search expands collapsed matches"
+  ]
+}

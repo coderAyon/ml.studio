@@ -1,5 +1,6 @@
 # Cross-dataset workspace reliability audit — 27 October 2026
 
+**Latest update:** [Startup and workflow expansion](STARTUP_AND_WORKFLOW_EXPANSION.md) adds explicit independent CSV sources, 56px circles and 38 steps. Earlier size/catalog/source descriptions below document the previous implementation.
 This audit tests general tabular workflows rather than treating one Iris example as evidence that the IDE is complete. It does not claim full Orange/Weka feature parity or that all defects are eliminated.
 
 ## Reproduced and repaired

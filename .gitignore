@@ -20,3 +20,8 @@ examples/preparation-smoke.log
 examples/student-contest-audit/
 examples/student-contest-final/
 examples/portable-audit-verified/
+
+# Per-process startup acceptance markers; keep the compact result only.
+examples/startup-verified/ready.json
+examples/startup-verified/activation.json
+examples/launch-animation-verified/animation.json

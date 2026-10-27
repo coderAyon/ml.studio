@@ -40,14 +40,14 @@ def run(output=None):
         nav=json.loads(js("JSON.stringify(Array.from(document.querySelectorAll('#navigation [data-page]')).map(n=>n.dataset.page))"))
         assert nav[nav.index('data')+1]=='dataset_visuals' and 'analytics' not in nav and 'workflow' in nav
         js("studioUI.navigate('workflow');true")
-        assert js("document.querySelectorAll('[data-flow-kind]').length===16")
+        assert js("document.querySelectorAll('[data-flow-kind]').length===38")
         add('Dataset',60,100)
         assert b.flow.public['nodes']['1']['status']=='waiting'
         f=pd.DataFrame({'x':np.arange(80,dtype=float),'z':np.sin(np.arange(80)),'target':[0,1]*40});f.loc[3,'x']=np.nan
         source=out/'synthetic-flow.csv';f.to_csv(source,index=False)
         QFileDialog.getOpenFileName=lambda *a:(str(source),'')
         js("flowSelect('1');true")  # Dropping a step keeps the canvas free; inspect on click.
-        js("document.querySelector('.wf-settings [data-action=import]').click();true")
+        js("document.querySelector('[data-flow-source=file]').click();true")
         wait_for(w,'state.dataset?.rows===80&&!state.busy');js("studioUI.navigate('workflow');true")
         wait_for(w,"state.flow.outputs['1']?.status==='ready'&&!state.busy")
         add('Impute missing',290,100);connect('1','2')
@@ -59,7 +59,7 @@ def run(output=None):
         js("flowSelect('3');true")
         assert js("document.querySelector('.wf-output').textContent.includes('Prepared training values')")
         capture(w,out,'workflow');(out/'workflow.png').replace(out/'prepared-output-light.png')
-        checks=['Main Visuals navigation and consolidated questions','16 categorized draggable steps','Import node waits until a real CSV is loaded',
+        checks=['Main Visuals navigation and consolidated questions','38 categorized draggable steps','Import node waits until a real CSV is loaded',
                 'Native mouse port drag creates arrows and automatically computes','Real training-only prepared output appears on result click']
         export=out/'prepared.csv';QFileDialog.getSaveFileName=lambda *a:(str(export),'')
         js("document.querySelector('[data-flow-export]').click();true")

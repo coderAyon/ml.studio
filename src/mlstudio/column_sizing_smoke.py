@@ -49,8 +49,8 @@ def run():
         js("document.querySelector('.scalable-table').closest('.table-scroll').scrollLeft=400;render();true")
         assert js("document.querySelector('.scalable-table').closest('.table-scroll').scrollLeft===400")
         js("document.querySelector('.scalable-table').closest('.table-scroll').scrollLeft=0;document.getElementById('column-size-value').value='240';document.querySelector('[data-column-size=apply]').click();document.querySelector('#toast').classList.remove('show');true")
-        js("document.getElementById('column-size-settings').open=true;document.querySelector('.scalable-table').closest('.table-scroll').scrollTop=0;document.getElementById('column-size-settings').scrollIntoView({block:'start'});window.scrollBy(0,-90);true");QTest.qWait(450);w.grab().save(str(out/'custom-width-light.png'))
-        js("cmd('preferences',{theme:'dark'});true");QTest.qWait(400)
+        js("document.getElementById('workspace-table-options')?.setAttribute('open','');document.getElementById('column-size-settings').open=true;document.querySelector('.scalable-table').closest('.table-scroll').scrollTop=0;document.getElementById('column-size-settings').scrollIntoView({block:'start'});window.scrollBy(0,-90);true");w.raise_();w.activateWindow();QTest.qWait(650);w.grab().save(str(out/'custom-width-light.png'))
+        js("cmd('preferences',{theme:'dark'});true");wait_for(w,"state.preferences.theme==='dark'&&document.documentElement.dataset.theme==='dark'");QTest.qWait(700)
         w.grab().save(str(out/'custom-width-dark.png'))
         pd.testing.assert_frame_equal(c.dataset.current,original)
         (out/'result.json').write_text(json.dumps({'passed':True,'columns':31,'rows':245,'native_drag_before':before,'native_drag_after':after,

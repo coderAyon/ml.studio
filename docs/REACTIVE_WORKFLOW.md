@@ -1,5 +1,6 @@
 # Visuals and reactive workflow — 26 October 2026
 
+**Latest update:** [Startup and workflow expansion](STARTUP_AND_WORKFLOW_EXPANSION.md) adds explicit independent CSV sources, 56px circles and 38 steps. Earlier size/catalog/source descriptions below document the previous implementation.
 ## Navigation
 
 **Visuals** is now a full main-sidebar option immediately below **My dataset**. The separate Charts & questions entry is consolidated into Visuals, with **Build a chart** and **Ask a question** tabs. Existing question plans, multiple-question review, manual chart controls, outlier/correlation tools and exports remain available. Old links to Charts & questions redirect to the question tab.

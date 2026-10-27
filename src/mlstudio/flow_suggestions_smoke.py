@@ -39,10 +39,12 @@ def run():
         assert js("Object.keys(state.workflow.nodes).length===0&&!document.querySelector('[data-flow-action=starter]')")
         # HTML5 library drop is synthesized; all subsequent arrow drags use native QTest input.
         js("(()=>{const r=document.querySelector('.wf-canvas').getBoundingClientRect(),d=new DataTransfer();d.setData('application/x-mlstudio-node','Dataset');document.querySelector('.wf-canvas').dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:d,clientX:r.left+100,clientY:r.top+120}));return true})()")
+        wait_for(w,"state.flow.outputs['1']?.status==='waiting'&&!state.busy&&!state.flow.stale")
+        js("cmd('flow_use_workspace',{id:'1'});true")
         wait_for(w,"state.flow.outputs['1']?.status==='ready'&&!state.busy&&!state.flow.stale")
         QTest.qWait(350)
         assert js("Object.keys(state.workflow.nodes).length===1&&!document.querySelector('.wf-inspector')")
-        assert js("Math.round(document.querySelector('.wf-node').getBoundingClientRect().width)===72")
+        assert js("Math.round(document.querySelector('.wf-node').getBoundingClientRect().width)===56")
         pull('1')
         assert js("Object.keys(state.workflow.nodes).length===1&&state.workflow.edges.length===0")
         assert js("document.querySelector('[data-flow-suggest]').dataset.flowSuggest==='Impute missing'")
@@ -67,7 +69,7 @@ def run():
         assert js("document.querySelector('[data-flow-suggest]').dataset.flowSuggest==='Prepared output'")
         js("document.querySelector('#toast').classList.remove('show');true");QTest.qWait(150)
         w.grab().save(str(out/'suggestions-dark.png'))
-        (out/'result.json').write_text(json.dumps({'passed':True,'checks':['Blank workflow after import','72px circles and no automatic inspector',
+        (out/'result.json').write_text(json.dumps({'passed':True,'checks':['Blank workflow after import','56px circles and no automatic inspector',
             'Native arrow drag opens suggestions without graph mutation','Missing-cell evidence ranks filling first','Native selection adds exactly one connected node',
             'Escape cancels without adding nodes','Port compatibility filters model results','New workflow is empty and undo restores nodes',
             'Prepared output is suggested after filling','Light and dark screenshots verified']},indent=2))
