@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "columns": 31,
+  "rows": 245,
+  "native_drag_before": 160.0,
+  "native_drag_after": 250.0,
+  "checks": [
+    "Native header drag adjusts rendered width",
+    "Resize does not sort column",
+    "Width survives sort/page/hide/show",
+    "Exact numeric width",
+    "Compact preset",
+    "Auto-fit long values",
+    "Reset widths",
+    "Horizontal scroll survives render",
+    "Light/Dark screenshots",
+    "Original data unchanged"
+  ]
+}
