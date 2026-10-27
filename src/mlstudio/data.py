@@ -59,7 +59,15 @@ class Transformation:
         for column in self.columns:
             series = result[column]
             if self.operation == "Fill missing":
-                value = series.median() if pd.api.types.is_numeric_dtype(series) else (series.mode().iloc[0] if not series.mode().empty else "Missing")
+                numeric=pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series)
+                if numeric:
+                    value=series.median()
+                    if pd.isna(value):raise ValueError('This numeric column is entirely missing. Choose a constant or training-only filling instead.')
+                    if pd.api.types.is_integer_dtype(series) and not float(value).is_integer():series=series.astype('Float64')
+                else:
+                    mode=series.mode();value=mode.iloc[0] if not mode.empty else 'Missing'
+                    if isinstance(series.dtype,pd.CategoricalDtype) and value not in series.cat.categories:series=series.cat.add_categories([value])
+                    if pd.api.types.is_bool_dtype(series) and mode.empty:raise ValueError('This Boolean column has no observed value. Choose a Boolean value explicitly before filling.')
                 result[column] = series.fillna(value)
             elif self.operation == "Trim whitespace":
                 result[column] = series.map(lambda x: x.strip() if isinstance(x, str) else x)

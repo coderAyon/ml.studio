@@ -1,5 +1,6 @@
 # ML Studio feature coverage — 26 October 2026
 
+**Current reliability update (27 October 2026):** See [WORKSPACE_RELIABILITY_AUDIT.md](WORKSPACE_RELIABILITY_AUDIT.md) for the cross-dataset repairs, current limits and 205-test verification. The inventory below includes historical limitations that have since changed.
 **Update:** The subsequent [audit repairs](AUDIT_FIXES.md) add model save/load, shared Advanced preprocessing, selectable comparison, bounded parameter search, scatter row selection and portable project snapshots. The original inventory below is a historical snapshot; use the repair document for these changed limitations.
 
 This is an implementation inventory, not a claim of complete Orange or Weka compatibility. Their widget/filter catalogs include many specialist tools and extensions. No usability superiority or benchmark superiority has been established.

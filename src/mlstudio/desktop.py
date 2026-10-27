@@ -126,6 +126,7 @@ class StudioBridge(QObject):
                 distribution = {"column": column, "values": counts.tolist()}
             self._cache = {
                 **summary, "name": Path(controller.source).name, "source": str(controller.source),
+                'instance_key':str(id(controller.dataset)),
                 'outlier_rows':int(combined.sum()),'outlier_cells':sum(int(m.sum()) for m in self._outlier_masks.values()),
                 "version": controller.dataset.index,
                 "preview": json.loads(frame.head(100).to_json(orient="split", date_format="iso")),

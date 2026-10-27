@@ -39,6 +39,8 @@ def run():
         js("document.querySelector('.dv-result')?.scrollIntoView({block:'start'});document.querySelector('#toast').classList.remove('show');true")
         QTest.qWait(800);w.grab().save(str(out/'boxplot-200.png'))
         b.dataset_visual_figure.savefig(out/'boxplot-200.svg',bbox_inches='tight')
+        svg=out/'boxplot-200.svg'
+        svg.write_text('\n'.join(line.rstrip() for line in svg.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
         js("studioUI.navigate('data');document.querySelector('[data-outlier-review]').click();true")
         wait_for(w,"state.preprocessing.detail?.title==='Potential outliers'")
         assert 200 in [row[0] for row in b.preprocess_detail['preview']['data']]

@@ -1,5 +1,6 @@
 # ML Studio compared with Orange and Weka
 
+**Current reliability update (27 October 2026):** See [WORKSPACE_RELIABILITY_AUDIT.md](WORKSPACE_RELIABILITY_AUDIT.md) for the cross-dataset repairs, current limits and 205-test verification. The inventory below includes historical limitations that have since changed.
 **Repair update:** This document preserves the original findings. See [AUDIT_FIXES.md](AUDIT_FIXES.md) for subsequent code/UI repairs and current verification evidence.
 
 Audit date: 26 October 2026. Scope: current local source, targeted Python reproductions and the embedded native desktop UI; Orange/Weka behavior checked against official documentation. Orange and Weka were not installed and benchmarked side by side. This audit changes no application behavior. Severity is based on user impact, not algorithm count.

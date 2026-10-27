@@ -73,16 +73,21 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
     preparation=validate_preparation(preparation,frame.columns,target)
     if target not in frame or algorithm not in ALGORITHMS:
         raise ValueError("Select a valid target and algorithm.")
-    if not 8<=len(frame)<=20000 or len(frame.columns)>201:
+    if not frame.columns.is_unique:raise ValueError('Resolve duplicate input column names before training.')
+    if not 8<=len(frame)<=20000:
         raise ValueError("Model Lab supports 8–20,000 rows and up to 200 input features. Use a smaller extract or research validation for a suitable design.")
     if frame[target].isna().any():
         raise ValueError("Target contains missing values. Review these rows before training.")
     x, y = frame.drop(columns=[target,*preparation['excluded']]), frame[target]
+    if len(x.columns)>200:raise ValueError('Model Lab supports at most 200 retained input features. Exclude unused columns in Prepare data.')
     if not len(x.columns):
         raise ValueError("At least one feature is required.")
     regression = algorithm in REGRESSION
+    if pd.api.types.is_numeric_dtype(y) and np.isinf(y.to_numpy(dtype=float,na_value=np.nan)).any():
+        raise ValueError('The outcome contains infinite values. Review and correct it before training.')
     if regression:
-        y = pd.to_numeric(y, errors="raise")
+        try:y = pd.to_numeric(y, errors="raise")
+        except (ValueError,TypeError) as exc:raise ValueError('Regression needs a numeric outcome. Review nonnumeric labels or choose classification.') from exc
         if not np.isfinite(y.to_numpy(dtype=float)).all():raise ValueError("The outcome contains infinite values. Review and correct it before training.")
     elif y.nunique() < 2:
         raise ValueError("Classification requires at least two classes.")
@@ -97,7 +102,11 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
         raise ValueError("Too many encoded category values for the local memory budget. Exclude identifier/high-cardinality columns or use a smaller dataset.")
     if not regression:
         from sklearn.utils.multiclass import type_of_target
-        if type_of_target(y) not in {"binary","multiclass"}:raise ValueError("This outcome contains continuous numbers. Choose Regression to predict a quantity.")
+        try:target_type=type_of_target(y)
+        except (ValueError,TypeError) as exc:raise ValueError('Outcome labels have mixed or unsupported types. Review them or convert the outcome to text in Prepare data.') from exc
+        if target_type not in {'binary','multiclass'}:
+            if target_type.startswith('continuous'):raise ValueError('This outcome contains continuous numbers. Choose Regression to predict a quantity.')
+            raise ValueError('Classification needs discrete category labels. Review this outcome or convert its labels to text in Prepare data.')
         counts=y.value_counts()
         if counts.min()<2:raise ValueError("Each class needs at least two rows for a stratified split. Review rare classes or choose a suitable outcome.")
         if len(counts)>int(np.ceil(len(frame)*test_size)) or len(counts)>len(frame)-int(np.ceil(len(frame)*test_size)):
@@ -179,6 +188,7 @@ def compare(frame: pd.DataFrame, target: str, algorithms: list[str], seed: int =
 def prediction_inputs(result: TrainingResult, frame: pd.DataFrame):
     """Validate the exact input schema and repeat only stateless type conversion."""
     expected = result.metadata["features"]
+    if not frame.columns.is_unique:raise ValueError('Prediction input column names must be unique. Rename repeated columns before predicting.')
     if set(frame.columns) != set(expected):
         missing = sorted(set(expected) - set(frame.columns))
         unexpected = sorted(set(frame.columns) - set(expected))
@@ -189,6 +199,7 @@ def prediction_inputs(result: TrainingResult, frame: pd.DataFrame):
     categorical = transformer.transformers_[1][2]
     for column in numeric:
         frame[column] = pd.to_numeric(frame[column], errors="raise")
+        if np.isinf(frame[column].to_numpy(dtype=float,na_value=np.nan)).any():raise ValueError(f'Prediction input {column} contains infinity. Correct it or use a missing value for the fitted imputer.')
     for column in categorical:
         frame[column] = frame[column].map(lambda v: str(v) if pd.notna(v) else np.nan).astype(object)
     return frame

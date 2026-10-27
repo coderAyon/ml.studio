@@ -212,7 +212,7 @@ def apply_operation(frame, operation, column="", value=""):
             _column(frame, column)
         result = frame.dropna(subset=[column] if column else None).reset_index(drop=True)
     else:
-        global_operation = operation == "Remove duplicates"
+        global_operation = operation in {"Remove duplicates","Select row positions"}
         if not global_operation:
             _column(frame, column)
         result = Transformation(operation, [] if global_operation else [column], value).preview(frame)
@@ -240,6 +240,10 @@ def preview_change(frame, operation, column="", value=""):
         mask = (frame[[column]] if column else frame).isna().any(axis=1).to_numpy(dtype=bool)
     elif operation == "Remove duplicates":
         mask = frame.duplicated(keep="first").to_numpy(dtype=bool)
+    elif operation == 'Select row positions':
+        import json
+        positions=json.loads(value)
+        mask=~np.isin(np.arange(len(frame)),positions)
     elif operation == "Filter rows":
         mask = ~frame[column].astype("string").str.contains(value, regex=False, case=False, na=False).to_numpy(dtype=bool)
     elif operation in {"Drop columns", "Rename column"}:
@@ -251,7 +255,7 @@ def preview_change(frame, operation, column="", value=""):
     if operation == "Cap outliers (IQR)":
         changed_cells = int((~_equal_cells(frame, proposed)).sum())
     affected = np.flatnonzero(mask)
-    aligned = len(frame) == len(proposed)
+    aligned = len(frame) == len(proposed) and operation!='Select row positions'
     preferred_after = [value.strip()] if operation == "Rename column" else columns
     after_positions = affected if aligned else np.arange(min(PREVIEW_LIMIT, len(proposed)))
     types = [{"column": str(c), "before": str(frame[c].dtype), "after": str(proposed[c].dtype)}

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "datasets": [
+    "Mixed numeric/Bengali category with duplicate index labels",
+    "Different categorical-only CSV reusing the same source path",
+    "Nullable integer with missing values"
+  ],
+  "checks": [
+    "Row selection uses active positions",
+    "Keep-selected preview matches apply",
+    "Undo restores full dataset",
+    "Same-path reimport resets old visibility/search/sort/selection",
+    "Category-only dataset trains successfully",
+    "Nullable integer cleaning preview fills exact gaps",
+    "Settings disclose actual tools and limits"
+  ]
+}

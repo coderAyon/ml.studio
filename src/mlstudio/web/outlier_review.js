@@ -3,7 +3,7 @@ const outlierUI={selected:null,key:''};
 const outlierData=renderData;
 renderData=function(){
  const t=document.createElement('template');t.innerHTML=outlierData();const d=state.dataset;if(!d)return t.innerHTML;
- const key=d.source+'|'+d.version;if(outlierUI.key!==key){outlierUI.key=key;outlierUI.selected=null;}
+ const key=d.instance_key+'|'+d.version;if(outlierUI.key!==key){outlierUI.key=key;outlierUI.selected=null;}
  const fields=d.fields.filter(f=>f.outliers?.outlier_count),marks=new Set((d.outlier_marks||[]).map(m=>JSON.stringify([m.row,m.column])));
  const panel=t.content.querySelector('#dataset-search')?.closest('section.panel');
  const summary=document.createElement('section');summary.className='outlier-overview';

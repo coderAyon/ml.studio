@@ -60,8 +60,8 @@ class FlowEngine:
             if kind!='Dataset' and not parent:nodes[key]={'status':'waiting','message':'Connect an input to this step.'};continue
             if kind=='Dataset' and frame is None:nodes[key]={'status':'waiting','message':'Choose a CSV using this step’s Import button.'};continue
             signature=hashlib.sha256(json.dumps([kind,node.get('params',{}),keys.get(parent),str(dataset_key) if kind=='Dataset' else None,
-                target if kind in {'Train model','Compare models','Prepared output'} else None,
-                algorithm if kind in {'Train model','Compare models','Prepared output'} else None,defaults if kind in {'Dataset','Prepare training'} else None,
+                target if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training'} else None,
+                algorithm if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training'} else None,defaults if kind in {'Dataset','Prepare training'} else None,
                 evaluation_error if kind in {'Train model','Compare models','Prepared output'} else None],sort_keys=True).encode()).hexdigest()
             keys[key]=signature
             try:
@@ -127,7 +127,7 @@ class FlowEngine:
             'note':'Original values are shown. Learned missing-value filling and scaling are deferred until the training split. Add Prepared output to inspect the transformed training values.'}
         if kind in {'Normalize','Impute missing','Prepare training'}:
             try:
-                _,preview=self.prepared(value,target,algorithm,params)
+                _,preview=self.prepared(value,target if target in value.frame else '',algorithm,params)
                 summary['comparison']=preview['comparison']
             except ValueError as exc:
                 summary['preview_error']=str(exc)
