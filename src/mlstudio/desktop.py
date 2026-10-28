@@ -93,6 +93,8 @@ class StudioBridge(QObject):
         self.predictions=PredictionWorkspace(self)
         from .flow_controller import FlowCoordinator
         self.flow=FlowCoordinator(self)
+        from .comparison_tools import ComparisonTools
+        self.comparison_tools=ComparisonTools(self)
 
     def on_status(self, message):
         self.last_status = message
@@ -235,6 +237,7 @@ class StudioBridge(QObject):
             "dataset_visuals": self.dataset_visual_result,
             "predictions":self.predictions.state(),
             "flow":self.flow.state(),
+            **self.comparison_tools.state(),
             "preferences": {"theme": controller.settings.value("referenceTheme", "pastel"), "reduce_motion": controller.settings.value("referenceReduceMotion",False,type=bool), "autosave": controller.settings.value("referenceAutosave", False, type=bool), "research_rows":controller.settings.value("researchRowBudget",20000,type=int), "next_storage":controller.settings.value("storageRoot", "")},
         }
 
@@ -330,6 +333,8 @@ class StudioBridge(QObject):
                 self.predictions.command(action,data);self.publish();return
             if action.startswith('flow_'):
                 self.flow.command(action,data);self.publish();return
+            if action in {'association_run','association_export','model_diagnostics_build','model_diagnostics_export','model_diagnostics_image','export_arff'}:
+                self.comparison_tools.command(action,data);self.publish();return
             if action in {"simple_train","simple_compare"}:
                 from .training import ALGORITHMS, compare
                 from .training_prep import assert_evaluation_ready,validate_preparation

@@ -172,7 +172,8 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
         'value':float(np.sqrt(mean_squared_error(y_test,base))) if regression else float(accuracy_score(y_test,base))}
     if not regression:metrics.update({'Balanced accuracy':float(balanced_accuracy_score(y_test,pred)),'Macro F1':float(f1_score(y_test,pred,average='macro',zero_division=0))})
     result=TrainingResult(pipeline, metrics, {"algorithm": algorithm, "target": target, "features": list(x.columns), "preparation":preparation,"tuning":tuning,"fitted_preparation":fitted_preparation_summary(pipeline),"dataset_fingerprint": hashlib.sha256(pd.util.hash_pandas_object(frame, index=True).values.tobytes()).hexdigest(), "parameters": model.get_params(), "seed": seed, "test_size": test_size, "training_rows": len(x_train), "test_rows": len(x_test), "seconds": duration, "protocol": "Stratified holdout" if not regression else "Random holdout", "warnings": warnings})
-    result.metadata.update({'test_positions':test_positions.tolist(),'diagnostics':holdout_details(frame,list(x.columns),test_positions,y_test,pred,pipeline,baseline,regression)})
+    from .data import schema_fingerprint
+    result.metadata.update({'dataset_columns':list(frame.columns),'dataset_schema':schema_fingerprint(frame),'test_positions':test_positions.tolist(),'diagnostics':holdout_details(frame,list(x.columns),test_positions,y_test,pred,pipeline,baseline,regression)})
     return result
 
 

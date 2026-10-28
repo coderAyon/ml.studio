@@ -340,11 +340,11 @@ class MainWindow(QMainWindow):
         return self.dataset.current
 
     def import_csv(self, advanced=False):
-        path, _ = QFileDialog.getOpenFileName(self, "Import dataset", "", "CSV and text (*.csv *.tsv *.txt);;All files (*)")
+        path, _ = QFileDialog.getOpenFileName(self, "Import dataset", "", "CSV / Weka ARFF (*.csv *.tsv *.txt *.arff);;All files (*)")
         if not path:
             return
         options = {"delimiter": None, "encoding": "utf-8-sig", "header": True, "decimal": "."}
-        if advanced:
+        if advanced and Path(path).suffix.lower() != '.arff':
             dialog = QDialog(self)
             dialog.setWindowTitle("CSV import options")
             form = QFormLayout(dialog)
@@ -711,6 +711,15 @@ def main():
     app = QApplication.instance() or QApplication(sys.argv)
     app.setStyle("Fusion")
     app.setStyleSheet(THEME)
+    if '--comparison-smoke' in sys.argv:
+        from .comparison_smoke import run
+        output=Path(sys.argv[sys.argv.index('--comparison-smoke')+1])
+        try:run(output)
+        except Exception:
+            import traceback
+            output.mkdir(parents=True,exist_ok=True)
+            (output/'failure.txt').write_text(traceback.format_exc(),encoding='utf-8');sys.exit(1)
+        return
     if '--flow-smoke' in sys.argv:
         from .flow_smoke import run
         index=sys.argv.index('--flow-smoke')

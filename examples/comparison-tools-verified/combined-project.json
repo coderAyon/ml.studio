@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "source": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\comparison-tools-verified\\synthetic.arff",
+  "fingerprint": "0958507cd70e0c9789e8bf4d0b24049dc6fa5a764b8e11eff04cf2746d95fc1e",
+  "import": {
+    "delimiter": null,
+    "encoding": "utf-8-sig",
+    "header": true,
+    "decimal": "."
+  },
+  "operations": [],
+  "workflow": {
+    "nodes": {
+      "1": {
+        "type": "Dataset",
+        "position": [
+          40.0,
+          100.0
+        ],
+        "params": {
+          "source": "file",
+          "path": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\comparison-tools-verified\\synthetic.arff"
+        }
+      },
+      "2": {
+        "type": "Dataset",
+        "position": [
+          40.0,
+          260.0
+        ],
+        "params": {
+          "source": "file",
+          "path": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\comparison-tools-verified\\extra.csv"
+        }
+      },
+      "3": {
+        "type": "Merge data",
+        "position": [
+          300.0,
+          160.0
+        ],
+        "params": {
+          "left_key": "id",
+          "right_key": "id"
+        }
+      },
+      "4": {
+        "type": "Group by",
+        "position": [
+          500.0,
+          160.0
+        ],
+        "params": {
+          "group": "group"
+        }
+      },
+      "5": {
+        "type": "Pivot table",
+        "position": [
+          700.0,
+          160.0
+        ],
+        "params": {
+          "group": "group",
+          "column": "colour"
+        }
+      },
+      "6": {
+        "type": "Concatenate",
+        "position": [
+          900.0,
+          160.0
+        ],
+        "params": {}
+      }
+    },
+    "edges": [
+      [
+        "1",
+        "3"
+      ],
+      [
+        "2",
+        "3"
+      ],
+      [
+        "3",
+        "4"
+      ],
+      [
+        "3",
+        "5"
+      ],
+      [
+        "1",
+        "6"
+      ],
+      [
+        "2",
+        "6"
+      ]
+    ]
+  },
+  "target": "label",
+  "algorithm": "Logistic Regression",
+  "preparation": null,
+  "embedded_source": {
+    "data": "{\"schema\":{\"fields\":[{\"name\":\"id\",\"type\":\"number\"},{\"name\":\"measurement\",\"type\":\"number\"},{\"name\":\"group\",\"type\":\"string\",\"extDtype\":\"str\"},{\"name\":\"colour\",\"type\":\"string\",\"extDtype\":\"str\"},{\"name\":\"label\",\"type\":\"number\"}],\"pandas_version\":\"1.4.0\"},\"data\":[{\"id\":0.0,\"measurement\":0.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":1.0,\"measurement\":1.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":2.0,\"measurement\":2.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":3.0,\"measurement\":null,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":4.0,\"measurement\":4.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":5.0,\"measurement\":5.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":6.0,\"measurement\":6.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":7.0,\"measurement\":7.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":8.0,\"measurement\":8.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":9.0,\"measurement\":9.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":10.0,\"measurement\":10.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":11.0,\"measurement\":11.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":12.0,\"measurement\":12.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":13.0,\"measurement\":13.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":14.0,\"measurement\":14.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":15.0,\"measurement\":15.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":16.0,\"measurement\":16.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":17.0,\"measurement\":17.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":18.0,\"measurement\":18.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":19.0,\"measurement\":19.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":20.0,\"measurement\":20.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":21.0,\"measurement\":21.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":22.0,\"measurement\":22.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":23.0,\"measurement\":23.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":24.0,\"measurement\":24.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":25.0,\"measurement\":25.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":26.0,\"measurement\":26.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":27.0,\"measurement\":27.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":28.0,\"measurement\":28.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":29.0,\"measurement\":29.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":30.0,\"measurement\":30.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":31.0,\"measurement\":31.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":32.0,\"measurement\":32.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":33.0,\"measurement\":33.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":34.0,\"measurement\":34.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":35.0,\"measurement\":35.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":36.0,\"measurement\":36.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":37.0,\"measurement\":37.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":38.0,\"measurement\":38.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":39.0,\"measurement\":39.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":40.0,\"measurement\":40.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":41.0,\"measurement\":41.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":42.0,\"measurement\":42.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":43.0,\"measurement\":43.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":44.0,\"measurement\":44.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":45.0,\"measurement\":45.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":46.0,\"measurement\":46.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":47.0,\"measurement\":47.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":48.0,\"measurement\":48.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":49.0,\"measurement\":49.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":50.0,\"measurement\":50.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":51.0,\"measurement\":51.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":52.0,\"measurement\":52.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":53.0,\"measurement\":53.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":54.0,\"measurement\":54.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":55.0,\"measurement\":55.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":56.0,\"measurement\":56.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":57.0,\"measurement\":57.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":58.0,\"measurement\":58.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":59.0,\"measurement\":59.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":60.0,\"measurement\":60.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":61.0,\"measurement\":61.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":62.0,\"measurement\":62.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":63.0,\"measurement\":63.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":64.0,\"measurement\":64.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":65.0,\"measurement\":65.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":66.0,\"measurement\":66.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":67.0,\"measurement\":67.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":68.0,\"measurement\":68.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":69.0,\"measurement\":69.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":70.0,\"measurement\":70.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":71.0,\"measurement\":71.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":72.0,\"measurement\":72.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":73.0,\"measurement\":73.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":74.0,\"measurement\":74.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":75.0,\"measurement\":75.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":76.0,\"measurement\":76.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":77.0,\"measurement\":77.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0},{\"id\":78.0,\"measurement\":78.0,\"group\":\"a\",\"colour\":\"red\",\"label\":0.0},{\"id\":79.0,\"measurement\":79.0,\"group\":\"b\",\"colour\":\"blue\",\"label\":1.0}]}",
+    "infinity": [],
+    "floats": [
+      {
+        "column": "id",
+        "dtype": "float64",
+        "data": "AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAACEAAAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQAAAAAAAADRAAAAAAAAANUAAAAAAAAA2QAAAAAAAADdAAAAAAAAAOEAAAAAAAAA5QAAAAAAAADpAAAAAAAAAO0AAAAAAAAA8QAAAAAAAAD1AAAAAAAAAPkAAAAAAAAA/QAAAAAAAAEBAAAAAAACAQEAAAAAAAABBQAAAAAAAgEFAAAAAAAAAQkAAAAAAAIBCQAAAAAAAAENAAAAAAACAQ0AAAAAAAABEQAAAAAAAgERAAAAAAAAARUAAAAAAAIBFQAAAAAAAAEZAAAAAAACARkAAAAAAAABHQAAAAAAAgEdAAAAAAAAASEAAAAAAAIBIQAAAAAAAAElAAAAAAACASUAAAAAAAABKQAAAAAAAgEpAAAAAAAAAS0AAAAAAAIBLQAAAAAAAAExAAAAAAACATEAAAAAAAABNQAAAAAAAgE1AAAAAAAAATkAAAAAAAIBOQAAAAAAAAE9AAAAAAACAT0AAAAAAAABQQAAAAAAAQFBAAAAAAACAUEAAAAAAAMBQQAAAAAAAAFFAAAAAAABAUUAAAAAAAIBRQAAAAAAAwFFAAAAAAAAAUkAAAAAAAEBSQAAAAAAAgFJAAAAAAADAUkAAAAAAAABTQAAAAAAAQFNAAAAAAACAU0AAAAAAAMBTQA=="
+      },
+      {
+        "column": "measurement",
+        "dtype": "float64",
+        "data": "AAAAAAAAAAAAAAAAAADwPwAAAAAAAABAAAAAAAAA+H8AAAAAAAAQQAAAAAAAABRAAAAAAAAAGEAAAAAAAAAcQAAAAAAAACBAAAAAAAAAIkAAAAAAAAAkQAAAAAAAACZAAAAAAAAAKEAAAAAAAAAqQAAAAAAAACxAAAAAAAAALkAAAAAAAAAwQAAAAAAAADFAAAAAAAAAMkAAAAAAAAAzQAAAAAAAADRAAAAAAAAANUAAAAAAAAA2QAAAAAAAADdAAAAAAAAAOEAAAAAAAAA5QAAAAAAAADpAAAAAAAAAO0AAAAAAAAA8QAAAAAAAAD1AAAAAAAAAPkAAAAAAAAA/QAAAAAAAAEBAAAAAAACAQEAAAAAAAABBQAAAAAAAgEFAAAAAAAAAQkAAAAAAAIBCQAAAAAAAAENAAAAAAACAQ0AAAAAAAABEQAAAAAAAgERAAAAAAAAARUAAAAAAAIBFQAAAAAAAAEZAAAAAAACARkAAAAAAAABHQAAAAAAAgEdAAAAAAAAASEAAAAAAAIBIQAAAAAAAAElAAAAAAACASUAAAAAAAABKQAAAAAAAgEpAAAAAAAAAS0AAAAAAAIBLQAAAAAAAAExAAAAAAACATEAAAAAAAABNQAAAAAAAgE1AAAAAAAAATkAAAAAAAIBOQAAAAAAAAE9AAAAAAACAT0AAAAAAAABQQAAAAAAAQFBAAAAAAACAUEAAAAAAAMBQQAAAAAAAAFFAAAAAAABAUUAAAAAAAIBRQAAAAAAAwFFAAAAAAAAAUkAAAAAAAEBSQAAAAAAAgFJAAAAAAADAUkAAAAAAAABTQAAAAAAAQFNAAAAAAACAU0AAAAAAAMBTQA=="
+      },
+      {
+        "column": "label",
+        "dtype": "float64",
+        "data": "AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPwAAAAAAAAAAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAPA/AAAAAAAAAAAAAAAAAADwPw=="
+      }
+    ],
+    "sha256": "c528c89159a4012757e7fdc376594cbe43c79c3a760fa2934e2856dee051d099",
+    "encoding": "typed-v3"
+  }
+}

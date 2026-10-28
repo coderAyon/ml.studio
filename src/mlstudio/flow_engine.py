@@ -7,7 +7,7 @@ import json
 import copy
 import numpy as np
 import pandas as pd
-from .workflow import Graph,PORTS
+from .workflow import Graph,PORTS,MULTI_INPUTS
 from .training import train,compare,TrainingResult,REGRESSION,prediction_inputs
 from .training_prep import validate_preparation
 
@@ -26,6 +26,7 @@ EXTRA=[('Filter rows','Filter rows','Data','filter'),('Sample rows','Sample rows
  ('Select features','Rank/select inputs','Prepare','filter'),('Discretize','Bin measurements','Prepare','layers'),
  ('K-Means','K-Means','Cluster','layers'),('DBSCAN','DBSCAN','Cluster','layers'),('Hierarchical','Hierarchical','Cluster','layers')]
 CATALOG.extend(EXTRA);CATALOG.extend((name,name,'Learn','brain') for name in sorted(LEARNERS));KINDS.update(row[0] for row in CATALOG)
+CATALOG.extend((name,name,'Data','layers') for name in ['Merge data','Concatenate','Group by','Pivot table']);KINDS.update(row[0] for row in CATALOG)
 
 
 def validate_flow(payload):
@@ -85,9 +86,12 @@ class FlowEngine:
                     if isinstance(source_frame,str):nodes[key]={'status':'error','message':source_frame};continue
                 elif choice!='workspace':nodes[key]={'status':'waiting','message':'Click Choose CSV, or explicitly use the current workspace dataset.'};continue
             if progress:progress(key)
-            if parent and nodes[parent]['status']!='ready':
-                message='Click Impute in the connected Missing values step to continue.' if nodes[parent]['status']=='pending' else 'Waiting for the connected step to succeed.'
+            blocked=next((a for a in parents if nodes[a]['status']!='ready'),None)
+            if blocked:
+                message='Click Impute in the connected Missing values step to continue.' if nodes[blocked]['status']=='pending' else 'Waiting for the connected step to succeed.'
                 nodes[key]={'status':'blocked','message':message};continue
+            if kind in MULTI_INPUTS and len(parents)!=2:
+                nodes[key]={'status':'waiting','message':'Connect two data outputs. The first connection is Input 1; the second is Input 2.'};continue
             if kind!='Dataset' and not parent:nodes[key]={'status':'waiting','message':'Connect an input to this step.'};continue
             if kind=='Dataset' and source_frame is None:nodes[key]={'status':'waiting','message':'Choose a CSV using this step’s Import button.'};continue
             if kind=='Dataset' and (len(source_frame)>20000 or len(source_frame.columns)>300):nodes[key]={'status':'error','message':'This source exceeds 20,000 rows / 300 columns. Choose a smaller CSV.'};continue
@@ -95,7 +99,7 @@ class FlowEngine:
             if kind=='Dataset' and isinstance(dataset_key,dict) and 'workspace' in dataset_key:
                 root_key=dataset_key.get('files',{}).get(key) if node.get('params',{}).get('source')=='file' else dataset_key['workspace']
             signature_defaults=validate_preparation(None) if kind=='Dataset' and node.get('params',{}).get('source')=='file' else defaults
-            signature=hashlib.sha256(json.dumps([kind,node.get('params',{}),keys.get(parent),str(root_key) if kind=='Dataset' else None,
+            signature=hashlib.sha256(json.dumps([kind,node.get('params',{}),[keys.get(a) for a in parents],str(root_key) if kind=='Dataset' else None,
                 target if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None,
                 algorithm if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None,signature_defaults if kind in {'Dataset','Prepare training'} else None,
                 evaluation_error if kind in {'Train model','Compare models','Prepared output'} else None],sort_keys=True).encode()).hexdigest()
@@ -117,7 +121,7 @@ class FlowEngine:
                 if signature in self.cache:
                     value,summary=self.cache[signature];summary=copy.deepcopy(summary);summary['cached']=True;cached+=1
                 else:
-                    incoming=values.get(parent)
+                    incoming=[values[a] for a in parents] if kind in MULTI_INPUTS else values.get(parent)
                     self.source_error=source_error
                     node_defaults=validate_preparation(None) if kind=='Dataset' and node.get('params',{}).get('source')=='file' else defaults
                     value,summary=self.compute(kind,incoming,source_frame,target,algorithm,node_defaults,node.get('params',{}))
@@ -133,6 +137,16 @@ class FlowEngine:
 
     def compute(self,kind,incoming,frame,target,algorithm,defaults,params):
         if kind in LEARNERS:params={**params,'algorithm':kind};kind='Train model'
+        if kind in MULTI_INPUTS:
+            from .table_operations import combine_tables
+            if len(incoming)!=2 or any(not isinstance(v,Packet) for v in incoming):raise ValueError('Connect two completed tables.')
+            joined=combine_tables(incoming[0].frame,incoming[1].frame,kind,params)
+            errors=' '.join(v.evaluation_error for v in incoming if v.evaluation_error) or None
+            packet=Packet(joined,validate_preparation(None),errors)
+            return packet,{'kind':'data','rows':len(joined),'columns':len(joined.columns),'fields':list(joined.columns),
+                'missing_cells':int(joined.isna().sum().sum()),'duplicate_rows':int(joined.duplicated().sum()),
+                'numeric':list(joined.select_dtypes(include='number').columns),'table':table(joined),
+                'note':'Input 1 and Input 2 follow connection order. Combined data uses a fresh preparation plan; review missing values, source columns and the outcome before learning.'}
         if kind=='Dataset':value=Packet(frame.copy(deep=True),copy.deepcopy(defaults),getattr(self,'source_error',None))
         elif isinstance(incoming,Packet):
             value=Packet(incoming.frame,copy.deepcopy(incoming.preparation),incoming.evaluation_error);f=value.frame
@@ -141,6 +155,11 @@ class FlowEngine:
                 if not isinstance(columns,list) or not columns or len(columns)!=len(set(columns)) or any(c not in f for c in columns):raise ValueError('Choose one or more distinct existing columns.')
                 value.frame=f[columns].copy();value.preparation['excluded']=[c for c in value.preparation['excluded'] if c in columns]
             elif kind=='Remove duplicates':value.frame=f.drop_duplicates().reset_index(drop=True)
+            elif kind in {'Group by','Pivot table'}:
+                from .table_operations import summarize_table
+                value.frame=summarize_table(f,kind,params)
+                value.evaluation_error='This branch summarizes all source rows. Train and evaluate from a branch before grouping or pivoting.'
+                value.preparation=validate_preparation(None)
             elif kind in {'Filter rows','Drop missing rows','Rename column','Convert numeric','Trim whitespace'}:
                 from .data import Transformation
                 column=params.get('column') or f.columns[0]

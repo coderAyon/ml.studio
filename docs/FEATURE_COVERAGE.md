@@ -1,5 +1,7 @@
 # ML Studio feature coverage — 26 October 2026
 
+**Current audit (28 October 2026):** [Competitor coverage and gap repairs](COMPETITOR_COVERAGE_2026_10_28.md) documents dense ARFF, association rules, held-out diagnostics, two-input table workflows and the remaining differences. The historical gaps below are not the current inventory.
+
 **Current reliability update (27 October 2026):** See [WORKSPACE_RELIABILITY_AUDIT.md](WORKSPACE_RELIABILITY_AUDIT.md) for the cross-dataset repairs, current limits and 205-test verification. The inventory below includes historical limitations that have since changed.
 **Update:** The subsequent [audit repairs](AUDIT_FIXES.md) add model save/load, shared Advanced preprocessing, selectable comparison, bounded parameter search, scatter row selection and portable project snapshots. The original inventory below is a historical snapshot; use the repair document for these changed limitations.
 

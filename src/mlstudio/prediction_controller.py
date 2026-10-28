@@ -33,7 +33,7 @@ class PredictionWorkspace:
         if result is None:raise ValueError('Train or open a saved model first.')
         if action=='prediction_import':
             options=self.bridge.prediction_options(data)
-            path,_=QFileDialog.getOpenFileName(self.bridge.parent(),'Choose prediction CSV','','CSV and text (*.csv *.tsv *.txt)')
+            path,_=QFileDialog.getOpenFileName(self.bridge.parent(),'Choose prediction CSV','','CSV / Weka ARFF (*.csv *.tsv *.txt *.arff)')
             if not path:return
             def read():
                 frame=load_csv(path,**options)

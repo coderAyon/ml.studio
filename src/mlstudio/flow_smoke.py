@@ -40,7 +40,7 @@ def run(output=None):
         nav=json.loads(js("JSON.stringify(Array.from(document.querySelectorAll('#navigation [data-page]')).map(n=>n.dataset.page))"))
         assert nav[nav.index('data')+1]=='dataset_visuals' and 'analytics' not in nav and 'workflow' in nav
         js("studioUI.navigate('workflow');true")
-        assert js("document.querySelectorAll('[data-flow-kind]').length===38")
+        assert js("document.querySelectorAll('[data-flow-kind]').length===42")
         add('Dataset',60,100)
         assert b.flow.public['nodes']['1']['status']=='waiting'
         f=pd.DataFrame({'x':np.arange(80,dtype=float),'z':np.sin(np.arange(80)),'target':[0,1]*40});f.loc[3,'x']=np.nan
@@ -76,7 +76,7 @@ def run(output=None):
         js("flowSelect('3');true")
         assert js("document.querySelector('.wf-output').textContent.includes('Prepared training values')")
         capture(w,out,'workflow');(out/'workflow.png').replace(out/'prepared-output-light.png')
-        checks=['Main Visuals navigation and consolidated questions','38 categorized draggable steps','Import node waits until a real CSV is loaded',
+        checks=['Main Visuals navigation and consolidated questions','42 categorized draggable steps','Import node waits until a real CSV is loaded',
                 'Native mouse port drag creates arrows and updates connected steps',
                 'Missing values selection keeps gaps pending until the right-panel Impute button is clicked',
                 'Explicit Impute fills the preview while preserving the original source',

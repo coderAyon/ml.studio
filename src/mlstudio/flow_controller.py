@@ -49,7 +49,7 @@ class FlowCoordinator(QObject):
             if not node or node['type']!='Dataset':raise ValueError('Select an Import CSV node first.')
             if action=='flow_use_workspace':
                 c.require_data();node['params']={'source':'workspace'};self.run();return
-            path,_=QFileDialog.getOpenFileName(self.bridge.parent(),'Choose CSV for this node','','CSV and text (*.csv *.tsv *.txt)')
+            path,_=QFileDialog.getOpenFileName(self.bridge.parent(),'Choose CSV for this node','','CSV / Weka ARFF (*.csv *.tsv *.txt *.arff)')
             if not path:return
             from .data import load_csv,DatasetVersions
             from .analyzer import analyze

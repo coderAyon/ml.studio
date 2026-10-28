@@ -1,0 +1,5 @@
+If these values occur,Then this value occurs,Rows,Support,Confidence,Lift,Leverage,Conviction
+colour = 'blue',group = 'b',40,0.5,1.0,2.0,0.25,
+colour = 'red',group = 'a',40,0.5,1.0,2.0,0.25,
+group = 'a',colour = 'red',40,0.5,1.0,2.0,0.25,
+group = 'b',colour = 'blue',40,0.5,1.0,2.0,0.25,

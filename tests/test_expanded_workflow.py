@@ -42,7 +42,7 @@ def test_empty_import_does_not_implicitly_use_loaded_workspace_and_sources_are_i
     g['nodes']['1']['params']={'source':'workspace'}
     r=engine.run(g,a,'label','Decision Tree',None,'v0',sources={'2':b},strict_sources=True)
     assert r['nodes']['1']['rows']==120 and r['nodes']['2']['rows']==40
-    assert len(CATALOG)==38 and len({row[0] for row in CATALOG})==38
+    assert len(CATALOG)==42 and len({row[0] for row in CATALOG})==42
 
 
 def test_dirty_workspace_does_not_block_an_independent_fresh_csv_branch():

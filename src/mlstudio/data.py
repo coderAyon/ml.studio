@@ -1,14 +1,31 @@
-"""CSV loading and immutable-by-convention dataset versions."""
+"""CSV/ARFF loading and immutable-by-convention dataset versions."""
 from dataclasses import dataclass
 from pathlib import Path
 import csv
 import pandas as pd
 
 
+def schema_fingerprint(frame):
+    """Column names, dtypes and nominal domains, independently of value hashes."""
+    import hashlib,json
+    schema=[]
+    for name in frame:
+        series=frame[name]
+        item={'name':str(name),'dtype':str(series.dtype)}
+        if isinstance(series.dtype,pd.CategoricalDtype):
+            item.update(ordered=series.cat.ordered,category_dtype=str(series.cat.categories.dtype),
+                categories=[str(value) for value in series.cat.categories])
+        schema.append(item)
+    return hashlib.sha256(json.dumps(schema,sort_keys=True).encode()).hexdigest()
+
+
 def load_csv(path: str, delimiter: str | None = None, encoding: str = "utf-8-sig", header: bool = True, decimal: str = ".") -> pd.DataFrame:
     source = Path(path)
     if source.stat().st_size > 250_000_000:
-        raise ValueError("This release supports CSV files up to 250 MB. Use a smaller extract.")
+        raise ValueError("This release supports dataset files up to 250 MB. Use a smaller extract.")
+    if source.suffix.lower() == '.arff':
+        from .arff_io import load_arff
+        return load_arff(source, encoding=encoding)
     with source.open("r", encoding=encoding, newline="") as handle:
         sample = handle.read(65536)
     if not sample.strip():

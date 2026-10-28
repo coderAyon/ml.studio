@@ -238,7 +238,9 @@ Prepare data now includes numeric/category imputation, Min–Max normalization a
 
 ## Latest startup and workflow update
 
-The project-root EXE shows a native splash where Data, Prepare and Model tiles fly into place; it stays visible at least five seconds and fades after the workspace is ready. The app footer status bar is removed. Launch timing, animation frames and repeat-launch activation are verified. Import CSV nodes require an explicit file/workspace choice, circles are 56px, and the library contains 38 working steps with independent file sources. See [startup and workflow expansion](docs/STARTUP_AND_WORKFLOW_EXPANSION.md) for tools, verification and remaining limits.
+The [28 October competitor coverage audit](docs/COMPETITOR_COVERAGE_2026_10_28.md) adds dense Weka ARFF exchange, association-rule mining, held-out classification/regression diagnostics and Merge/Concatenate/Group/Pivot workflows. The library has 42 working steps. New deeper tools live under More tools and My results. Complete Orange/Weka/add-on parity is not claimed.
+
+The project-root EXE shows a native splash where Data, Prepare and Model tiles fly into place; it stays visible at least five seconds and fades after the workspace is ready. The app footer status bar is removed. Launch timing, animation frames and repeat-launch activation are verified. Import CSV nodes require an explicit file/workspace choice, circles are 56px, and the library contains 42 working steps with independent file sources. See [startup and workflow expansion](docs/STARTUP_AND_WORKFLOW_EXPANSION.md) for tools, verification and remaining limits.
 
 ## Unified workspace and preparation evidence
 
