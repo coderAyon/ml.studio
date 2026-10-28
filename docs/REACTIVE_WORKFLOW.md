@@ -1,6 +1,13 @@
 # Visuals and reactive workflow — 26 October 2026
 
 **Latest update:** [Startup and workflow expansion](STARTUP_AND_WORKFLOW_EXPANSION.md) adds explicit independent CSV sources, 56px circles and 38 steps. Earlier size/catalog/source descriptions below document the previous implementation.
+
+**Missing values update — 28 October 2026:** Connecting or selecting Missing values now shows the original input and missing count. Choose a method and press **Impute** in the right settings panel to produce the filled preview and unlock downstream steps. Auto update and Update workflow do not bypass this button. Changing the method, source, upstream preparation, outcome or algorithm requires another Impute click. Moving nodes and inspecting values do not require it again.
+
+The applied preview shows missing input counts before/after and prioritizes missing rows. Numeric inputs use the selected method; categories use the saved category-filling plan. Outcome and excluded columns remain unchanged and their remaining gaps are reported separately. Export output CSV from this step writes the full filled preview. The original CSV and the branch's raw training data remain intact; model fitting learns its own fill values on training records. The Impute preview performs filling alone, so scaling or feature selection from another step does not obscure the result.
+
+Verification: 60 workflow/value-preview/expanded-tool tests passed, including explicit apply, input/method invalidation, five filling methods and preservation of raw data. Embedded acceptance clicks the actual Impute button, checks pending/applied counts and exports the filled preview. Screenshots: `examples/reactive-flow-verified/missing-values-pending.png` and `missing-values-applied.png`.
+
 ## Navigation
 
 **Visuals** is now a full main-sidebar option immediately below **My dataset**. The separate Charts & questions entry is consolidated into Visuals, with **Build a chart** and **Ask a question** tabs. Existing question plans, multiple-question review, manual chart controls, outlier/correlation tools and exports remain available. Old links to Charts & questions redirect to the question tab.

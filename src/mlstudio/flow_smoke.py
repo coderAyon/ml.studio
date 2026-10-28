@@ -51,7 +51,24 @@ def run(output=None):
         wait_for(w,'state.dataset?.rows===80&&!state.busy');js("studioUI.navigate('workflow');true")
         wait_for(w,"state.flow.outputs['1']?.status==='ready'&&!state.busy")
         add('Impute missing',290,100);connect('1','2')
+        wait_for(w,"state.flow.outputs['2']?.status==='pending'")
+        assert b.flow.public['nodes']['2']['missing_cells']==1
+        js("flowSelect('2');true")
+        pause(450)
+        assert b.flow.public['nodes']['2']['status']=='pending'
+        assert 'comparison' not in b.flow.public['nodes']['2']
+        assert js("!!document.querySelector('[data-flow-impute=\"2\"]')&&!document.querySelector('[data-flow-impute=\"2\"]').disabled")
+        capture(w,out,'workflow');(out/'workflow.png').replace(out/'missing-values-pending.png')
+        js("document.querySelector('[data-flow-impute=\"2\"]').click();true")
         wait_for(w,"state.flow.outputs['2']?.status==='ready'")
+        assert b.flow.public['nodes']['2']['imputation_preview']['before_missing']==1
+        assert b.flow.public['nodes']['2']['imputation_preview']['after_missing']==0
+        capture(w,out,'workflow');(out/'workflow.png').replace(out/'missing-values-applied.png')
+        imputed_export=out/'imputed-preview.csv';QFileDialog.getSaveFileName=lambda *a:(str(imputed_export),'')
+        js("document.querySelector('[data-flow-export]').click();true")
+        exported=pd.read_csv(imputed_export)
+        assert len(exported)==len(f) and not exported['x'].isna().any()
+        assert pd.isna(c.dataset.current.loc[3,'x'])
         add('Prepared output',520,100);connect('2','3')
         wait_for(w,"state.flow.outputs['3']?.kind==='prepared'&&!state.busy",timeout=60)
         assert b.flow.public['nodes']['3']['training_rows']==60
@@ -60,7 +77,10 @@ def run(output=None):
         assert js("document.querySelector('.wf-output').textContent.includes('Prepared training values')")
         capture(w,out,'workflow');(out/'workflow.png').replace(out/'prepared-output-light.png')
         checks=['Main Visuals navigation and consolidated questions','38 categorized draggable steps','Import node waits until a real CSV is loaded',
-                'Native mouse port drag creates arrows and automatically computes','Real training-only prepared output appears on result click']
+                'Native mouse port drag creates arrows and updates connected steps',
+                'Missing values selection keeps gaps pending until the right-panel Impute button is clicked',
+                'Explicit Impute fills the preview while preserving the original source',
+                'Real training-only prepared output appears on result click']
         export=out/'prepared.csv';QFileDialog.getSaveFileName=lambda *a:(str(export),'')
         js("document.querySelector('[data-flow-export]').click();true")
         assert export.is_file()

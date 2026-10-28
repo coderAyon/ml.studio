@@ -55,10 +55,21 @@ class Packet:
     frame:pd.DataFrame
     preparation:dict
     evaluation_error:str|None=None
+    imputed_preview:pd.DataFrame|None=None
 
 
 class FlowEngine:
-    def __init__(self):self.cache={};self.values={};self.result={'nodes':{},'computed':0,'cached':0};self.fitted=[]
+    def __init__(self):self.cache={};self.values={};self.result={'nodes':{},'computed':0,'cached':0};self.fitted=[];self.node_keys={}
+
+    def imputation_approval(self,payload,key,target,algorithm):
+        """Bind an explicit Impute click to the current input and method."""
+        graph=validate_flow(payload);node=graph.nodes.get(key)
+        if not node or node['type']!='Impute missing':raise ValueError('Choose a Missing values step.')
+        parent=next((a for a,b in graph.edges if b==key),None)
+        if not parent or self.result['nodes'].get(parent,{}).get('status')!='ready' or parent not in self.node_keys:
+            raise ValueError('Connect a completed data step before clicking Impute.')
+        return {'input':self.node_keys[parent],'method':node.get('params',{}).get('imputation','median'),
+                'target':target,'algorithm':algorithm}
 
     def run(self,payload,frame,target,algorithm,preparation,dataset_key,progress=None,evaluation_error=None,sources=None,strict_sources=False):
         graph=validate_flow(payload);order=graph.order(allow_disconnected=True) if graph.nodes else []
@@ -74,7 +85,9 @@ class FlowEngine:
                     if isinstance(source_frame,str):nodes[key]={'status':'error','message':source_frame};continue
                 elif choice!='workspace':nodes[key]={'status':'waiting','message':'Click Choose CSV, or explicitly use the current workspace dataset.'};continue
             if progress:progress(key)
-            if parent and nodes[parent]['status']!='ready':nodes[key]={'status':'blocked','message':'Waiting for the connected step to succeed.'};continue
+            if parent and nodes[parent]['status']!='ready':
+                message='Click Impute in the connected Missing values step to continue.' if nodes[parent]['status']=='pending' else 'Waiting for the connected step to succeed.'
+                nodes[key]={'status':'blocked','message':message};continue
             if kind!='Dataset' and not parent:nodes[key]={'status':'waiting','message':'Connect an input to this step.'};continue
             if kind=='Dataset' and source_frame is None:nodes[key]={'status':'waiting','message':'Choose a CSV using this step’s Import button.'};continue
             if kind=='Dataset' and (len(source_frame)>20000 or len(source_frame.columns)>300):nodes[key]={'status':'error','message':'This source exceeds 20,000 rows / 300 columns. Choose a smaller CSV.'};continue
@@ -87,6 +100,19 @@ class FlowEngine:
                 algorithm if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None,signature_defaults if kind in {'Dataset','Prepare training'} else None,
                 evaluation_error if kind in {'Train model','Compare models','Prepared output'} else None],sort_keys=True).encode()).hexdigest()
             keys[key]=signature
+            if kind=='Impute missing':
+                approval={'input':keys[parent],'method':node.get('params',{}).get('imputation','median'),
+                          'target':target,'algorithm':algorithm}
+                if node.get('params',{}).get('imputation_approval')!=approval:
+                    incoming=values[parent]
+                    missing_positions=np.flatnonzero(incoming.frame.isna().any(axis=1).to_numpy())[:30].tolist()
+                    preview_positions=missing_positions+[i for i in range(len(incoming.frame)) if i not in missing_positions][:40-len(missing_positions)]
+                    nodes[key]={'status':'pending','kind':'imputation','rows':len(incoming.frame),
+                        'columns':len(incoming.frame.columns),'fields':list(incoming.frame.columns),
+                        'numeric':list(incoming.frame.select_dtypes(include='number').columns),
+                        'missing_cells':int(incoming.frame.isna().sum().sum()),'table':table(incoming.frame.iloc[preview_positions]),
+                        'message':'Choose a filling method, then click Impute. No filling has been applied to this step.'}
+                    continue
             try:
                 if signature in self.cache:
                     value,summary=self.cache[signature];summary=copy.deepcopy(summary);summary['cached']=True;cached+=1
@@ -101,7 +127,7 @@ class FlowEngine:
                 values[key]=value;nodes[key]=summary
             except Exception as exc:nodes[key]={'status':'error','message':str(exc)}
         self.cache={key:value for key,value in self.cache.items() if key in set(keys.values())}
-        self.values=values;self.fitted=fitted
+        self.values=values;self.fitted=fitted;self.node_keys=keys
         self.result={'nodes':nodes,'computed':computed,'cached':cached,'ready':sum(v['status']=='ready' for v in nodes.values()),'errors':sum(v['status']=='error' for v in nodes.values())}
         return self.result
 
@@ -190,13 +216,25 @@ class FlowEngine:
             'note':'Original values are shown. Learned missing-value filling and scaling are deferred until the training split. Add Prepared output to inspect the transformed training values.'}
         if kind in {'Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}:
             try:
-                _,preview=self.prepared(value,target if target in value.frame else '',algorithm,params)
+                preview_packet=value
+                if kind=='Impute missing':
+                    # This preview fills gaps only; other branch preparation runs later.
+                    preview_plan={**value.preparation,'scaling':'none','outliers':'keep',
+                        'missing_indicators':False,'discretization':'none','remove_constant':False,'feature_selection':'none'}
+                    preview_packet=Packet(value.frame,validate_preparation(preview_plan),value.evaluation_error)
+                _,preview=self.prepared(preview_packet,target if target in value.frame else '',algorithm,params,
+                    include_imputation=kind=='Impute missing')
                 summary['comparison']=preview['comparison']
+                if kind=='Impute missing':
+                    value.imputed_preview=preview_packet.imputed_preview
+                    summary['comparison']['label']='missing-value filling'
+                    summary['imputation_preview']=preview['imputation_preview']
             except ValueError as exc:
+                if kind=='Impute missing':raise
                 summary['preview_error']=str(exc)
         return value,summary
 
-    def prepared(self,packet,target,algorithm,params=None):
+    def prepared(self,packet,target,algorithm,params=None,include_imputation=False):
         from sklearn.model_selection import train_test_split
         from .training import build_pipeline
         f=packet.frame;p=validate_preparation(packet.preparation,f.columns,target or None)
@@ -230,7 +268,9 @@ class FlowEngine:
         flags={c:iqr_evidence(f,c)[0] for c in numeric if not pd.api.types.is_bool_dtype(f[c])}
         flagged=np.zeros(len(f),dtype=bool)
         for mask in flags.values():flagged|=mask
-        positions=[selected-1] if selected else list(np.flatnonzero(flagged)[:30])
+        missing=x.isna().any(axis=1).to_numpy()
+        priority=np.flatnonzero(missing).tolist()+[int(i) for i in np.flatnonzero(flagged) if not missing[i]]
+        positions=[selected-1] if selected else priority[:30]
         positions+=([] if selected else [i for i in range(len(f)) if i not in positions][:30-len(positions)])
         comparisons=[];effects=[]
         if numeric:
@@ -254,7 +294,26 @@ class FlowEngine:
                         'split':'Training' if pos in train_set else 'Holdout'})
         comparison={'cells':comparisons,'effects':effects,'output_columns':len(names),'training_rows':len(train_positions),'test_rows':len(test_positions),'total_rows':len(f),'numeric_columns':numeric,'scaling':p['scaling'],
             'selected_row':selected,'selected_column':chosen or '',
-            'note':'Same active row before → after numeric preparation. Original IQR outliers appear first and stay marked for tracking. Scaling changes units; it does not remove unusual observations. Statistics fit on training rows only; holdout values may fall outside 0–1. Values shown are before encoding/feature selection/PCA. Up to 30 rows × 20 numeric columns; choose a row and column to inspect any value.'}
-        return prepared,{'kind':'prepared','table':table(prepared),'training_rows':len(train_positions),'test_rows':len(test_positions),
+            'note':'Same active row before → after numeric preparation. Missing rows and original IQR outliers appear first and stay marked for tracking. Scaling changes units; it does not remove unusual observations. Statistics fit on training rows only; holdout values may fall outside 0–1. Values shown are before encoding/feature selection/PCA. Up to 30 rows × 20 numeric columns; choose a row and column to inspect any value.'}
+        summary={'kind':'prepared','table':table(prepared),'training_rows':len(train_positions),'test_rows':len(test_positions),
             'comparison':comparison,'output_columns':len(names),'preparation':p,'note':('No outcome selected; all chosen columns are treated as inputs. ' if not target else 'The selected outcome is excluded from inputs. ')+
             'Preview of prepared TRAINING rows only (up to 30 rows / 30 inputs shown). Statistics were fitted without holdout rows. No predictor is trained by this preview; this terminal view never sends fitted full-data statistics into evaluation.'}
+        if include_imputation:
+            imputed=f.copy(deep=True)
+            preprocess=pipeline.named_steps['preprocess']
+            for branch,cols in [('numeric',numeric),('categorical',[c for c in x if c not in numeric])]:
+                if not cols:continue
+                filled=preprocess.named_transformers_[branch].named_steps['imputer'].transform(x[cols])
+                for index,column in enumerate(cols):
+                    absent=f[column].isna().to_numpy()
+                    series=f[column].astype(float if column in numeric else object).copy()
+                    series.iloc[np.flatnonzero(absent)]=filled[absent,index]
+                    imputed[column]=series
+            packet.imputed_preview=imputed
+            summary['imputation_preview']={'table':table(imputed.iloc[positions]),
+                'before_missing':int(f[columns].isna().sum().sum()),
+                'after_missing':int(imputed[columns].isna().sum().sum()),
+                'untouched_missing':int(imputed.isna().sum().sum()-imputed[columns].isna().sum().sum()),
+                'method':p['imputation'],'rows':len(f),'fields':columns,
+                'note':'Filled input preview. Original CSV stays unchanged. Outcome and excluded columns stay unchanged; model training fits filling on its own training split.'}
+        return prepared,summary

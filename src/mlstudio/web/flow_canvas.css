@@ -27,3 +27,4 @@ html:root .student-workspace #navigation .nav-item[data-page=dataset_visuals] .i
 @media(prefers-reduced-motion:reduce){.wf-suggestions{animation:none}}html[data-motion=reduced] .wf-suggestions{animation:none}
 
 .wf-suggestions{width:288px;padding:11px}.wf-suggest-list{max-height:190px}.wf-suggestion-item{padding:8px 6px}.wf-suggestions>p{margin:9px 0}
+.wf-node.pending{border-color:var(--purple)}.wf-node.pending .wf-node-status{color:var(--purple);background:var(--purple-light)}

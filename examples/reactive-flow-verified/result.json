@@ -3,9 +3,11 @@
   "frozen": false,
   "checks": [
     "Main Visuals navigation and consolidated questions",
-    "16 categorized draggable steps",
+    "38 categorized draggable steps",
     "Import node waits until a real CSV is loaded",
-    "Native mouse port drag creates arrows and automatically computes",
+    "Native mouse port drag creates arrows and updates connected steps",
+    "Missing values selection keeps gaps pending until the right-panel Impute button is clicked",
+    "Explicit Impute fills the preview while preserving the original source",
     "Real training-only prepared output appears on result click",
     "Native round-node drag updates arrow geometry without re-fitting; output export works",
     "Data branch trains and Results node exposes actual metrics; model activation succeeds",

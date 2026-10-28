@@ -2,52 +2,57 @@
   "version": 1,
   "source": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\reactive-flow-verified\\synthetic-flow.csv",
   "fingerprint": "1c9b83db00c76231fcc0deb95aa18e01b3a85ed941dbb84c54fbe8c8b1957327",
-  "import": {
-    "delimiter": null,
-    "encoding": "utf-8-sig",
-    "header": true,
-    "decimal": "."
-  },
+  "import": {},
   "operations": [],
   "workflow": {
     "nodes": {
       "1": {
         "type": "Dataset",
         "position": [
-          59.33331298828125,
-          99.45161437988281
+          84.0,
+          123.27082824707031
         ],
-        "params": {}
+        "params": {
+          "source": "file",
+          "path": "D:\\STUDY\\8th sem\\project\\ML Studio\\examples\\reactive-flow-verified\\synthetic-flow.csv"
+        }
       },
       "2": {
         "type": "Impute missing",
         "position": [
-          309.33331298828125,
-          129.5208282470703
+          334.0,
+          153.2708282470703
         ],
-        "params": {}
+        "params": {
+          "imputation_approval": {
+            "input": "26bb8c5be83f128951b522a1a3d1575b5d7df0ff82633c18f24ae4fbd9596d97",
+            "method": "median",
+            "target": "",
+            "algorithm": "Logistic Regression"
+          }
+        }
       },
       "3": {
         "type": "Prepared output",
         "position": [
-          519.3333129882812,
-          99.52082824707031
+          544.0,
+          123.27082824707031
         ],
         "params": {}
       },
       "4": {
         "type": "Train model",
         "position": [
-          289.33331298828125,
-          329.5208282470703
+          314.0,
+          353.2708282470703
         ],
         "params": {}
       },
       "5": {
         "type": "Results",
         "position": [
-          519.3333129882812,
-          329.5208282470703
+          544.0,
+          353.2708282470703
         ],
         "params": {}
       }

@@ -69,6 +69,13 @@ class FlowCoordinator(QObject):
             self.auto=bool(data.get('auto',self.auto))
             if self.auto:self.run()
         elif action=='flow_run':self.run(force=bool(data.get('force',False)))
+        elif action=='flow_impute':
+            if self.signature()!=self.last_signature:raise ValueError('Wait for the connected steps to update before clicking Impute.')
+            key=str(data.get('id'));graph=c.canvas.snapshot()
+            payload={'nodes':graph.nodes,'edges':graph.edges}
+            approval=self.engine.imputation_approval(payload,key,c.target.currentText(),c.algorithm.currentText())
+            c.canvas.graph.nodes[key].setdefault('params',{})['imputation_approval']=approval
+            self.run()
         elif action=='flow_auto':self.auto=bool(data.get('enabled',True))
         elif action=='flow_activate':
             if self.signature()!=self.last_signature:raise ValueError('Workflow changed. Wait for the connected steps to finish.')
@@ -78,7 +85,7 @@ class FlowCoordinator(QObject):
         elif action=='flow_export':
             if self.signature()!=self.last_signature:raise ValueError('Run the current workflow before exporting its output.')
             value=self.engine.values.get(str(data.get('id')))
-            if isinstance(value,Packet):frame=value.frame
+            if isinstance(value,Packet):frame=value.imputed_preview if value.imputed_preview is not None else value.frame
             elif isinstance(value,pd.DataFrame):frame=value
             elif isinstance(value,dict) and 'table' in value:frame=pd.DataFrame(value['table']['data'],columns=value['table']['columns'])
             elif isinstance(value,list):frame=pd.DataFrame([{'algorithm':r.metadata['algorithm'],**{k:v for k,v in r.metrics.items() if isinstance(v,(int,float,str))}} for r in value])
