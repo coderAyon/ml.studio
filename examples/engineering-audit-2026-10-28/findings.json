@@ -1,0 +1,75 @@
+{
+  "baseline": "3f24d03",
+  "purpose": "Audit observations; known bugs remain unfixed.",
+  "observations": {
+    "unsigned_snapshot": {
+      "before": [
+        "0",
+        "18446744073709551615"
+      ],
+      "after": [
+        "0",
+        "-1"
+      ],
+      "before_dtype": "uint64",
+      "after_dtype": "int64",
+      "source_preserved": true
+    },
+    "finding_counts": [
+      {
+        "title": "Possibly mixed numeric values",
+        "summary": 0,
+        "detail": 1
+      },
+      {
+        "title": "Equivalent category labels",
+        "summary": 4,
+        "detail": 2
+      }
+    ],
+    "categorical_preview": {
+      "applied_values": [
+        "A",
+        "b",
+        "c"
+      ],
+      "preview_error": "Categoricals can only be compared if 'categories' are the same."
+    },
+    "revision_cache_alias": {
+      "version": 1,
+      "actual_first_x": 1,
+      "cached_first_x": 0,
+      "computed": 0,
+      "cached": 2,
+      "association_hidden_on_undo": true,
+      "old_association_revived": true
+    },
+    "legacy_execution_divergence": {
+      "input_rows": 3,
+      "legacy_data_table_rows": 2,
+      "reactive_data_table_rows": 3
+    },
+    "explanation_schema_guard": {
+      "renamed_columns": [
+        "z",
+        "x",
+        "label"
+      ],
+      "accepted": true,
+      "recorded_columns": [
+        "x",
+        "z",
+        "label"
+      ]
+    },
+    "incomplete_model_manifest": {
+      "accepted_empty_versions_and_metadata": true,
+      "security_scope": "Self-generated safe pipeline; no code-execution exploit tested or established."
+    },
+    "research_time_precision": {
+      "distinct_before": 100,
+      "distinct_after": 1,
+      "replay_error": "Time values must parse unambiguously and contain enough distinct timestamps."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-29",
+  "full_suite": {
+    "passed": 367,
+    "warnings": 14,
+    "seconds": 52.05
+  },
+  "targeted_chart_tests": 32,
+  "javascript_syntax": "passed for dataset_visuals.js and audit_fixes.js",
+  "native_embedded_acceptance": "passed all five chart tabs, actual flag121, correlation methods/pair counts, customization and PNG/SVG/CSV exports, light/dark, data unchanged",
+  "scope": "Chart presentation and evidence; calculations, sampling bounds and training protocols unchanged",
+  "limits": "Native hover title tooltips, not custom keyboard-hover cards; interactive SVG and Matplotlib export use same data with different presentation."
+}

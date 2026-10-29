@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-29",
+  "full_suite": {
+    "passed": 365,
+    "warnings": 14,
+    "seconds": 53.22
+  },
+  "native_root_exe_checks": 16,
+  "responsive_layouts": 48,
+  "actual_widths": [
+    800,
+    1024,
+    1440
+  ],
+  "reduced_motion_running_animations": 0,
+  "source_preserved": true,
+  "limits": [
+    "Eight core pages with synthetic fixtures; not all possible loaded states",
+    "No exhaustive accessibility/DPI certification",
+    "Shared holdout validation and other P0 repairs remain open"
+  ],
+  "changed_modules": [
+    "web/modern.css",
+    "web/polish.js",
+    "desktop.py",
+    "packaging/verify_interface.py"
+  ]
+}

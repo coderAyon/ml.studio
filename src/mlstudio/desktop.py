@@ -95,6 +95,8 @@ class StudioBridge(QObject):
         self.flow=FlowCoordinator(self)
         from .comparison_tools import ComparisonTools
         self.comparison_tools=ComparisonTools(self)
+        from .business_controller import BusinessWorkspace
+        self.business=BusinessWorkspace(self)
 
     def on_status(self, message):
         self.last_status = message
@@ -106,7 +108,7 @@ class StudioBridge(QObject):
         controller = self.controller
         if controller.dataset is None:
             return None
-        key = (id(controller.dataset), controller.dataset.index)
+        key = controller.dataset.revision_id
         if key != self._cache_key:
             self.row_detail = None
             self.comparison_start = None
@@ -132,7 +134,7 @@ class StudioBridge(QObject):
                 **summary, "name": Path(controller.source).name, "source": str(controller.source),
                 'instance_key':str(id(controller.dataset)),
                 'outlier_rows':int(combined.sum()),'outlier_cells':sum(int(m.sum()) for m in self._outlier_masks.values()),
-                "version": controller.dataset.index,
+                "version": controller.dataset.index, "revision_id": controller.dataset.revision_id,
                 "preview": json.loads(frame.head(100).to_json(orient="split", date_format="iso")),
                 "missing_cells": int(frame.isna().sum().sum()),
                 "duplicates": int(frame.duplicated().sum()),
@@ -179,7 +181,7 @@ class StudioBridge(QObject):
 
     def snapshot(self):
         controller = self.controller
-        request_key = (id(controller.dataset), controller.dataset.index if controller.dataset else None)
+        request_key = controller.dataset.revision_id if controller.dataset else None
         context=(request_key,controller.target.currentText(),controller.algorithm.currentText())
         if self.preparation_context!=context:
             self.training_preview=self.training_comparison=None
@@ -198,9 +200,9 @@ class StudioBridge(QObject):
             self.visual_results = []
             self.visual_figures = {}
             self.visual_request_key = request_key
-        if self.lab_key != (id(controller.dataset), controller.dataset.index if controller.dataset else None):
+        if self.lab_key != (controller.dataset.revision_id if controller.dataset else None):
             self.lab_result = self.lab_figure = self.lab_key = None
-        if self.clustering_key != (id(controller.dataset),controller.dataset.index if controller.dataset else None):
+        if self.clustering_key != (controller.dataset.revision_id if controller.dataset else None):
             self.clustering_result = None
         records = [{"created": t, "algorithm": a, "result": json.loads(r)} for t, a, r in controller.store.history()]
         dataset = self.dataset_state()
@@ -238,6 +240,7 @@ class StudioBridge(QObject):
             "predictions":self.predictions.state(),
             "flow":self.flow.state(),
             **self.comparison_tools.state(),
+            "business":self.business.state(),
             "preferences": {"theme": controller.settings.value("referenceTheme", "pastel"), "reduce_motion": controller.settings.value("referenceReduceMotion",False,type=bool), "autosave": controller.settings.value("referenceAutosave", False, type=bool), "research_rows":controller.settings.value("researchRowBudget",20000,type=int), "next_storage":controller.settings.value("storageRoot", "")},
         }
 
@@ -329,6 +332,8 @@ class StudioBridge(QObject):
                 self.research.command(action,data)
                 self.publish()
                 return
+            if action.startswith('business_'):
+                self.business.command(action,data);self.publish();return
             if action.startswith('prediction_'):
                 self.predictions.command(action,data);self.publish();return
             if action.startswith('flow_'):
@@ -427,7 +432,7 @@ class StudioBridge(QObject):
                 self.preprocess_preview=None
             elif action == "preprocess_apply":
                 frame=controller.require_data()
-                key=(id(controller.dataset),controller.dataset.index)
+                key=controller.dataset.revision_id
                 if self.preprocess_key!=key or not self.preprocess_preview:
                     raise ValueError("Preview the change on the current dataset first.")
                 operations=self.preprocess_preview['operations']
@@ -717,11 +722,11 @@ class StudioBridge(QObject):
                 result, figure = grouped_analysis(controller.require_data(), **{
                     k:v for k,v in data.items() if k in {"group", "columns", "statistic", "layout", "title", "xlabel", "ylabel"}})
                 self.lab_result, self.lab_figure = result, figure
-                self.lab_key = (id(controller.dataset), controller.dataset.index)
+                self.lab_key = controller.dataset.revision_id
                 self.render_lab()
                 self.announce("Grouped summary and chart ready. All dataset rows were included.")
             elif action == "lab_export":
-                if self.lab_result is None or self.lab_key != (id(controller.dataset), controller.dataset.index if controller.dataset else None):
+                if self.lab_result is None or self.lab_key != (controller.dataset.revision_id if controller.dataset else None):
                     raise ValueError("Create a grouped summary before exporting.")
                 format = data.get("format", "csv")
                 if format not in {"csv", "svg", "png"}:raise ValueError("Choose CSV, SVG or PNG.")
@@ -741,7 +746,7 @@ class StudioBridge(QObject):
             elif action == "cluster_study":
                 from .clustering import study
                 frame = controller.require_data()
-                key = (id(controller.dataset),controller.dataset.index)
+                key = controller.dataset.revision_id
                 def complete(result):
                     self.clustering_result,self.clustering_key=result,key
                     controller.store.add(result["algorithm"]+" clustering",{"metrics":result["metrics"],"clustering":result})
@@ -823,12 +828,15 @@ class StudioBridge(QObject):
         dark=self.controller.settings.value("referenceTheme","pastel")=="dark"
         paper,ink,edge=("#1a2133","#e9eef9","#46536e") if dark else ("#ffffff","#27334e","#c3ccdd")
         figure=self.controller.figure
+        from .chart_style import style_figure
+        style_figure(figure,dark=dark)
         if figure._suptitle is not None:figure._suptitle.set_color(ink)
         figure.set_facecolor(paper)
         for axis in figure.axes:
             axis.set_facecolor(paper)
             axis.tick_params(colors=ink)
-            for item in [axis.title,axis.xaxis.label,axis.yaxis.label,axis.xaxis.get_offset_text(),axis.yaxis.get_offset_text(),*axis.texts]:item.set_color(ink)
+            for item in [axis.title,axis.xaxis.label,axis.yaxis.label,axis.xaxis.get_offset_text(),axis.yaxis.get_offset_text(),*axis.texts]:
+                if item.get_gid()!='correlation-cell-label':item.set_color(ink)
             for spine in axis.spines.values():spine.set_color(edge)
             if axis.get_legend() is not None:
                 legend = axis.get_legend()
@@ -842,7 +850,7 @@ class StudioBridge(QObject):
         output=io.BytesIO()
         figure.savefig(output,format="svg",bbox_inches="tight",facecolor=paper)
         self.chart="data:image/svg+xml;base64,"+base64.b64encode(output.getvalue()).decode()
-        if update_key:self._chart_key=(id(self.controller.dataset),self.controller.dataset.index)
+        if update_key:self._chart_key=self.controller.dataset.revision_id
 
 
 class ModernWindow(QMainWindow):
@@ -850,7 +858,7 @@ class ModernWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ML Studio · Your offline ML workspace")
         self.resize(1460, 940)
-        self.setMinimumSize(1080, 720)
+        self.setMinimumSize(800, 600)
         self.controller = MainWindow(directory)
         self.bridge = StudioBridge(self.controller, self)
         self.profile = QWebEngineProfile(self)  # off-the-record; no web cookies or disk cache

@@ -2,6 +2,7 @@
 from dataclasses import asdict, dataclass, field
 import pandas as pd
 import numpy as np
+from .quality_rules import label_masks
 
 
 @dataclass
@@ -58,14 +59,16 @@ def analyze(frame: pd.DataFrame) -> list[Issue]:
                 add("Skewed numeric distribution", "Low", "Recommendation", [column], s.notna().sum(), "Absolute sample skewness > 2", "A long-tailed distribution can affect some estimators.", "Review the histogram; consider robust scaling or a domain-appropriate transform.", "Transforms alter interpretation and must be fitted within training folds.")
         else:
             strings = s.dropna().astype(str)
-            whitespace = strings.ne(strings.str.strip())
-            numeric_fraction = pd.to_numeric(strings, errors="coerce").notna().mean()
+            masks = label_masks(strings)
+            whitespace = masks['whitespace']
+            invalid = masks['mixed_numeric']
+            numeric_fraction = 1 - int(invalid.sum()) / len(strings) if len(strings) else 0
             if .8 <= numeric_fraction < 1:
-                add("Possibly mixed numeric values", "Medium", "Potential Issue", [column], int((1-numeric_fraction)*len(strings)), "At least 80% but not all labels parse as numbers", "Some entries differ from the dominant numeric format.", "Review nonnumeric entries and decimal settings before confirming a type conversion.", "These values may be valid categorical labels.", strings[pd.to_numeric(strings, errors="coerce").isna()].head(8).tolist())
+                add("Possibly mixed numeric values", "Medium", "Potential Issue", [column], invalid.sum(), "At least 80% but not all labels parse as numbers; count is nonnumeric rows", "Some entries differ from the dominant numeric format.", "Review nonnumeric entries and decimal settings before confirming a type conversion.", "These values may be valid categorical labels.", strings.iloc[np.flatnonzero(invalid)[:8]].tolist())
             if whitespace.any():
                 add("Surrounding whitespace", "Low", "Confirmed Issue", [column], whitespace.sum(), "Compare stripped labels", "Whitespace can split equivalent labels.", "Preview trimming whitespace.", "Whitespace can occasionally be meaningful.", strings[whitespace].head(8).tolist())
-            if strings.nunique() > strings.str.strip().str.lower().nunique():
-                add("Equivalent category labels", "Low", "Potential Issue", [column], len(strings), "Case-folded and trimmed distinct counts", "Some labels differ only in case or whitespace.", "Review labels before standardizing.", "Case can carry domain meaning.")
+            if masks['equivalent'].any():
+                add("Equivalent category labels", "Low", "Potential Issue", [column], masks['equivalent'].sum(), "Rows in trimmed/lowercase labels with multiple original spellings", "Some labels differ only in case or whitespace.", "Review labels before standardizing.", "Case can carry domain meaning.")
             if unique > 20 and unique/n > .9:
                 add("High cardinality / possible identifier", "Medium", "Potential Issue", [column], unique, "Distinct ratio > 90%", "Nearly every record has a different label.", "Check whether this is an identifier before modeling.", "Removing a meaningful feature can reduce predictive value.")
     numeric = frame.select_dtypes(include="number")

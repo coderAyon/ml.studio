@@ -1,0 +1,49 @@
+{
+  "baseline": "3f24d0375170ad069b8567609f30c3a8469eebb4",
+  "date": "2026-10-28",
+  "timezone": "Asia/Dhaka",
+  "scope": "Audit only; no product fixes",
+  "full_suite": {
+    "command": ".venv\\Scripts\\python.exe -m pytest -q",
+    "passed": 271,
+    "warnings": 12,
+    "seconds": 63.74
+  },
+  "overlapping_targeted_suites": {
+    "data": 50,
+    "workflow": 91,
+    "training": 83
+  },
+  "native_acceptance": {
+    "launcher": "project-root MLStudio.exe",
+    "argument": "--comparison-smoke",
+    "isolated": true,
+    "passed": true,
+    "checks": 10,
+    "result": "ui-result.json"
+  },
+  "dependency_check": {
+    "command": ".venv\\Scripts\\python.exe -m pip check",
+    "result": "No broken requirements found.",
+    "all_existing_lock_entries_match_installed": true,
+    "missing_required_lock_entry": "skops==0.16.0"
+  },
+  "runtime": {
+    "python": "3.14.7",
+    "PySide6": "6.12.0",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "skops": "0.16.0"
+  },
+  "not_performed": [
+    "clean-machine install/uninstall",
+    "physical network-disconnection",
+    "peak memory profiling",
+    "exhaustive interactive UI acceptance"
+  ],
+  "bug_observations": "findings.json",
+  "fixture_note": "Synthetic local audit inputs; no model superiority or complete functionality claim."
+}

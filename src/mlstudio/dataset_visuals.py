@@ -74,7 +74,17 @@ def build_chart(frame,config):
         clean=frame[columns].replace([np.inf,-np.inf],np.nan)
         matrix=clean.corr(method=method,min_periods=2)
         figure=Figure(figsize=(10,6),layout='constrained');axis=figure.add_subplot(111)
-        image=axis.imshow(matrix,vmin=-1,vmax=1,cmap='coolwarm')
+        from matplotlib.colors import LinearSegmentedColormap
+        cmap=LinearSegmentedColormap.from_list('studio_correlation',['#287ca8','#faf8ff','#9644b4'])
+        cmap=cmap.with_extremes(bad='#e8e3ef')
+        image=axis.imshow(np.ma.masked_invalid(matrix.to_numpy()),vmin=-1,vmax=1,cmap=cmap)
+        if len(columns)<=12:
+            for i in range(len(columns)):
+                for j in range(len(columns)):
+                    value=matrix.iloc[i,j]
+                    label=axis.text(j,i,f'{value:.2f}' if pd.notna(value) else '—',ha='center',va='center',
+                        fontsize=10 if len(columns)<=6 else 8,color='white' if pd.notna(value) and abs(value)>.6 else '#49385e')
+                    label.set_gid('correlation-cell-label')
         axis.set_xticks(range(len(columns)),columns,rotation=40,ha='right');axis.set_yticks(range(len(columns)),columns)
         figure.colorbar(image,ax=axis,label=method.title()+' correlation')
         table={'columns':['Column',*columns],'index':list(range(len(columns))),
@@ -128,13 +138,16 @@ def build_chart(frame,config):
             axis.set_xlabel(titles['xlabel'] or columns[0]);axis.set_ylabel(titles['ylabel'] or columns[1])
             notes.append(f'{len(chosen):,} complete finite pairs plotted; a deterministic sample is used above 5,000. Outliers are flagged if either axis exceeds its univariate rule, not a multivariate anomaly model.')
         elif kind=='histogram':
-            for patch in axis.patches:patch.set_facecolor(color);patch.set_alpha(opacity)
+            for patch in axis.patches:
+                patch.set_facecolor(color);patch.set_alpha(opacity);patch.set_edgecolor('white');patch.set_linewidth(1)
+            median=float(frame[columns[0]].replace([np.inf,-np.inf],np.nan).median())
+            axis.axvline(median,color='#258778',linewidth=1.8,label=f'Median · {median:,.4g}')
             if show:
                 detail=fields[0]
                 for key in ['lower','upper']:
                     bound=detail[key]
                     if bound is not None:axis.axvline(bound,color='#d95468',linestyle='--',linewidth=1.3,label='Outlier limits' if key=='lower' else None)
-                if detail['lower'] is not None:axis.legend()
+            axis.legend(loc='upper right')
         elif kind=='box':
             axis.clear();valid=[]
             for c in columns:
@@ -142,6 +155,8 @@ def build_chart(frame,config):
                 if not values.empty:valid.append((c,values))
             axis.boxplot([s.to_numpy() for _,s in valid],tick_labels=[c for c,_ in valid],patch_artist=True,
                          showfliers=show,boxprops={'facecolor':color,'alpha':opacity},
+                         medianprops={'color':'#258778','linewidth':2.3},
+                         whiskerprops={'color':'#827398','linewidth':1.3},capprops={'color':'#827398'},
                          flierprops={'marker':'o','markerfacecolor':'#df6c7c','markeredgecolor':'#df6c7c','markersize':4,'alpha':.65})
             axis.set_xlabel(titles['xlabel'] or 'Measurement');axis.set_ylabel(titles['ylabel'] or 'Value');axis.tick_params(axis='x',labelrotation=25)
             if show:
@@ -153,7 +168,15 @@ def build_chart(frame,config):
                         axis.annotate(f'{value:g}',(j+1,value),xytext=(9,2),textcoords='offset points',fontsize=9,color='#a93a25',bbox={'facecolor':'#fff2d9','edgecolor':'#d58a30','alpha':.9,'pad':2})
             notes.append('Boxplot boxes and fliers always use the conventional 1.5 × IQR rule. The separately selected outlier rule affects the flagged-row table, not boxplot geometry.')
         elif kind=='bar':
-            for patch in axis.patches:patch.set_facecolor(color);patch.set_alpha(opacity)
+            for patch in axis.patches:
+                patch.set_facecolor(color);patch.set_alpha(opacity);patch.set_edgecolor('white');patch.set_linewidth(.8)
+            if len(axis.patches)<=24:
+                from matplotlib.container import BarContainer
+                for container in axis.containers:
+                    if isinstance(container,BarContainer):
+                        axis.bar_label(container,fmt=lambda v:f'{v:,.4g}' if np.isfinite(v) else '',padding=5,fontsize=9,color='#635478')
+                axis.margins(y=.15 if config.get('orientation','vertical')=='vertical' else .05,
+                             x=.15 if config.get('orientation')=='horizontal' else .05)
     axis.set_title(title)
     if kind=='correlation':
         if titles['xlabel']:axis.set_xlabel(titles['xlabel'])
@@ -162,7 +185,10 @@ def build_chart(frame,config):
     interactive=None
     if kind=='scatter':
         interactive={'columns':columns,'points':[[int(pos),float(frame.iloc[pos][columns[0]]),float(frame.iloc[pos][columns[1]])] for pos in chosen],
+            'flagged_positions':[int(pos) for pos in chosen if show and mask[pos]],
             'note':'Up to 5,000 finite points shown. Region selection checks all active rows, including points omitted from this display.'}
+    from .chart_style import style_figure
+    style_figure(figure)
     return {'title':title,'kind':kind,'config':config,'table':table,'support':support,'pairs':pair_table,'interactive':interactive,
             'insights':insights,'outliers':outliers,'rows':len(frame),
             'protocol':' '.join(notes)+' All chart operations are exploratory and leave the active dataset unchanged.'},figure

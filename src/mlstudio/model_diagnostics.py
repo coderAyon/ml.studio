@@ -1,6 +1,5 @@
 """Read-only plots from a fitted model's recorded holdout; never fit or tune here."""
 import base64
-import hashlib
 import io
 
 import numpy as np
@@ -44,32 +43,10 @@ def _chart(kind, title, draw, help_text):
 
 
 def _holdout(result, frame):
-    if not isinstance(result, TrainingResult):
-        raise ValueError('Train or open a saved model before inspecting diagnostics.')
-    if not isinstance(frame, pd.DataFrame) or frame.empty or not frame.columns.is_unique:
-        raise ValueError('Open the original training dataset and version first.')
-    meta = result.metadata
-    if meta.get('dataset_columns') != list(frame.columns):
-        raise ValueError('Dataset column names or order do not match this model’s recorded schema. Restore the training schema, or train a new model to record it.')
-    from .data import schema_fingerprint
-    if meta.get('dataset_schema') != schema_fingerprint(frame):
-        raise ValueError('Dataset types or category domains do not match the recorded schema. Restore the training types, or train a new model to record them.')
-    fingerprint = hashlib.sha256(pd.util.hash_pandas_object(frame, index=True).values.tobytes()).hexdigest()
-    if fingerprint != meta.get('dataset_fingerprint'):
-        raise ValueError('This dataset differs from the one used to train the model. Restore that version or train a new model before viewing holdout diagnostics.')
-    positions = meta.get('test_positions')
-    if (not isinstance(positions, list) or not positions or len(positions) > 8000
-            or any(type(p) is not int or not 0 <= p < len(frame) for p in positions)
-            or len(positions) != len(set(positions)) or len(positions) != meta.get('test_rows')):
-        raise ValueError('This model has no valid recorded holdout manifest. Train a new model to create diagnostics.')
-    features, target = meta.get('features'), meta.get('target')
-    if (not isinstance(features, list) or not features or len(features) != len(set(features))
-            or target not in frame or any(c not in frame for c in features) or target in features):
-        raise ValueError('The saved model input and outcome columns do not match this dataset.')
+    from .holdout import validate_holdout
+    features, target, positions = validate_holdout(result, frame)
     x = prediction_inputs(result, frame.iloc[positions][features])
     actual = frame.iloc[positions][target].to_numpy()
-    if pd.isna(actual).any():
-        raise ValueError('Recorded holdout outcomes contain missing values. Review the dataset and train again.')
     predicted = np.asarray(result.pipeline.predict(x))
     if predicted.ndim != 1 or len(predicted) != len(actual):
         raise ValueError('This model returned an unsupported prediction shape.')

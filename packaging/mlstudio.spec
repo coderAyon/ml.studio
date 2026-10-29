@@ -2,7 +2,7 @@
 from pathlib import Path
 from PyInstaller.utils.hooks import copy_metadata,collect_submodules
 root = Path(SPECPATH).parent
-replay_files = ['__init__.py', 'training.py', 'training_prep.py', 'model_settings.py', 'evaluation.py', 'research.py', 'safety.py', 'error_analysis.py', 'research_export.py']
+replay_files = ['__init__.py', 'training.py', 'training_prep.py', 'model_settings.py', 'evaluation.py', 'holdout.py', 'data.py', 'research.py', 'safety.py', 'error_analysis.py', 'research_export.py', 'project_data.py']
 resources = [(str(root / 'src/mlstudio/web'), 'mlstudio/web')]
 resources += [(str(root / 'src/mlstudio' / name), 'replay_sources') for name in replay_files]
 for package in ['numpy', 'pandas', 'scipy', 'scikit-learn','skops']:

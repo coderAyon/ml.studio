@@ -14,10 +14,14 @@ class PredictionWorkspace:
 
     def clear(self):
         self.input=None;self.path=None;self.output=None;self.summary=None;self.single=None;self.explanation=None
+        self.explanation_revision=None
 
     def state(self):
         result=self.bridge.controller.result
         if self.key is not result:self.key=result;self.clear()
+        revision=self.bridge.controller.dataset.revision_id if self.bridge.controller.dataset else None
+        if self.explanation_revision != revision:
+            self.explanation=None;self.explanation_revision=revision
         return {'input':None if self.input is None else {'name':Path(self.path).name,'rows':len(self.input),'columns':list(self.input.columns),
                     'preview':json.loads(self.input.iloc[:8,:12].to_json(orient='split',date_format='iso'))},
                 'output':self.summary,'preview':None if self.output is None else self.preview(),
@@ -64,8 +68,11 @@ class PredictionWorkspace:
             self.single={'table':json.loads(out.to_json(orient='split')),'summary':summary}
         elif action=='prediction_explain':
             from .evaluation import explain_inputs
-            frame=c.require_data()
-            def done(value):self.explanation=value
+            frame=c.require_data();revision=c.dataset.revision_id
+            self.explanation=None
+            def done(value):
+                if c.result is result and c.dataset and c.dataset.revision_id==revision:
+                    self.explanation=value;self.explanation_revision=revision
             self.bridge.research._background(lambda:explain_inputs(result,frame),'Held-out input explanation calculated.',done)
         elif action=='prediction_diagnostics_export':
             diagnostic=result.metadata.get('diagnostics')

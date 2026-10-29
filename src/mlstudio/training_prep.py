@@ -7,6 +7,25 @@ DEFAULT_PREPARATION={"imputation":"median","scaling":"standard","outliers":"keep
  "knn_neighbors":5,"missing_indicators":False,"discretization":"none","bins":5,
  "remove_constant":False,"feature_selection":"none","selection_k":10,"pca_components":2}
 EXPLORATORY_OPERATIONS={"Fill missing","Cap outliers (IQR)","Remove outlier rows (IQR)"}
+MAX_CATEGORY_LEVELS = 100
+
+
+def encoded_width_bound(frame, preparation=None):
+    """Conservative dense width before reduction, without learning any statistics.
+
+    Count possible numeric missing indicators and the same one-hot cap used by
+    build_pipeline. This is an element budget, not a peak-process-RAM guarantee.
+    """
+    p = validate_preparation(preparation)
+    numeric = list(frame.select_dtypes(include='number').columns)
+    width = len(numeric)
+    if p['missing_indicators']:
+        width += sum(bool(frame[c].isna().any()) for c in numeric)
+    for c in frame:
+        if c not in numeric:
+            # A training-fold imputer can add one category for absent values.
+            width += min(MAX_CATEGORY_LEVELS, max(1, frame[c].nunique() + int(frame[c].isna().any())))
+    return width
 
 
 def validate_preparation(preparation,columns=None,target=None):

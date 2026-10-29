@@ -11,8 +11,8 @@ from .analyzer import analyze
 from .ui_smoke import evaluate,wait_for,capture
 
 
-def run():
-    out=Path('examples/dataset-visuals-verified').resolve();out.mkdir(parents=True,exist_ok=True)
+def run(directory='examples/dataset-visuals-verified'):
+    out=Path(directory).resolve();out.mkdir(parents=True,exist_ok=True)
     app=QApplication.instance() or QApplication([])
     w=ModernWindow(out/'storage');c,b=w.controller,w.bridge
     c.settings=QSettings(str(out/'preferences.ini'),QSettings.Format.IniFormat)
@@ -30,6 +30,7 @@ def run():
     wait_for(w,"window.appState.dataset_visuals?.kind==='scatter'")
     assert js("document.querySelectorAll('[data-dv-kind]').length===5")
     assert b.dataset_visual_result['outliers']['count']==1
+    assert js("Array.from(document.querySelectorAll('#linked-scatter circle')).some(n=>n.getAttribute('fill')==='#dc526c'&&n.textContent.includes('Row 121'))")
     js("document.querySelector('[data-action=dv_rows]').click();true")
     assert js("document.querySelector('.dv-outlier-rows').open")
     assert js("document.querySelector('.dv-outlier-rows .table-scroll').textContent.includes('121')")
@@ -38,7 +39,8 @@ def run():
     for kind in ['histogram','box','bar','correlation']:
         js("document.querySelector('[data-dv-kind="+kind+"]').click();true")
         wait_for(w,"window.appState.dataset_visuals.kind==='"+kind+"'")
-        assert js("document.querySelector('.dv-plot img').naturalWidth>0")
+        assert js("!!document.querySelector('.dv-plot svg')||document.querySelector('.dv-plot img')?.naturalWidth>0")
+        if kind=='correlation':assert js("document.querySelector('.dv-matrix-scroll title').textContent.includes('finite pairs')")
     checks.append('All five chart tabs produce real dataset charts')
     for method in ['spearman','kendall','pearson']:
         js("document.querySelector('#dv-correlation').value='"+method+"';document.querySelector('#dv-correlation').dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('[data-action=dv_draw]').click();true")
@@ -65,6 +67,10 @@ def run():
     js("studioUI.command('preferences',{theme:'dark'});true")
     wait_for(w,"document.documentElement.dataset.theme==='dark'")
     capture(w,out,'dataset_visuals');(out/'dataset_visuals.png').replace(out/'correlation-dark.png')
+    js("document.querySelector('.dv-result').scrollIntoView({block:'start'});true")
+    from PySide6.QtCore import QEventLoop,QTimer
+    loop=QEventLoop();QTimer.singleShot(300,loop.quit);loop.exec()
+    w.grab().save(str(out/'correlation-detail-dark.png'))
     assert c.dataset.current.equals(frame)
     (out/'result.json').write_text(json.dumps({'passed':True,'checks':checks},indent=2),encoding='utf-8')
     w.close();app.processEvents()

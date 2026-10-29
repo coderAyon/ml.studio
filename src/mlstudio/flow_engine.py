@@ -51,6 +51,10 @@ def table(frame,limit=40):
     return json.loads(frame.iloc[:limit,:30].to_json(orient='split',date_format='iso'))
 
 
+def _clustering_columns(frame,target,params):
+    return params.get('columns') or [c for c in frame.select_dtypes(include='number') if c!=target and not pd.api.types.is_bool_dtype(frame[c])]
+
+
 @dataclass
 class Packet:
     frame:pd.DataFrame
@@ -99,8 +103,11 @@ class FlowEngine:
             if kind=='Dataset' and isinstance(dataset_key,dict) and 'workspace' in dataset_key:
                 root_key=dataset_key.get('files',{}).get(key) if node.get('params',{}).get('source')=='file' else dataset_key['workspace']
             signature_defaults=validate_preparation(None) if kind=='Dataset' and node.get('params',{}).get('source')=='file' else defaults
+            signature_context=target if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None
+            if kind in {'K-Means','DBSCAN','Hierarchical'} and isinstance(values.get(parent),Packet):
+                signature_context=_clustering_columns(values[parent].frame,target,node.get('params',{}))
             signature=hashlib.sha256(json.dumps([kind,node.get('params',{}),[keys.get(a) for a in parents],str(root_key) if kind=='Dataset' else None,
-                target if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None,
+                signature_context,
                 algorithm if kind in {'Train model','Compare models','Prepared output','Normalize','Impute missing','Prepare training','PCA','Select features','Discretize'}|LEARNERS else None,signature_defaults if kind in {'Dataset','Prepare training'} else None,
                 evaluation_error if kind in {'Train model','Compare models','Prepared output'} else None],sort_keys=True).encode()).hexdigest()
             keys[key]=signature
@@ -190,7 +197,7 @@ class FlowEngine:
                 result={'table':output};return result,{'kind':'analysis','table':output,'rows':len(f),'note':'Statistics use all input rows. IQR flags are review findings, not confirmed mistakes. Evidence table is a bounded preview.'}
             elif kind in {'K-Means','DBSCAN','Hierarchical'}:
                 from .clustering import study
-                columns=params.get('columns') or [c for c in f.select_dtypes(include='number') if c!=target and not pd.api.types.is_bool_dtype(f[c])]
+                columns=_clustering_columns(f,target,params)
                 result=study(f,columns,kind,clusters=params.get('clusters',3),eps=params.get('eps',.5),min_samples=params.get('min_samples',5))
                 output=f.copy();name='Cluster'
                 while name in output:name='_'+name

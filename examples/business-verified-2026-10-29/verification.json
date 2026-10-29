@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-29",
+  "scope": "Offline business analysis and sidebar dataset controls",
+  "native": {
+    "passed": true,
+    "checks": [
+      "Dataset name and deletion moved below sidebar brand",
+      "Business mode toggles and restores ML navigation",
+      "Real KPI/profit/segments/trends/pivot/scenario calculations",
+      "Segment click cross-filters and reset restores totals",
+      "All six data/report exports and report definition open/save",
+      "Project reopen preserves report configuration and invalidates outputs",
+      "48 layouts across 8 business routes, 3 sizes and 2 themes",
+      "Sidebar deletion preserves original source"
+    ]
+  },
+  "baseline_full_suite": {
+    "passed": 383,
+    "warnings": 14,
+    "seconds": 52.46
+  },
+  "limitations": "Descriptive single-table BI; see docs/BUSINESS_MODE.md. This is not clean-machine installer acceptance."
+}

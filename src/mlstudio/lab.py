@@ -78,4 +78,6 @@ def grouped_analysis(frame, group, columns=None, statistic="mean", layout="combi
     note = (f"All {len(frame):,} rows; showing {len(result)} of {total_groups} groups. Missing group labels are included. "
             + ("Count counts rows, including rows with missing measurements." if statistic == "count" else
                "Missing and infinite measurements are excluded per feature; empty or overflowed results remain blank. Standard deviation uses sample ddof=1."))
+    from .chart_style import style_figure
+    style_figure(figure)
     return {"table": table, "note": note, "title": heading}, figure

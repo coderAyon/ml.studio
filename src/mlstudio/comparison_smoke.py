@@ -94,11 +94,51 @@ def run(directory):
         js("navigate('models');minimalModel.target='id';minimalModel.task='regression';render();true")
         assert js("!!document.querySelector('[data-review-answer-gaps]')")
         assert not [n for n in notices if n['kind']=='error' and 'Choose a grouping' not in n['message']],notices
+        # Same displayed history index must not revive output from another branch.
+        branch=pd.DataFrame({'x':range(80),'category':['A','A','B','B']*20,
+            'colour':['red','blue']*40,'label':[0,1]*40})
+        branch_source=out/'revision-source.csv';branch.to_csv(branch_source,index=False)
+        original_bytes=branch_source.read_bytes()
+        c.source=str(branch_source);c.dataset=DatasetVersions(branch);c.preparation=None
+        c.canvas.restore(Graph());c.refresh_data();b.publish()
+        js("cmd('preview',{operation:'Filter rows',column:'category',value:'A'});true")
+        js("cmd('apply_preview');true");wait_for(w,"state.dataset?.version===1&&!state.busy")
+        revision_a=c.dataset.revision_id
+        js("navigate('association');cmd('association_run',{columns:['category','colour']});true")
+        wait_for(w,"!!state.association?.result&&!state.busy")
+        c.target.setCurrentText('label')
+        c.canvas.restore(Graph({'1':{'type':'Dataset','position':[40,100],'params':{'source':'workspace'}},
+            '2':{'type':'Data table','position':[240,100]},'3':{'type':'Decision Tree','position':[240,260]}},[['1','2'],['1','3']]))
+        b.publish();js("navigate('workflow');true")
+        wait_for(w,"state.flow.outputs['3']?.status==='ready'&&!state.busy&&!state.flow.stale")
+        assert b.flow.engine.values['2'].frame.x.iloc[0]==0
+        js("navigate('preprocessing');cmd('undo');true");wait_for(w,"state.dataset?.version===0&&!state.busy")
+        js("cmd('preview',{operation:'Filter rows',column:'category',value:'B'});true")
+        js("cmd('apply_preview');true");wait_for(w,"state.dataset?.version===1&&!state.busy")
+        assert c.dataset.revision_id!=revision_a and b.comparison_tools.state()['association']['result'] is None
+        js("navigate('workflow');true")
+        wait_for(w,"state.flow.outputs['3']?.status==='ready'&&!state.busy&&!state.flow.stale")
+        assert b.flow.engine.values['2'].frame.x.iloc[0]==2
+        revised=out/'revision-output.csv';QFileDialog.getSaveFileName=lambda *a:(str(revised),'')
+        js("cmd('flow_export',{id:'2'});true")
+        assert pd.read_csv(revised).x.iloc[0]==2
+        js("cmd('flow_activate',{id:'3'});true")
+        assert c.result.metadata['dataset_fingerprint']==b.flow.engine.values['3'].metadata['dataset_fingerprint']
+        current_revision=c.dataset.revision_id
+        js("navigate('preprocessing');cmd('undo');true");wait_for(w,"state.dataset?.version===0&&!state.busy")
+        js("cmd('redo');true");wait_for(w,"state.dataset?.version===1&&!state.busy")
+        assert c.dataset.revision_id==current_revision and branch_source.read_bytes()==original_bytes
         result={'passed':True,'checks':['Dense ARFF import through real dialog','Association controls, exact rules and full CSV export',
             'Three held-out diagnostic charts and prediction/SVG export','ARFF export from Reports',
             'Two-input merge via canvas connections and input-order controls','Group-by, pivot and two-input concatenation outputs',
             'Classification class selection and regression diagnostics in dark mode','Combined graph project save',
-            'Dataset changes invalidate rules and diagnostics','Missing outcome preflight links to review']}
+            'Dataset changes invalidate rules and diagnostics','Missing outcome preflight links to review',
+            'Replacement cleaning branch cannot revive association rules',
+            'Workflow recomputes replacement revision, exports current rows and activates current model',
+            'Undo/redo retains revision identity and preserves source bytes']}
+        from .correctness_smoke import persistence,evidence_contracts
+        result['checks'].extend(persistence(w,out))
+        result['checks'].extend(evidence_contracts(w,out))
         (out/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
     finally:
         QFileDialog.getOpenFileName,QFileDialog.getSaveFileName=old_open,old_save

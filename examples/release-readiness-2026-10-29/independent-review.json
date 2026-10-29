@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-29",
+  "scope": "Latest correctness contracts, model IO, preparation/resource estimates, research provenance and legacy workflow behavior",
+  "findings": [
+    "P2: unfitted estimators/components accepted as trained",
+    "P2: overflowing JSON float in secondary metric bypasses finite checks"
+  ],
+  "resolution": "Regressions first; recursive fitted active-component checks and bounded finite parse_float. Re-review found no remaining blockers in scope.",
+  "verification": {
+    "passed": 86,
+    "warnings": 11,
+    "suite": "Model bundles, all registered estimator roundtrips, advanced preparation and execution safety"
+  },
+  "read_only_reviewer": true
+}

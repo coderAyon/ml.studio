@@ -22,7 +22,7 @@ class FlowCoordinator(QObject):
     def signature(self):
         c=self.bridge.controller;g=c.canvas.snapshot()
         nodes={k:{'type':n['type'],'params':n.get('params',{})} for k,n in g.nodes.items()}
-        data=[id(c.dataset),c.dataset.index if c.dataset else None,nodes,g.edges,c.target.currentText(),c.algorithm.currentText(),self.bridge.training_preparation()]
+        data=[c.dataset.revision_id if c.dataset else None,nodes,g.edges,c.target.currentText(),c.algorithm.currentText(),self.bridge.training_preparation()]
         for node in g.nodes.values():
             p=node.get('params',{})
             if node['type']=='Dataset' and p.get('source')=='file':
@@ -106,7 +106,7 @@ class FlowCoordinator(QObject):
             try:assert_evaluation_ready(c.dataset)
             except ValueError as exc:evaluation_error=str(exc)
         target,algorithm=c.target.currentText(),c.algorithm.currentText();prep=self.bridge.training_preparation()
-        dataset_key=(id(c.dataset),c.dataset.index if c.dataset else None)
+        dataset_key=c.dataset.revision_id if c.dataset else None
         def work():
             try:
                 from .data import load_csv
@@ -128,6 +128,7 @@ class FlowCoordinator(QObject):
                 self.engine.values={};self.engine.fitted=[]
                 return {'nodes':{key:{'status':'error','message':str(exc)} for key in graph.nodes},'ready':0,'errors':len(graph.nodes),'computed':0,'cached':0}
         def complete(result):
+            if self.signature()!=signature:return
             self.public=result;self.last_signature=signature
             for fitted in self.engine.fitted:
                 c.store.add(fitted.metadata['algorithm'],{'metrics':fitted.metrics,'metadata':fitted.metadata,'origin':'Reactive workflow'})

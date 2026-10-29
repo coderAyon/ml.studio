@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-29",
+  "baseline_commit": "3f24d0375170ad069b8567609f30c3a8469eebb4",
+  "full_suite": {
+    "command": ".venv\\Scripts\\python.exe -m pytest -q --tb=short",
+    "passed": 453,
+    "failed": 0,
+    "warnings": 14,
+    "seconds": 61.26
+  },
+  "native_exe": {
+    "command": "MLStudio.exe --comparison-smoke <isolated temporary directory>",
+    "passed": true,
+    "checks": 19,
+    "result": "native-result.json",
+    "exe_sha256": "1240de193e576ba06a1d716bc71bb3c11966cc03573caf0f73b693fa742e50a8"
+  },
+  "business_native": {
+    "passed": true,
+    "checks": [
+      "Dataset name and deletion moved below sidebar brand",
+      "Business mode toggles and restores ML navigation",
+      "Real KPI/profit/segments/trends/pivot/scenario calculations",
+      "Segment click cross-filters and reset restores totals",
+      "All six data/report exports and report definition open/save",
+      "Project reopen preserves report configuration and invalidates outputs",
+      "48 layouts across 8 business routes, 3 sizes and 2 themes",
+      "Sidebar deletion preserves original source"
+    ]
+  },
+  "regression_process": {
+    "holdout_contract_before_repair": "7 failed, 11 passed",
+    "cleaning_contract_before_repair": "9 failed, 3 passed",
+    "model_bundle_contract_before_repair": "23 failed",
+    "execution_safety_before_repair": "8 failed",
+    "explanation_revision_before_repair": "1 failed, 18 passed",
+    "full_suite_intermediate": "1 failed, 444 passed: test_training_input_budget_and_task_errors_are_clear. Restored guided trainer conservative cardinality guard; final full suite passes.",
+    "review_fittedness_and_overflow_before_repair": "3 failed, 23 passed",
+    "nested_fittedness_before_repair": "2 failed, 26 passed",
+    "boolean_research_before_repair": "1 failed, 9 passed",
+    "sqlite_lifecycle_before_repair": "1 failed: real unclosed database connections under garbage collection"
+  },
+  "environment_checks": {
+    "pip_check": "No broken requirements found",
+    "locked_requirements_no_index_dry_run": "Exit 0 in existing environment; no fresh install claimed",
+    "git_diff_check": "Exit 0; only Windows LF/CRLF advisories",
+    "sqlite_cleanup": "Regression and full suite pass; incidental unclosed-database warning no longer present"
+  },
+  "remaining_release_gates": [
+    "self-contained installer and clean-machine disconnected acceptance",
+    "fresh lock-only environment and offline wheel/build reproducibility",
+    "cancellation, durable job logs and crash recovery",
+    "measured peak-RAM/runtime and long-session acceptance",
+    "keyboard, screen-reader and high-DPI acceptance"
+  ],
+  "notes": "Synthetic test data only. No public-release sign-off, universal competitor parity, source EXE rebuild, Git commit or GitHub push claimed.",
+  "core_interface": {
+    "layouts": 48,
+    "themes": [
+      "Light",
+      "Dark"
+    ],
+    "widths": [
+      800,
+      1024,
+      1440
+    ],
+    "max_horizontal_overflow": 0,
+    "source_preserved": true,
+    "result": "interface-result.json"
+  },
+  "independent_review": {
+    "passed": 86,
+    "warnings": 11,
+    "remaining_blockers_in_scope": 0,
+    "result": "independent-review.json"
+  }
+}

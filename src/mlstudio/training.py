@@ -41,7 +41,7 @@ class TrainingResult:
 
 
 def build_pipeline(x,algorithm,preparation=None,seed=42,parameters=None):
-    from .training_prep import validate_preparation,numeric_pipeline,BoundedFeatureSelector
+    from .training_prep import validate_preparation,numeric_pipeline,BoundedFeatureSelector,MAX_CATEGORY_LEVELS
     from .model_settings import model_parameters
     p=validate_preparation(preparation);numeric=list(x.select_dtypes(include='number').columns)
     categorical=[c for c in x if c not in numeric]
@@ -50,7 +50,7 @@ def build_pipeline(x,algorithm,preparation=None,seed=42,parameters=None):
     pre=ColumnTransformer([
         ('numeric',numeric_pipeline(p),numeric),
         ('categorical',Pipeline([('imputer',SimpleImputer(strategy=p['categorical_imputation'],fill_value=p['categorical_constant'],keep_empty_features=True)),
-            ('encoder',OneHotEncoder(handle_unknown='ignore',sparse_output=False,max_categories=100))]),categorical)])
+            ('encoder',OneHotEncoder(handle_unknown='ignore',sparse_output=False,max_categories=MAX_CATEGORY_LEVELS))]),categorical)])
     model=ALGORITHMS[algorithm](**model_parameters(algorithm,parameters))
     if 'random_state' in model.get_params():model.set_params(random_state=seed)
     if isinstance(model,(KNeighborsClassifier,KNeighborsRegressor)) and model.n_neighbors>len(x):
@@ -97,7 +97,10 @@ def train(frame: pd.DataFrame, target: str, algorithm: str, seed: int = 42, test
         raise ValueError('KNN filling supports up to 2,000 rows and 50 numeric inputs on this local engine. Use median filling or a smaller extract.')
     if numeric and np.isinf(x[numeric].to_numpy(dtype=float,na_value=np.nan)).any():
         raise ValueError("Features contain infinity. Preview 'Replace infinity with missing' in Dataset Explorer, then retry training.")
-    encoded_width=len(numeric)+sum(x[c].nunique(dropna=False) for c in categorical)
+    from .training_prep import encoded_width_bound
+    # Retain the guided trainer's existing conservative cardinality guard too.
+    raw_width=len(numeric)+sum(x[c].nunique(dropna=False) for c in categorical)
+    encoded_width=max(raw_width,encoded_width_bound(x,preparation))
     if len(x)*max(1,encoded_width)>5_000_000:
         raise ValueError("Too many encoded category values for the local memory budget. Exclude identifier/high-cardinality columns or use a smaller dataset.")
     if not regression:

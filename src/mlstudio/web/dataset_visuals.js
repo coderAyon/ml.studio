@@ -41,3 +41,23 @@ document.addEventListener('toggle',e=>{if(e.target.matches?.('.dv-outlier-rows')
 function dvMarkEdited(){if(view.page!=='dataset_visuals'||!state.dataset_visuals)return;const p=document.querySelector('.dv-result>.panel-head p');if(p)p.textContent=num(state.dataset_visuals.rows)+' active records · '+(JSON.stringify(state.dataset_visuals.config)===JSON.stringify(dvConfig())?'Current chart settings':'Settings changed — click Update chart');}
 document.addEventListener('input',e=>{if(e.target.id.startsWith('dv-'))dvMarkEdited();});
 document.addEventListener('change',e=>{if(e.target.id.startsWith('dv-')||e.target.hasAttribute('data-dv-column'))dvMarkEdited();});
+
+// Interactive matrix reads exactly the same coefficient/pair tables as export.
+const evidenceCharts=renderDatasetVisuals;
+renderDatasetVisuals=function(){
+ const t=document.createElement('template');t.innerHTML=evidenceCharts();const r=state.dataset_visuals;
+ const host=t.content.querySelector('.dv-result');if(!r||!host)return t.innerHTML;
+ host.querySelector('.dv-plot').insertAdjacentHTML('beforebegin',`<div class="dv-evidence-strip"><span><b>${num(r.rows)}</b> active records</span><span><b>${r.config.columns?.length||0}</b> numeric measurements</span><span class="dv-flag-key"><i></i><b>${num(r.outliers.count)}</b> flagged rows${r.config.show_outliers?'':' · hidden on plot'}</span></div>`);
+ if(r.kind==='correlation'){
+  const names=r.table.columns.slice(1),n=names.length,size=52,left=150,top=110;
+  const cells=r.table.data.map((row,i)=>row.slice(1).map((v,j)=>{
+   const strength=v===null?0:Math.abs(v),base=v<0?[40,124,168]:[150,68,180];
+   const color=v===null?'#e8e3ef':`rgb(${base.map(c=>Math.round(250+(c-250)*strength)).join(',')})`;
+   const count=r.support.data[i][j+1];
+   return `<g role="img" aria-label="${esc(names[i])} and ${esc(names[j])}: ${v===null?'undefined':v.toFixed(3)}, ${count} finite pairs"><title>${esc(names[i])} × ${esc(names[j])}\n${v===null?'Undefined coefficient':r.config.correlation+': '+v.toFixed(4)}\n${num(count)} finite pairs · correlation is not causation</title><rect x="${left+j*size}" y="${top+i*size}" width="${size-2}" height="${size-2}" rx="6" fill="${color}"/>${n<=12?`<text x="${left+j*size+25}" y="${top+i*size+29}" text-anchor="middle" fill="${strength>.6?'white':'#49385e'}" font-size="12">${v===null?'—':v.toFixed(2)}</text>`:''}</g>`;
+  }).join('')).join('');
+  const labels=names.map((name,i)=>`<text x="${left-12}" y="${top+i*size+29}" text-anchor="end" fill="currentColor" font-size="11">${esc(name.length>22?name.slice(0,20)+'…':name)}</text><text transform="translate(${left+i*size+26},${top-12}) rotate(-35)" fill="currentColor" font-size="11">${esc(name.length>22?name.slice(0,20)+'…':name)}</text>`).join('');
+  host.querySelector('.dv-plot').innerHTML=`<div class="dv-matrix-scroll"><svg style="max-width:${Math.min(860,left+n*size+20)}px" viewBox="0 0 ${left+n*size+20} ${top+n*size+24}" role="img" aria-label="${esc(r.title)}. Hover a cell for exact coefficient and pair count.">${labels}${cells}</svg></div><p class="dv-legend"><span style="color:#287ca8">● Negative</span><span>Near zero</span><span style="color:#9644b4">● Positive</span><small>Hover a cell for its finite pair count. — means undefined.</small></p>`;
+ }
+ return t.innerHTML;
+};window.studioPages.dataset_visuals=renderDatasetVisuals;

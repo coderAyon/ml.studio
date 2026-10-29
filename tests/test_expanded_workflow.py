@@ -64,6 +64,53 @@ def test_cluster_labels_can_flow_to_tables_but_do_not_silently_enter_model_evalu
     assert r['4']['status']=='error' and 'before clustering' in r['4']['message']
 
 
+@pytest.mark.parametrize('kind',['K-Means','DBSCAN','Hierarchical'])
+@pytest.mark.parametrize('columns',[None,[]],ids=['omitted-columns','empty-columns'])
+def test_default_clustering_inputs_recompute_when_selected_target_changes(kind,columns,monkeypatch):
+    from mlstudio import clustering
+    selected=[];study=clustering.study
+    def record_study(frame,columns,*args,**kwargs):
+        selected.append(list(columns))
+        return study(frame,columns,*args,**kwargs)
+    monkeypatch.setattr(clustering,'study',record_study)
+    params={'clusters':2,'min_samples':3}
+    if columns is not None:params['columns']=columns
+    g={'nodes':{'1':{'type':'Dataset','position':[0,0]},
+        '2':{'type':kind,'position':[100,0],'params':params}},'edges':[['1','2']]}
+    engine=FlowEngine();f=data()
+    first=engine.run(g,f,'label','Decision Tree',None,'v0')
+    assert first['nodes']['2']['status']=='ready',first
+    assert selected==[['x','z']]
+
+    result=engine.run(g,f,'z','Decision Tree',None,'v0')
+    assert result['nodes']['2']['status']=='ready',result
+    assert result['computed']==1 and result['cached']==1
+    assert result['nodes']['1']['cached']
+    assert selected==[['x','z'],['x','label']]
+
+
+@pytest.mark.parametrize('kind',['K-Means','DBSCAN','Hierarchical'])
+def test_explicit_clustering_inputs_reuse_cache_when_selected_target_changes(kind,monkeypatch):
+    from mlstudio import clustering
+    selected=[];study=clustering.study
+    def record_study(frame,columns,*args,**kwargs):
+        selected.append(list(columns))
+        return study(frame,columns,*args,**kwargs)
+    monkeypatch.setattr(clustering,'study',record_study)
+    g={'nodes':{'1':{'type':'Dataset','position':[0,0]},
+        '2':{'type':kind,'position':[100,0],'params':{'columns':['x','z'],'clusters':2,'min_samples':3}}},'edges':[['1','2']]}
+    engine=FlowEngine();f=data()
+    first=engine.run(g,f,'label','Decision Tree',None,'v0')
+    assert first['nodes']['2']['status']=='ready',first
+    clustered=engine.values['2']
+
+    result=engine.run(g,f,'z','Decision Tree',None,'v0')
+    assert result['computed']==0 and result['cached']==2
+    assert result['nodes']['2']['cached']
+    assert engine.values['2'] is clustered
+    assert selected==[['x','z']]
+
+
 def test_file_cache_invalidation_preserves_an_unrelated_branch():
     g={'nodes':{'1':{'type':'Dataset','position':[0,0],'params':{'source':'file','path':'one.csv'}},'2':{'type':'Dataset','position':[0,100],'params':{'source':'file','path':'two.csv'}}},'edges':[]}
     engine=FlowEngine();a=data();b=data().iloc[:40]

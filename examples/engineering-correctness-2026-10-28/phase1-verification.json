@@ -1,0 +1,22 @@
+{
+  "phase": 1,
+  "full_suite": {
+    "passed": 285,
+    "warnings": 12,
+    "seconds": 39.81
+  },
+  "targeted": {
+    "revision_bridge_research_reactive_tables_workspace": 75,
+    "expanded_workflow": 36
+  },
+  "native": {
+    "launcher": "project-root MLStudio.exe",
+    "checks": 13,
+    "passed": true
+  },
+  "regressions_observed_before_fix": {
+    "revision": 4,
+    "clustering_default_cases": 6
+  },
+  "remaining": "Snapshot fidelity, shared holdout guard and additional P0 audit items remain open."
+}

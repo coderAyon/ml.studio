@@ -1,5 +1,4 @@
 """Inspect real holdout outcomes; explanatory evidence is never a training input."""
-import hashlib
 import numpy as np
 import pandas as pd
 
@@ -41,14 +40,11 @@ def holdout_details(frame,features,positions,actual,predicted,pipeline,baseline,
 def explain_inputs(result,frame):
     from .training import prediction_inputs,REGRESSION
     from sklearn.inspection import permutation_importance
-    fingerprint=hashlib.sha256(pd.util.hash_pandas_object(frame,index=True).values.tobytes()).hexdigest()
-    if fingerprint!=result.metadata.get('dataset_fingerprint'):raise ValueError('Open the same dataset and version used for this model before explaining inputs.')
-    positions=result.metadata.get('test_positions')
-    if not positions:raise ValueError('This saved model has no held-out row manifest. Train a new experiment.')
-    features=result.metadata['features']
+    from .holdout import validate_holdout
+    features,target,positions=validate_holdout(result,frame)
     if len(features)>100:raise ValueError('Input explanation supports at most 100 raw features. Exclude unused inputs before training.')
     chosen=np.random.default_rng(42).choice(positions,min(500,len(positions)),replace=False)
-    x=prediction_inputs(result,frame.iloc[chosen][features]);y=frame.iloc[chosen][result.metadata['target']]
+    x=prediction_inputs(result,frame.iloc[chosen][features]);y=frame.iloc[chosen][target]
     regression=result.metadata['algorithm'] in REGRESSION
     if regression:y=pd.to_numeric(y,errors='raise')
     values=permutation_importance(result.pipeline,x,y,n_repeats=3,random_state=42,n_jobs=1,

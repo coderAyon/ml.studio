@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "checks": [
+    "Dense ARFF import through real dialog",
+    "Association controls, exact rules and full CSV export",
+    "Three held-out diagnostic charts and prediction/SVG export",
+    "ARFF export from Reports",
+    "Two-input merge via canvas connections and input-order controls",
+    "Group-by, pivot and two-input concatenation outputs",
+    "Classification class selection and regression diagnostics in dark mode",
+    "Combined graph project save",
+    "Dataset changes invalidate rules and diagnostics",
+    "Missing outcome preflight links to review",
+    "Replacement cleaning branch cannot revive association rules",
+    "Workflow recomputes replacement revision, exports current rows and activates current model",
+    "Undo/redo retains revision identity and preserves source bytes",
+    "Unsigned project reopen/export preserves exact boundary values without source",
+    "Nominal ARFF project preserves unused categories and provenance",
+    "Native research export and isolated replay preserve nanosecond timezone splits",
+    "Nominal cleaning preview/apply/undo/redo preserves source and agrees with issue counts",
+    "Validated model saves/reopens and predicts without an active dataset",
+    "Wrong-version evidence and incomplete model bundles report errors without stale output"
+  ]
+}

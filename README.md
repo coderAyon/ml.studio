@@ -1,3 +1,27 @@
+# ML Studio — current engineering status
+
+**29 October release-readiness increment:** repaired shared held-out evidence validation and stale explanation invalidation; categorical cleaning previews and exact quality counts; strict skops model manifest/pipeline agreement; preparation-aware research width, effective seed/config provenance and fail-closed legacy execution. Windows lock now includes skops/prettytable/wcwidth. **453 tests passed, 14 existing warnings, 61.26s**; actual root EXE **19 native checks passed**. Business mode separately passes eight checks including **48 layouts**; the ML interface also passes **48 layouts**. Independent scoped re-review passes **86 targeted tests**. Boolean research preparation and SQLite connection cleanup are repaired too. Source CSVs remain preserved. See [verified changes and remaining launch gates](docs/RELEASE_READINESS.md) and [machine-readable evidence](examples/release-readiness-2026-10-29/verification.json). Clean-machine installer, cancellation/recovery and measured scale acceptance remain open; this is not a commercial-release sign-off.
+
+**Business analysis mode (29 October):** choose Business analysis under the sidebar mode switch for a separate offline BI workspace: explicit KPI measures, paired revenue/cost profit, segment/Pareto analysis, shared filters and segment-click drill-down, UTC time buckets, pivot tables, target/what-if sensitivity and local HTML/CSV reports. Report definitions and project configuration can be saved/reopened; changing mode preserves the ML workspace. The active dataset name is now bold below the brand with its remove button alongside it, replacing the top-right removal control. See [usage, verified scope and remaining enterprise differences](docs/BUSINESS_MODE.md). This does not claim complete Power BI/Tableau parity or a forecasting engine.
+
+**29 October chart presentation:** dataset visuals now use a consistent lavender plot surface, clearer axes/grid/typography, actual histogram median references, labeled small bar charts, stronger boxplot medians and annotated correlation coefficients. The interactive scatter highlights the same flagged positions as its exported chart; correlation cells expose exact coefficients and finite pair counts on hover. Undefined correlations remain blank/marked, not zero. Shared styling also covers question-driven and grouped lab plots. Native five-tab/customization/export checks and screenshots: `examples/charts-verified-2026-10-29/`. Statistics and sampling protocols are unchanged; interactive SVG appearance and exported Matplotlib images are distinct renderers of the same evidence.
+
+Light mode now combines white data surfaces with a lavender workspace/sidebar, purple-tinted section/table headers, clearer selection and purple primary actions. The palette is scoped to Light; Dark and High contrast retain their colors. Representative palette contrast checks and native responsive screenshots are in `examples/lavender-light-verified-2026-10-29/`. No processing or model behavior changed.
+
+**29 October interface update:** readable system-font sizing, consistent 12px action/label text, 800×600 minimum window support, stacked narrow-window work areas, wrapping controls and locally scrolling tables/canvas. Navigation motion is shorter and starts near full opacity; rebuilt workflow nodes no longer replay drop animation. Light/dark acceptance covers 48 page/theme/size combinations at actual 800/1024/1440px widths, with no whole-page horizontal overflow and reduced-motion animations stopped. See [interface evidence](examples/interface-verified-2026-10-29/result.json). Full Python suite: **365 passed, 14 warnings**. This is scoped layout acceptance, not complete accessibility or all-device certification.
+
+**Correctness increment 2 is also verified:** project snapshots use typed-v4 and Research Packs use schema 2, preserving boundary integers, null masks, supported timestamp units/timezones, nominal domains and import provenance; legacy readers remain. **365 tests / 16 root-EXE checks passed.** See [format boundaries](docs/DATA_SNAPSHOT_FORMAT.md). This is a historical checkpoint; the 29 October release-readiness update above supersedes its open-issue list.
+
+**Correctness increment 1 verified (28 October):** retained dataset versions now have immutable revision IDs; replacement undo branches cannot revive old workflow/association outputs or authorize their export/model activation. Clustering cache signatures include the resolved input columns. Full suite **285 passed, 12 warnings**; actual root EXE **13 native checks passed**. Source bytes and visible version numbering are preserved. Evidence: [phase 1](examples/engineering-correctness-2026-10-28/phase1-verification.json). Snapshot fidelity, shared holdout validation and other P0 repairs remain pending at this checkpoint.
+
+ML Studio is an offline-first Windows tabular machine-learning workbench using Python, Qt WebEngine, local JavaScript, scikit-learn and SQLite. It competes in selected workflows; complete Orange/Weka parity or universal superiority is not claimed.
+
+**28 October 2026 audit, baseline `3f24d03`:** 271 tests passed (12 warnings), the actual root EXE passed 10 isolated native acceptance checks, and the existing environment passes `pip check`. Additional probes found real correctness gaps in revision-cache identity, integer/project and timestamp/research persistence, finding counts, categorical previews and held-out explanation validation. These were baseline failures in the audit-only phase; subsequent repair status is documented above. See the [source-based engineering audit](docs/ENGINEERING_AUDIT_2026_10_28.md) and [three proposed correctness improvements](docs/superpowers/plans/2026-10-28-engineering-correctness.md). Passing tests are scoped evidence, not completion of every workflow.
+
+Open the existing project-root **MLStudio.exe** to run the current source with its local `.venv`; the EXE alone is not an installer or a portable application. The Windows dependency lock now includes skops and its required prettytable/wcwidth pins. Current-environment checks pass; clean-machine installer and fresh lock-only installation acceptance remain open. The original audit itself changed no application code; subsequent verified increments are documented above. Current status is also summarized in [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md).
+
+The earlier UI/release notes below are historical. Their test totals, old navigation/shortcut names and superseded limitations describe those updates, not the current capability inventory. Use the audit for current implemented/partial/missing status.
+
 # Stronger standard Light theme
 
 Light mode now uses a slate-gray workspace, dark navy text, clearer secondary labels, visible card/input borders, tinted section headers and stronger purple selection/primary actions. Disabled controls remain visibly disabled without fading all their text. Corners and shadows are restrained for a more conventional desktop UI. The override is scoped to Light only; Dark and High contrast light keep their existing palettes. No features or calculations changed. Native screenshots and representative text contrast measurements are in examples/light-standard-verified/. Restart the same project-root EXE to load the styling.
@@ -104,11 +128,11 @@ The verified environment is Windows x64 and CPython **3.14**. The installed `pyt
 
 ```powershell
 py -3.14 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements/lock-windows-py314.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements/lock-windows-py314.txt -r requirements/core.txt
 .\.venv\Scripts\python.exe main.py
 ```
 
-Initial dependency installation requires internet access, or a predownloaded wheelhouse. Application operation requires no network. No datasets are uploaded; no telemetry or cloud services are included. Python 3.12/3.13 are not tested against this lock. Package metadata compatibility was checked by pip on Python 3.14; `pip check` validates the installed dependency graph. Compatibility sources: [Qt for Python](https://pypi.org/project/PySide6/), [scikit-learn](https://pypi.org/project/scikit-learn/), and dependency wheel metadata in the resolved lock.
+Initial dependency installation requires internet access, or a predownloaded wheelhouse. Application operation requires no network. No datasets are uploaded; no telemetry or cloud services are included. Python 3.12/3.13 are not tested against this lock. The lock omits skops and its transitive dependency closure, so the combined command is a setup workaround, not a fully locked clean-environment acceptance claim. `pip check` validates the already installed dependency graph; clean lock-only installation remains an audit action.
 
 ## Working features
 
@@ -117,11 +141,11 @@ Initial dependency installation requires internet access, or a predownloaded whe
 - Rule-based missing, duplicate, constant, whitespace, category consistency, mixed numeric, cardinality, IQR outlier, skewness and numeric correlation findings. Findings include methods, evidence, recommendations and risks.
 - Cleaning preview and explicit Apply, in-memory version undo/redo, cleaned-copy CSV and transformation-log export. Original source export is blocked.
 - Histograms, box plots, scatter, correlation, missingness and category charts, labeled with their row limit.
-- Eleven supervised algorithms, training-only sklearn preprocessing pipelines and deterministic holdout metrics, per-class reports, and ROC-AUC when available. Model comparison uses identical splits without declaring an unbiased winner. Experiment metadata includes parameters, dataset fingerprint and heuristic duplicate-split/imbalance warnings.
+- Twenty-two supervised methods, training-only sklearn preparation, deterministic holdout metrics, baselines, balanced/macro/weighted metrics, per-class reports and ROC-AUC when available. Advanced research provides configurable random/group/time CV and a reserved final partition. Small fixed training-only grid search exists; randomized and group/time-aware search are pending. Comparison does not establish an unbiased winner.
 - Numeric K-Means, DBSCAN, hierarchical clustering and PCA; these are explicitly exploratory full-dataset operations.
 - Modern dashboard, searchable data preview, column-profile cards, evidence panels, before/after cleaning modal, metric cards, confusion-matrix heatmap, comparison table, history details, reports and settings. Dashboard numbers come from local application state.
-- Drag-and-drop workflow library, draggable nodes, click-to-connect ports, node properties, delete/disconnect, graph undo, zoom/fit, validation and execution status. Three real nodes are available: Dataset → Remove duplicates → Train model; choose target/algorithm in Model Lab or the selected node properties.
-- SQLite experiment history in `%LOCALAPPDATA%\MLStudio`, session model predictions, JSON projects and HTML reports. Projects verify source SHA-256 on reopen, preserve import options and replay approved operations.
+- Drag-and-drop reactive workflow with 42 real node types, typed connections, properties, graph undo, zoom/fit, waiting/errors and caching. Dataset/cleaning/preparation/training/charts/clustering/join/summary nodes compute real outputs. Revision/cache and legacy-executor correctness gaps remain open in the engineering audit.
+- SQLite experiment history, skops trained-model save/open, schema-reviewed predictions, JSON projects and HTML/CSV/PDF health exports. Current projects embed the original frame and replay approved operations while preserving import settings, preparation and graphs. Independent workflow input files still depend on their paths. Boundary integer/provenance and research timestamp fidelity require the audited repairs.
 
 ## Usage and correctness
 
@@ -129,7 +153,7 @@ Import CSV, inspect Dataset Explorer, and review Smart Analyzer findings. Select
 
 In Model Lab select a target and compatible algorithm, then train. Classification uses stratification; insufficient per-class rows produce an error. Regression targets must be numeric. Model comparison is exploratory: repeated selection on the same holdout biases its estimate. Use independent final evaluation data after choosing a model. Clustering ignores nonnumeric columns and reports this in its protocol.
 
-Prediction input must contain exactly the training feature columns; the target should not be included. Models are kept only for the current session. No untrusted pickle/joblib files are loaded.
+Prediction validates required feature names and numeric convertibility; the prediction workspace supports explicit column mapping and review of extra columns. Trained models can be saved/opened as versioned skops bundles; no untrusted pickle/joblib files are loaded. Manifest completeness and dtype/category-drift checks need the hardening described in the audit. Model probabilities are estimates, not guaranteed calibrated confidence.
 
 ## Architecture
 
@@ -183,7 +207,7 @@ Qt uses the ICU API supplied by supported Windows versions. The build spec exclu
 
 ## Limitations
 
-See DEVELOPMENT_STATUS.md. PyTorch, persistent model bundles, CV, configurable hyperparameters, workflow cancellation and the full node catalog, comprehensive domain/date/leakage detectors, PDF reports, complete report charts, autosave and large-data streaming remain pending. CSV header presence defaults to enabled and can be overridden; automatic header detection and custom missing markers remain pending. Undo stores full in-memory copies, so large datasets and long cleaning histories may use substantial memory. Some preview, plotting, fingerprinting and prediction operations are currently synchronous. Projects reference the source rather than embed it. Projects with incomplete workflow graphs must be completed before reopening. No advanced unavailable node is advertised as implemented. Comparison results appear in a metrics table and are stored in history; sortable comparisons, model selection and persistent model export remain pending.
+Use the [engineering audit](docs/ENGINEERING_AUDIT_2026_10_28.md) for current limits and confirmed bugs. Missing capabilities include randomized/group-aware/time-aware tuning, cancellation, durable per-node execution logs, SHAP, full competitor/add-on coverage, large-data streaming and current installer/clean-machine offline acceptance. Some preview/profile/chart/hash/prediction work is synchronous, and undo stores full in-memory copies. Independent node CSVs and in-progress research sessions are not embedded in ordinary projects. Configurable research CV, small grid search, skops models, portable workspace snapshots, incomplete reactive graph saving, health PDF export and optional autosave already exist within their documented bounds.
 
 ## Embedded UI acceptance check
 
@@ -201,7 +225,7 @@ Normal CSV import no longer displays an options dialog: choose a file and it loa
 
 Smart Analyzer now includes a dataset-specific preprocessing plan: observed evidence, reasons, risks, and individual Preview buttons for supported cleaning. Training-only imputation, one-hot encoding and scaling are explained and already performed safely inside model pipelines. Choose the prediction target yourself; it is intentionally not guessed from column order. Choose classification for class labels or regression for numeric amounts. Model Lab explains algorithm assumptions, dataset dimensions and tradeoffs. After comparison it identifies observed leaders using weighted F1 for classification or RMSE for regression, handles ties, explains score gaps and states validation limitations. These are deterministic rules and observed metrics, not an AI oracle or proof of why a model performs better. CV/hyperparameter optimization remain future work.
 
-Launch `ML Studio - Guided.lnk` from the repository root or `dist/MLStudio-Guided/MLStudio.exe`. Earlier EXEs are retained so an existing open session is not interrupted.
+This 0.3.0 section describes historical behavior. Use the project-root `MLStudio.exe` for current source; old shortcuts are archived and frozen distributions are historical snapshots.
 
 ## Research tools (0.4.0)
 
@@ -224,7 +248,7 @@ Recommended demo: Import → Safety Advisor (select target, exclude IDs, choose 
 .\dist\MLStudio-Research\MLStudio.exe --research-smoke examples/research-packaged-acceptance
 ```
 
-Use the root shortcut `ML Studio - Research.lnk` for the new EXE. Inno Setup scripts target 0.4.0; clean-machine installer testing remains pending.
+Use the project-root `MLStudio.exe` for current source. Inno Setup scripts target 0.4.0; a current installer build and clean-machine offline acceptance remain pending.
 # Expanded preparation and model coverage
 
 Visuals is now a main option below My dataset, combining charts and questions. The new reactive Workflow canvas offers a left-hand step library, round drag/drop nodes, typed arrows, automatic connected-step execution and click-to-inspect output. See [workflow usage, safety and verification](docs/REACTIVE_WORKFLOW.md).

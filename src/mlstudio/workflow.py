@@ -59,8 +59,14 @@ class Graph:
         return order
 
     def execute(self, frame, target, algorithm, preparation=None):
+        supported={'Dataset','Data table','Remove duplicates','Fill missing','Prepare training',
+                   'Train model','Compare models',*MULTI_INPUTS,'Group by','Pivot table'}
+        order=self.order()
+        for key in order:
+            if self.nodes[key]['type'] not in supported:
+                raise ValueError(f"Use the reactive workflow canvas to execute {self.nodes[key]['type']}; this legacy executor does not implement it.")
         results = {};summarized={}
-        for key in self.order():
+        for key in order:
             kind = self.nodes[key]["type"]
             parents = [a for a, b in self.edges if b == key]
             summarized[key]=kind in {'Group by','Pivot table'} or any(summarized[a] for a in parents)
@@ -69,6 +75,8 @@ class Graph:
             data = results[parents[0]] if parents else frame.copy(deep=True)
             if kind == "Dataset":
                 results[key] = data
+            elif kind == 'Data table':
+                results[key] = data.copy(deep=True)
             elif kind in MULTI_INPUTS:
                 from .table_operations import combine_tables
                 results[key]=combine_tables(results[parents[0]],results[parents[1]],kind,self.nodes[key].get('params',{}))
@@ -86,7 +94,7 @@ class Graph:
                 results[key]=compare(data,target,algorithms,preparation=preparation)
             elif kind == "Fill missing":
                 raise ValueError("Exploratory imputation cannot precede evaluation. Training already fits imputation within the training split.")
-            else:
+            elif kind == 'Remove duplicates':
                 results[key] = Transformation("Remove duplicates", []).preview(data)
         return results
 

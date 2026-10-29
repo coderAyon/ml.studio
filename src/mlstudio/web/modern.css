@@ -48,7 +48,7 @@ html[data-theme="contrast"]:root {
 }
 html:root body.quiet-studio {
   font-family: 'Segoe UI Variable Text', 'Segoe UI', Arial, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
   background: var(--bg);
   color: var(--ink);
@@ -84,7 +84,7 @@ html:root .quiet-studio #navigation .nav-item,
 html:root .quiet-studio .sidebar-bottom .nav-item {
   min-height: 39px; margin: 3px 0; padding: 9px 12px;
   border: 0; border-radius: 9px; gap: 11px;
-  font-size: 12px; font-weight: 550; color: var(--muted);
+  font-size: 13px; font-weight: 550; color: var(--muted);
   background: transparent;
   transition: background .16s, color .16s;
 }
@@ -103,7 +103,7 @@ html:root .quiet-studio .topbar {
   height: 56px; padding: 0 27px; background: var(--surface);
   border-bottom: 1px solid var(--border); box-shadow: none;
 }
-html:root .quiet-studio .breadcrumb { font-size: 11px; gap: 12px; color: var(--muted); }
+html:root .quiet-studio .breadcrumb { font-size: 12px; gap: 12px; color: var(--muted); }
 html:root .quiet-studio .breadcrumb b { font-weight: 650; color: var(--ink); }
 html:root .quiet-studio .topbar-actions { gap: 16px; }
 html:root .quiet-studio .offline-label { font-size: 10px; color: var(--muted); gap: 7px; }
@@ -121,7 +121,7 @@ html:root .quiet-studio :is(.page-title,.workspace-header,.wf-heading) .actions 
 html:root .quiet-studio .button {
   min-height: 34px; padding: 8px 13px; border-radius: 9px;
   border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-  box-shadow: 0 1px 2px #18223804; font-size: 11px; font-weight: 600;
+  box-shadow: 0 1px 2px #18223804; font-size: 12px; font-weight: 600;
   transition: background .15s, border-color .15s, box-shadow .15s;
 }
 html:root .quiet-studio .button:hover:not(:disabled) { background: var(--surface-soft); border-color: var(--quiet); }
@@ -129,10 +129,10 @@ html:root .quiet-studio .button.primary { color: #fff; background: #7051d5; bord
 html:root .quiet-studio .button.primary:hover:not(:disabled) { background: #6040c0; border-color: #6040c0; box-shadow: 0 4px 12px #7051d52a; }
 html:root .quiet-studio :is(.button,.icon-button):disabled { color: var(--quiet); border-color: var(--border); background: var(--surface-soft); box-shadow: none; opacity: .65; cursor: default; }
 html:root .quiet-studio :is(.button,.text-link) .icon { width: 15px; height: 15px; }
-html:root .quiet-studio .text-link { color: var(--accent); font-size: 11px; }
+html:root .quiet-studio .text-link { color: var(--accent); font-size: 12px; }
 html:root .quiet-studio :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
   background: var(--surface); color: var(--ink); border: 1px solid var(--border);
-  border-radius: 8px; font-family: inherit; font-size: 12px; font-weight: 400;
+  border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 400;
   min-height: 35px; padding: 8px 11px; box-shadow: 0 1px 2px #18223803;
 }
 html:root .quiet-studio input[type=checkbox],html:root .quiet-studio input[type=radio] { accent-color: #7051d5; }
@@ -141,12 +141,12 @@ html:root .quiet-studio :is(input,select,textarea):focus { border-color: var(--f
 html:root .quiet-studio :is(button,a,input,select,textarea,summary):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 html:root .quiet-studio #content .panel { border-radius: 12px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
 html:root .quiet-studio #content .panel-head { padding: 17px 20px; background: transparent; border-bottom: 1px solid var(--line); border-radius: 12px 12px 0 0; }
-html:root .quiet-studio #content .panel-head h2 { font-size: 13px; font-weight: 650; }
-html:root .quiet-studio #content .panel-head p { font-size: 11px; color: var(--muted); }
+html:root .quiet-studio #content .panel-head h2 { font-size: 15px; font-weight: 650; }
+html:root .quiet-studio #content .panel-head p { font-size: 12px; color: var(--muted); }
 html:root .quiet-studio #content .panel-body { padding: 19px 20px; }
 html:root .quiet-studio .help-details { border: 1px solid var(--border); background: var(--surface); border-radius: 9px; }
 html:root .quiet-studio .help-details>summary { color: var(--muted); font-size: 11px; padding: 12px 15px; }
-html:root .quiet-studio .tag { font-size: 9px; padding: 4px 7px; border-radius: 5px; }
+html:root .quiet-studio .tag { font-size: 11px; padding: 4px 7px; border-radius: 5px; }
 html:root .quiet-studio .tag.purple { background: var(--purple-light); color: var(--accent); }
 html:root .quiet-studio th { background: var(--surface-soft); color: var(--muted); border-bottom-color: var(--border); font-weight: 600; }
 html:root .quiet-studio td { color: var(--ink); border-bottom-color: var(--line); }
@@ -214,7 +214,7 @@ html:root .quiet-studio .wf-canvas-host { background-color: var(--bg); }
 .preferences-toggle input:checked+span::after { transform: translateX(15px); background: white; }
 .preferences-toggle input:focus-visible+span { outline: 2px solid var(--focus); outline-offset: 3px; }
 .preferences-advanced { border-top: 1px solid var(--border); }
-.preferences-advanced>summary { font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; padding: 16px 2px; }
+.preferences-advanced>summary { font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; padding: 16px 2px; }
 .preferences-advanced .preference-row { border: 0; padding: 8px 2px 18px; }
 
 @media (max-width: 1150px) {
@@ -241,3 +241,110 @@ html[data-motion="reduced"] .quiet-studio :is(.button,.nav-item) { transition: n
 
 /* Keep the model action separate from the history/save panels above it. */
 .result-model-action { margin-top: 18px; padding-bottom: 4px; }
+
+/* Responsive workbench contract: readable controls, bounded content and local scrolling. */
+html:root .quiet-studio :is(button,input,select,textarea) { font-family: inherit; }
+html:root .quiet-studio :is(.form-field label,.hint,.paragraph,.preference-copy p,.tool-copy small,.help-body,.panel-head p) { font-size: 12px; line-height: 1.65; }
+html:root .quiet-studio :is(.button,.text-link,#remove-dataset,.tabs .tab,.preference-copy label) { font-size: 12px; }
+html:root .quiet-studio .button { min-height: 36px; }
+html:root .quiet-studio .icon-button { width: 36px; height: 36px; flex-shrink: 0; }
+html:root .quiet-studio :is(.page-title,.workspace-header,.wf-heading) { flex-wrap: wrap; }
+html:root .quiet-studio :is(.page-title h1,.workspace-header h1) { overflow-wrap: anywhere; }
+html:root .quiet-studio #content { width: 100%; min-width: 0; margin-inline: auto; }
+html:root .quiet-studio #content :is(.panel,.panel-body,.form-field,.form-row,.chart-controls,.workspace-unified,.minimal-results-grid>*,.prep-workspace>*) { min-width: 0; }
+html:root .quiet-studio :is(.chart-controls,.visual-selectors,.result-summary,.panel-head,.table-toolbar,.table-footer) { flex-wrap: wrap; gap: 12px; }
+html:root .quiet-studio .chart-controls>.form-field { flex-basis: 150px; }
+html:root .quiet-studio .table-scroll { max-width: 100%; overflow: auto; overscroll-behavior: contain; }
+html:root .quiet-studio :is(td,th) { font-variant-numeric: tabular-nums; }
+html:root .quiet-studio .prep-empty { padding: 20px 4px; }
+html:root .quiet-studio :is(.warning,.recommendation,.help-details,.prep-finding) { overflow-wrap: anywhere; }
+html:root .quiet-studio .tabs { overflow-x: auto; flex-wrap: nowrap; }
+html:root .quiet-studio .tab { flex-shrink: 0; }
+html:root .quiet-studio .wf-toolbar { flex-wrap: wrap; gap: 10px; }
+html:root .quiet-studio .wf-workspace { height: clamp(420px,calc(100dvh - 210px),860px); }
+html:root .quiet-studio .wf-library-item { min-height: 36px; font-size: 12px; }
+html:root .quiet-studio .wf-inspector { width: 340px; max-width: 95%; }
+html:root .quiet-studio .wf-empty { left: 24px; top: 48px; width: calc(100% - 48px); min-width: 0; max-width: 420px; }
+html:root .quiet-studio .wf-empty h2 { font-size: 20px; }
+html:root .quiet-studio .modal { max-width: 100%; }
+html:root .quiet-studio .toast { max-width: min(440px,calc(100vw - 32px)); overflow-wrap: anywhere; }
+@media(max-width:1100px) {
+ html[data-theme]:root { --sidebar-width: 184px; }
+ html:root .quiet-studio #content { padding: 22px 20px 36px; }
+ html:root .quiet-studio :is(.minimal-training-layout,.model-layout,.minimal-results-grid,.analysis-layout,.prep-workspace,.dashboard-three,.report-grid) { grid-template-columns: minmax(0,1fr); }
+ html:root .quiet-studio .prep-issue-list { max-height: 250px; }
+ html:root .quiet-studio .prep-side-by-side { grid-template-columns: minmax(0,1fr); }
+ html:root .quiet-studio .wf-workspace { grid-template-columns: 158px minmax(0,1fr); }
+}
+@media(max-width:850px) {
+ html[data-theme]:root { --sidebar-width: 164px; }
+ html:root .quiet-studio .sidebar { padding-inline: 8px; }
+ html:root .quiet-studio .sidebar .brand { font-size: 18px; padding-inline: 5px; gap: 8px; }
+ html:root .quiet-studio #navigation .nav-item { padding-inline: 8px; gap: 8px; font-size: 12px; }
+ html:root .quiet-studio #content { padding: 18px 16px 30px; }
+ html:root .quiet-studio .topbar { padding-inline: 16px; }
+ html:root .quiet-studio .breadcrumb-parent,html:root .quiet-studio .breadcrumb-separator { display: none; }
+ html:root .quiet-studio :is(.prep-settings-grid,.form-row,.diagnostic-charts,.preview-grid,.metric-grid,.automatic-grid,.method-cards) { grid-template-columns: minmax(0,1fr); }
+ html:root .quiet-studio .preference-row { flex-wrap: wrap; gap: 10px; }
+ html:root .quiet-studio .preference-control { max-width: 100%; }
+ html:root .quiet-studio .workspace-shortcuts { flex-wrap: wrap; }
+ html:root .quiet-studio .wf-workspace { grid-template-columns: 140px minmax(0,1fr); }
+ html:root .quiet-studio .wf-library { padding-inline: 8px; }
+ html:root .quiet-studio .wf-tools { flex-wrap: wrap; }
+}
+
+/* Rebuilt status markup must not replay node/drop animations. */
+html:root .quiet-studio .wf-node { animation: none; }
+html:root .quiet-studio .wf-node.fresh { animation: wf-pop .18s ease-out; }
+html:root .quiet-studio .wf-inspector { animation: none; }
+@media(prefers-reduced-motion:reduce) {
+ html:root .quiet-studio .wf-node.fresh { animation: none; }
+}
+html[data-motion=reduced]:root .quiet-studio .wf-node.fresh { animation: none; }
+
+/* Light workspace: white working surfaces against a lavender hierarchy. */
+html[data-theme="pastel"]:root {
+  --bg: #eee9f8;
+  --surface: #ffffff;
+  --surface-soft: #f3eefb;
+  --surface-raised: #fcfaff;
+  --ink: #252039;
+  --muted: #554b6b;
+  --quiet: #685d7e;
+  --border: #d5c9e9;
+  --line: #e6ddf2;
+  --purple: #7048d5;
+  --accent: #5831b3;
+  --purple-light: #e7dcfc;
+  --focus: #7048d5;
+  --shadow: 0 2px 4px #49316b06, 0 8px 24px #49316b07;
+}
+html[data-theme="pastel"]:root .quiet-studio .app-shell {
+  background: linear-gradient(135deg,#f6f2fc 0%,#eee9f8 65%,#f2edf9 100%);
+}
+html[data-theme="pastel"]:root .quiet-studio .sidebar {
+  background: linear-gradient(180deg,#f6f0ff 0%,#fcfaff 48%,#f6f1fc 100%);
+}
+html[data-theme="pastel"]:root .quiet-studio .topbar { background: #faf7ff; }
+html[data-theme="pastel"]:root .quiet-studio #content .panel-head {
+  background: linear-gradient(110deg,#f0e8fc,#faf7ff);
+  border-bottom-color: var(--border);
+}
+html[data-theme="pastel"]:root .quiet-studio #content .panel-head h2 { color: #42276e; }
+html[data-theme="pastel"]:root .quiet-studio #navigation .nav-item.active {
+  background: #e3d5fb;
+  box-shadow: inset 3px 0 #7950d2;
+}
+html[data-theme="pastel"]:root .quiet-studio .button:not(.primary):not(:disabled) { background: #fbf8ff; }
+html[data-theme="pastel"]:root .quiet-studio .button:not(.primary):hover:not(:disabled) { background: #eee5fc; }
+html[data-theme="pastel"]:root .quiet-studio .button.primary {
+  background: #6943c9; border-color: #6943c9;
+}
+html[data-theme="pastel"]:root .quiet-studio .button.primary:hover:not(:disabled) { background: #5833b6; }
+html[data-theme="pastel"]:root .quiet-studio th { background: #ede4fa; color: #493263; }
+html[data-theme="pastel"]:root .quiet-studio tbody tr:nth-child(even) { background: #faf7ff; }
+html[data-theme="pastel"]:root .quiet-studio tbody tr:hover { background: #eee4fc; }
+html[data-theme="pastel"]:root .quiet-studio .prep-finding.active { background: #e9ddfa; }
+html[data-theme="pastel"]:root .quiet-studio .wf-library { background: #faf6ff; }
+html[data-theme="pastel"]:root .quiet-studio .wf-canvas-host,
+html[data-theme="pastel"]:root .quiet-studio .wf-canvas { background-color: #f0eaf9; }

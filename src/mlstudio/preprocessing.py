@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from .data import Transformation
+from .quality_rules import label_masks
 
 
 EXPLORATORY_OPERATIONS = frozenset({"Cap outliers (IQR)", "Remove outlier rows (IQR)", "Fill missing"})
@@ -131,17 +132,13 @@ def _finding_mask(frame, issue):
             mask |= frame[c].isin([np.inf, -np.inf]).to_numpy(dtype=bool)
     elif title == "Surrounding whitespace":
         for c in columns:
-            mask |= frame[c].map(lambda v: isinstance(v, str) and v != v.strip()).to_numpy(dtype=bool)
+            mask |= label_masks(frame[c])['whitespace']
     elif title == "Possibly mixed numeric values":
         for c in columns:
-            mask |= (frame[c].notna() & pd.to_numeric(frame[c], errors="coerce").isna()).to_numpy(dtype=bool)
+            mask |= label_masks(frame[c])['mixed_numeric']
     elif title == "Equivalent category labels":
         for c in columns:
-            values = frame[c].astype("string")
-            normalized = values.str.strip().str.lower()
-            counts = pd.DataFrame({"key": normalized, "value": values}).dropna().groupby("key")["value"].nunique()
-            ambiguous = counts[counts > 1].index
-            mask |= normalized.isin(ambiguous).to_numpy(dtype=bool)
+            mask |= label_masks(frame[c])['equivalent']
         scope = "Rows belonging to normalized labels with multiple original spellings. Review their meaning before merging them."
     elif title in {"Empty or constant column", "High cardinality / possible identifier"}:
         mask[:] = True
@@ -222,8 +219,18 @@ def apply_operation(frame, operation, column="", value=""):
 
 
 def _equal_cells(before, after):
-    equal = before.eq(after) | (before.isna() & after.isna())
-    return equal.fillna(False).to_numpy(dtype=bool)
+    # Compare actual values rather than requiring identical categorical domains.
+    # Work one column at a time so a wide frame need not be copied into objects.
+    equal = np.empty(before.shape, dtype=bool)
+    for i, column in enumerate(before.columns):
+        left, right = before[column], after[column]
+        if isinstance(left.dtype, pd.CategoricalDtype):
+            left = left.astype(object)
+        if isinstance(right.dtype, pd.CategoricalDtype):
+            right = right.astype(object)
+        same = left.eq(right) | (left.isna() & right.isna())
+        equal[:, i] = same.fillna(False).to_numpy(dtype=bool)
+    return equal
 
 
 def preview_change(frame, operation, column="", value=""):

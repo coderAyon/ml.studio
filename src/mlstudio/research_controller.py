@@ -32,7 +32,7 @@ class ResearchCoordinator(QObject):
 
     def signature(self):
         controller=self.bridge.controller
-        return (id(controller.dataset),controller.dataset.index if controller.dataset else None,json.dumps(asdict(self.config()),sort_keys=True))
+        return (controller.dataset.revision_id if controller.dataset else None,json.dumps(asdict(self.config()),sort_keys=True))
 
     def invalidate_if_changed(self):
         if self.key is not None and self.key!=self.signature():
@@ -104,6 +104,7 @@ class ResearchCoordinator(QObject):
             else:session.evaluate_final(algorithm,variant)
             return session
         def complete(session):
+            if self.signature()!=sig:return
             self.session=session;self.key=sig;self.fingerprint=fingerprint
             self.cached=session.snapshot()
             self.prior_exposures=controller.store.final_exposure_count(fingerprint)-(1 if action=="research_final" else 0)

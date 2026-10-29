@@ -571,6 +571,7 @@ class MainWindow(QMainWindow):
             graph = self.canvas.snapshot()
             payload = {"version": 1, "source": str(Path(self.source).resolve()), "fingerprint": hashlib.sha256(Path(self.source).read_bytes()).hexdigest() if Path(self.source).is_file() else None, "import": self.import_options, "operations": self.dataset.log[:self.dataset.index], "workflow": {"nodes": graph.nodes, "edges": graph.edges}, "target": self.target.currentText(), "algorithm": self.algorithm.currentText()}
             payload["preparation"] = self.preparation
+            payload['business_config']=getattr(self,'business_config',{})
             from .project_data import pack_frame
             payload['embedded_source']=pack_frame(self.dataset.versions[0])
             from uuid import uuid4
@@ -610,6 +611,8 @@ class MainWindow(QMainWindow):
             return versions, analyze(versions.current), preparation
         def loaded(value):
             self.dataset, self.issues, self.preparation = value
+            business_config=payload.get('business_config',{})
+            self.business_config=business_config if isinstance(business_config,dict) else {}
             self.active_project_path = path
             self.source, self.import_options = payload["source"], payload["import"]
             self.result = None

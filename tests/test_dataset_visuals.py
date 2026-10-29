@@ -78,3 +78,21 @@ def test_invalid_customization_rejected():
                 {'kind':'correlation','columns':['x','y'],'correlation':'magic'},
                 {'kind':'scatter','columns':['x','y'],'opacity':2}]:
         with pytest.raises(ValueError):build_chart(data(),cfg)
+
+
+def test_histogram_median_and_interactive_flags_are_actual_data_evidence():
+    result, figure = build_chart(data(), {'kind':'histogram','columns':['x'],'show_outliers':False})
+    median = next(line for line in figure.axes[0].lines if line.get_label().startswith('Median'))
+    assert median.get_xdata()[0] == data().x.median()
+    result, _ = build_chart(data(), {'kind':'scatter','columns':['x','y']})
+    assert result['interactive']['flagged_positions'] == [40]
+    hidden, _ = build_chart(data(), {'kind':'scatter','columns':['x','y'],'show_outliers':False})
+    assert hidden['interactive']['flagged_positions'] == [] and hidden['outliers']['count'] == 1
+
+
+def test_undefined_correlation_cells_are_not_rendered_as_zero():
+    f = pd.DataFrame({'x':[1.,2.,3.], 'constant':[1.]*3})
+    report, figure = build_chart(f, {'kind':'correlation','columns':['x','constant']})
+    assert report['table']['data'][0][2] is None
+    assert any(text.get_text() == '—' for text in figure.axes[0].texts)
+    assert np.ma.getmaskarray(figure.axes[0].images[0].get_array())[0,1]

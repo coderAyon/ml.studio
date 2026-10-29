@@ -1,0 +1,18 @@
+{
+  "phase": 2,
+  "date": "2026-10-29",
+  "full_suite": {
+    "passed": 365,
+    "warnings": 14,
+    "seconds": 46.74
+  },
+  "native": {
+    "launcher": "project-root MLStudio.exe",
+    "checks": 16,
+    "passed": true
+  },
+  "codec_cases": 74,
+  "research_schema": 2,
+  "snapshot_encoding": "typed-v4",
+  "remaining": "Shared holdout validator and other P0 audit repairs still open."
+}

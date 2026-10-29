@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "config": {
+    "measure": "sales",
+    "aggregate": "sum",
+    "dimension": "region",
+    "date": "date",
+    "grain": "month",
+    "pivot": "product",
+    "cost": "cost",
+    "customer": "customer",
+    "target": 10000,
+    "scenario_percent": 10,
+    "filters": [],
+    "top_n": 12,
+    "date_from": "",
+    "date_to": "",
+    "title": "Business overview"
+  }
+}

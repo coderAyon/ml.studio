@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import csv
+from uuid import uuid4
 import pandas as pd
 
 
@@ -106,6 +107,7 @@ class Transformation:
 class DatasetVersions:
     def __init__(self, frame: pd.DataFrame):
         self.versions = [frame.copy(deep=True)]
+        self._revision_ids = [uuid4().hex]
         self.index = 0
         self.log: list[dict] = []
 
@@ -113,11 +115,17 @@ class DatasetVersions:
     def current(self):
         return self.versions[self.index].copy(deep=True)
 
+    @property
+    def revision_id(self):
+        """Identity of this retained version, independent of its history position."""
+        return self._revision_ids[self.index]
+
     def apply(self, operation: Transformation):
         new = operation.preview(self.current)
         if new.empty:
             raise ValueError("This change would leave no data. Keep at least one row and column.")
         self.versions = self.versions[:self.index + 1] + [new]
+        self._revision_ids = self._revision_ids[:self.index + 1] + [uuid4().hex]
         self.log = self.log[:self.index] + [vars(operation)]
         self.index += 1
 

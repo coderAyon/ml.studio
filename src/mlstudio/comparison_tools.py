@@ -11,7 +11,7 @@ class ComparisonTools:
 
     def key(self):
         c=self.bridge.controller
-        return (id(c.dataset), c.dataset.index) if c.dataset else None
+        return c.dataset.revision_id if c.dataset else None
 
     def model_key(self):
         return (self.key(), id(self.bridge.controller.result))

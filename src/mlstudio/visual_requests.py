@@ -384,5 +384,7 @@ def execute_request(frame, plan):
         axis.set_title(title)
         if kind!='missing':notes.append("Missing and infinite numeric measurements are excluded; no values are imputed.")
     protocol=f"{len(filtered):,} of {total:,} active rows after filtering. {filter_note} "+' '.join(notes)
+    from .chart_style import style_figure
+    style_figure(figure)
     return {"title":title,"table":table,"support":support_table,"insights":insights,"protocol":protocol,"plan":plan,
             "rows_total":total,"rows_used":len(filtered),"columns_used":columns},figure

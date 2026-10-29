@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "Dataset name and deletion moved below sidebar brand",
+    "Business mode toggles and restores ML navigation",
+    "Real KPI/profit/segments/trends/pivot/scenario calculations",
+    "Segment click cross-filters and reset restores totals",
+    "All six data/report exports and report definition open/save",
+    "Project reopen preserves report configuration and invalidates outputs",
+    "48 layouts across 8 business routes, 3 sizes and 2 themes",
+    "Sidebar deletion preserves original source"
+  ]
+}

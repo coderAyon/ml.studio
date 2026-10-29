@@ -33,15 +33,20 @@ class ResearchConfig:
     preparation: dict | None = None
 
 
-def pipeline_for(x, algorithm, variant, seed,preparation=None):
+def _variant_preparation(variant, preparation):
     if variant not in VARIANTS:raise ValueError("Unknown preprocessing variant.")
-    if algorithm not in ALGORITHMS:raise ValueError("Unknown algorithm.")
     from .training_prep import validate_preparation
-    from .training import build_pipeline
     p=validate_preparation(preparation)
     if variant=='mean':p['imputation']='mean'
     if variant=='unscaled':p['scaling']='none'
     if variant=='indicator':p['missing_indicators']=True
+    return p
+
+
+def pipeline_for(x, algorithm, variant, seed,preparation=None):
+    if algorithm not in ALGORITHMS:raise ValueError("Unknown algorithm.")
+    from .training import build_pipeline
+    p=_variant_preparation(variant,preparation)
     return build_pipeline(x,algorithm,p,seed)
 
 
@@ -65,10 +70,13 @@ class ResearchSession:
         self.features=[c for c in frame if c not in excluded]
         if not self.features:raise ValueError("No input features remain after exclusions.")
         self.x=self.frame[self.features].copy()
-        width=sum(1 if pd.api.types.is_numeric_dtype(self.x[c]) else min(50,max(1,self.x[c].nunique())) for c in self.x)
+        from .training_prep import encoded_width_bound
+        # Impact can enable missing indicators even if the saved plan does not.
+        width=encoded_width_bound(self.x,{**self.preparation,'missing_indicators':True})
         if len(self.x)*width>5_000_000:raise ValueError("Encoded research data would exceed the memory budget. Exclude high-cardinality identifiers or use a reviewed extract.")
+        numeric=set(self.x.select_dtypes(include='number').columns)
         for c in self.x:
-            if not pd.api.types.is_numeric_dtype(self.x[c]):
+            if c not in numeric:
                 self.x[c]=self.x[c].map(lambda v:str(v) if pd.notna(v) else np.nan).astype(object)
         self.y=self.frame[config.target].copy()
         if config.task=="regression":self.y=pd.to_numeric(self.y,errors="raise")
@@ -158,7 +166,7 @@ class ResearchSession:
             pipeline=pipeline_for(self.x.iloc[tr],algorithm,variant,self.config.seed,self.preparation)
             started=time.perf_counter();pipeline.fit(self.x.iloc[tr],self.y.iloc[tr]);pred=pipeline.predict(self.x.iloc[va]);durations.append(time.perf_counter()-started)
             values=metric_values(self.y.iloc[va],pred,self.config.task);metrics.append(values);scores.append(values[self.metric])
-        return {"algorithm":algorithm,"variant":variant,"label":VARIANTS[variant],"scores":scores,"mean":float(np.mean(scores)),"std":float(np.std(scores,ddof=1)) if len(scores)>1 else 0.,"seconds":float(sum(durations)),"fold_metrics":metrics,"fold_ids":list(range(len(self.folds))),"parameters":ALGORITHMS[algorithm]().get_params()}
+        return {"algorithm":algorithm,"variant":variant,"label":VARIANTS[variant],"scores":scores,"mean":float(np.mean(scores)),"std":float(np.std(scores,ddof=1)) if len(scores)>1 else 0.,"seconds":float(sum(durations)),"fold_metrics":metrics,"fold_ids":list(range(len(self.folds))),"parameters":pipeline.named_steps['model'].get_params(),"preparation":_variant_preparation(variant,self.preparation)}
 
     def _baseline(self):
         scores=[]
